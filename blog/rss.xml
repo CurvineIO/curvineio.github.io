@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="rss.xsl"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Curvine Blog</title>
+        <link>https://curvine.io/blog</link>
+        <description>Curvine Blog</description>
+        <lastBuildDate>Thu, 29 May 2025 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Curvine Caching now comming!]]></title>
+            <link>https://curvine.io/blog/welcome</link>
+            <guid>https://curvine.io/blog/welcome</guid>
+            <pubDate>Thu, 29 May 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Curbine is a high-performance distributed caching system implemented in Rust, designed for low-latency and high-throughput workloads with powerful data governance capabilities.]]></description>
+            <content:encoded><![CDATA[<p>Curbine is a high-performance distributed caching system implemented in Rust, designed for low-latency and high-throughput workloads with powerful data governance capabilities.</p>]]></content:encoded>
+            <category>teams</category>
+        </item>
+    </channel>
+</rss>
