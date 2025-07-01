@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Curvine Blog</title>
-        <link>https://curvine.io/zh-cn/blog</link>
+        <link>https://curvinecache.com/zh-cn/blog</link>
         <description>Curvine Blog</description>
         <lastBuildDate>Thu, 29 May 2025 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,8 +10,8 @@
         <language>zh-cn</language>
         <item>
             <title><![CDATA[Curvine分布式缓存系统，来了！!]]></title>
-            <link>https://curvine.io/zh-cn/blog/welcome</link>
-            <guid>https://curvine.io/zh-cn/blog/welcome</guid>
+            <link>https://curvinecache.com/zh-cn/blog/welcome</link>
+            <guid>https://curvinecache.com/zh-cn/blog/welcome</guid>
             <pubDate>Thu, 29 May 2025 00:00:00 GMT</pubDate>
             <description><![CDATA[Curvine是一个高性能的分布式缓存系统，实现了Rust语言，面向低延迟和高吞吐量的工作负载，具有强大的数据治理能力。]]></description>
             <content:encoded><![CDATA[<p>Curvine是一个高性能的分布式缓存系统，实现了Rust语言，面向低延迟和高吞吐量的工作负载，具有强大的数据治理能力。</p>]]></content:encoded>
