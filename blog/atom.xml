@@ -12,8 +12,8 @@
         <id>https://curvinecache.com/blog/welcome</id>
         <link href="https://curvinecache.com/blog/welcome"/>
         <updated>2025-05-29T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Curbine is a high-performance distributed caching system implemented in Rust, designed for low-latency and high-throughput workloads with powerful data governance capabilities.]]></summary>
-        <content type="html"><![CDATA[<p>Curbine is a high-performance distributed caching system implemented in Rust, designed for low-latency and high-throughput workloads with powerful data governance capabilities.</p>]]></content>
+        <summary type="html"><![CDATA[Curvine is a high-performance distributed caching system implemented in Rust, designed for low-latency and high-throughput workloads with powerful data governance capabilities.]]></summary>
+        <content type="html"><![CDATA[<p>Curvine is a high-performance distributed caching system implemented in Rust, designed for low-latency and high-throughput workloads with powerful data governance capabilities.</p>]]></content>
         <author>
             <name>Barry</name>
             <uri>https://curvine.io</uri>
