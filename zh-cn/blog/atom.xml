@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="atom.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://curvinecache.com/zh-cn/blog</id>
+    <id>https://curvineio.github.io/zh-cn/blog</id>
     <title>Curvine Blog</title>
     <updated>2025-05-29T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://curvinecache.com/zh-cn/blog"/>
+    <link rel="alternate" href="https://curvineio.github.io/zh-cn/blog"/>
     <subtitle>Curvine Blog</subtitle>
-    <icon>https://curvinecache.com/zh-cn/img/curvine_logo.ico</icon>
+    <icon>https://curvineio.github.io/zh-cn/img/curvine_logo.ico</icon>
     <entry>
         <title type="html"><![CDATA[Curvine分布式缓存系统，来了！!]]></title>
-        <id>https://curvinecache.com/zh-cn/blog/welcome</id>
-        <link href="https://curvinecache.com/zh-cn/blog/welcome"/>
+        <id>https://curvineio.github.io/zh-cn/blog/welcome</id>
+        <link href="https://curvineio.github.io/zh-cn/blog/welcome"/>
         <updated>2025-05-29T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Curvine是一个高性能的分布式缓存系统，实现了Rust语言，面向低延迟和高吞吐量的工作负载，具有强大的数据治理能力。]]></summary>
         <content type="html"><![CDATA[<p>Curvine是一个高性能的分布式缓存系统，实现了Rust语言，面向低延迟和高吞吐量的工作负载，具有强大的数据治理能力。</p>]]></content>
