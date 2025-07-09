@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-cn" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-User-Manuals/webui" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.8.0">
+<title data-rh="true">Web管理界面 | Curvine</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://curvineio.github.io/zh-cn/docs/User-Manuals/webui"><meta data-rh="true" property="og:locale" content="zh_cn"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-cn"><meta data-rh="true" name="docsearch:language" content="zh-cn"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Web管理界面 | Curvine"><meta data-rh="true" name="description" content="Curvine 提供了直观易用的Web管理界面，用户可以通过浏览器实时监控集群状态、管理文件系统、查看工作节点信息以及配置系统参数。Web界面为集群运维和日常管理提供了可视化的操作平台，无需复杂的命令行操作即可完成大部分管理任务。"><meta data-rh="true" property="og:description" content="Curvine 提供了直观易用的Web管理界面，用户可以通过浏览器实时监控集群状态、管理文件系统、查看工作节点信息以及配置系统参数。Web界面为集群运维和日常管理提供了可视化的操作平台，无需复杂的命令行操作即可完成大部分管理任务。"><link data-rh="true" rel="icon" href="/zh-cn/img/curvine_logo.ico"><link data-rh="true" rel="canonical" href="https://curvineio.github.io/zh-cn/docs/User-Manuals/webui"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/User-Manuals/webui" hreflang="en"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/zh-cn/docs/User-Manuals/webui" hreflang="zh-cn"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/User-Manuals/webui" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"用户手册","item":"https://curvineio.github.io/zh-cn/docs/category/user-manuals"},{"@type":"ListItem","position":2,"name":"Web管理界面","item":"https://curvineio.github.io/zh-cn/docs/User-Manuals/webui"}]}</script><link rel="alternate" type="application/rss+xml" href="/zh-cn/blog/rss.xml" title="Curvine RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/zh-cn/blog/atom.xml" title="Curvine Atom Feed"><link rel="stylesheet" href="/zh-cn/assets/css/styles.adcb0481.css">
+<script src="/zh-cn/assets/js/runtime~main.8c2fdbc3.js" defer="defer"></script>
+<script src="/zh-cn/assets/js/main.b17f40b8.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/zh-cn/img/curvine_logo.png"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/zh-cn/"><div class="navbar__logo"><img src="/zh-cn/img/curvine_logo.png" alt="Curvine" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/zh-cn/img/curvine_logo.png" alt="Curvine" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Curvine</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/zh-cn/docs/Overview/instroduction">文档</a><a class="navbar__item navbar__link" href="/zh-cn/blog">博客</a><a class="navbar__item navbar__link" href="/zh-cn/community">社区</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/zh-cn/docs/User-Manuals/webui">Master 🚧</a><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/docs/User-Manuals/webui" target="_self" rel="noopener noreferrer" class="dropdown__link" lang="en">English</a></li><li><a href="/zh-cn/docs/User-Manuals/webui" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-cn">简体中文</a></li></ul></div><a href="https://github.com/curvineio/curvine" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="切换浅色/暗黑模式（当前为system mode）"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/zh-cn/docs/Overview/instroduction">概览</a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/zh-cn/docs/Deploy/quick-start">部署</a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" href="/zh-cn/docs/category/user-manuals">用户手册</a><button aria-label="折叠侧边栏分类 &#x27;用户手册&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/zh-cn/docs/User-Manuals/ufs">数据编排</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/zh-cn/docs/User-Manuals/cache">缓存</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/zh-cn/docs/User-Manuals/webui">Web管理界面</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/zh-cn/docs/User-Manuals/cli">命令行工具</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/zh-cn/docs/User-Manuals/opt">性能调优</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/zh-cn/docs/User-Manuals/conf">配置参考</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/zh-cn/docs/category/benchmark">性能测试</a><button aria-label="展开侧边栏分类 &#x27;性能测试&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/zh-cn/docs/category/architecture">架构详情</a><button aria-label="展开侧边栏分类 &#x27;架构详情&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/zh-cn/docs/category/contributor-guide">开发者指南</a><button aria-label="展开侧边栏分类 &#x27;开发者指南&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/zh-cn/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/zh-cn/docs/category/user-manuals"><span>用户手册</span></a></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Web管理界面</span></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>Web管理界面</h1></header>
+<p>Curvine 提供了直观易用的Web管理界面，用户可以通过浏览器实时监控集群状态、管理文件系统、查看工作节点信息以及配置系统参数。Web界面为集群运维和日常管理提供了可视化的操作平台，无需复杂的命令行操作即可完成大部分管理任务。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="overview---集群概览">Overview - 集群概览<a href="#overview---集群概览" class="hash-link" aria-label="Overview - 集群概览的直接链接" title="Overview - 集群概览的直接链接">​</a></h2>
+<p>Overview页面提供了Curvine集群的整体运行状态概览，是集群监控的核心仪表板。</p>
+<p><img decoding="async" loading="lazy" alt="Overview页面" src="/zh-cn/assets/images/overview-56e749032abc2dd7ee18f77d63239941.png" width="1898" height="654" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="集群状态信息">集群状态信息<a href="#集群状态信息" class="hash-link" aria-label="集群状态信息的直接链接" title="集群状态信息的直接链接">​</a></h3>
+<ul>
+<li><strong>集群状态</strong>：显示当前集群是否处于活跃状态，包含运行时长信息</li>
+<li><strong>主节点地址</strong>：显示Master节点的访问地址和端口</li>
+<li><strong>版本信息</strong>：显示当前运行的Curvine版本号</li>
+<li><strong>启动时间</strong>：显示集群的启动时间戳</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="工作节点状态">工作节点状态<a href="#工作节点状态" class="hash-link" aria-label="工作节点状态的直接链接" title="工作节点状态的直接链接">​</a></h3>
+<ul>
+<li><strong>活跃工作节点数量</strong>：实时显示当前在线的Worker节点数量</li>
+<li><strong>离线工作节点数量</strong>：显示当前离线或故障的Worker节点数量</li>
+<li><strong>节点状态指示器</strong>：通过颜色编码直观显示节点健康状态</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="存储容量统计">存储容量统计<a href="#存储容量统计" class="hash-link" aria-label="存储容量统计的直接链接" title="存储容量统计的直接链接">​</a></h3>
+<ul>
+<li><strong>总存储容量</strong>：显示集群的总存储容量</li>
+<li><strong>已用存储空间</strong>：显示当前已使用的存储空间</li>
+<li><strong>可用存储空间</strong>：显示剩余可用的存储空间</li>
+<li><strong>容量利用率</strong>：通过进度条和百分比显示存储使用率</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="文件系统统计">文件系统统计<a href="#文件系统统计" class="hash-link" aria-label="文件系统统计的直接链接" title="文件系统统计的直接链接">​</a></h3>
+<ul>
+<li><strong>总文件数量</strong>：显示文件系统中的文件总数</li>
+<li><strong>目录数量</strong>：显示文件系统中的目录总数</li>
+<li><strong>数据块统计</strong>：显示唯一数据块和副本数据块的数量</li>
+</ul>
+<p>通过Overview页面，管理员可以快速了解集群的整体健康状况，及时发现潜在问题并进行相应处理。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="browse---文件系统浏览">Browse - 文件系统浏览<a href="#browse---文件系统浏览" class="hash-link" aria-label="Browse - 文件系统浏览的直接链接" title="Browse - 文件系统浏览的直接链接">​</a></h2>
+<p>Browse页面提供了类似文件管理器的界面，用户可以浏览和管理Curvine文件系统中的文件和目录。</p>
+<p><img decoding="async" loading="lazy" alt="Browse页面" src="/zh-cn/assets/images/browse-69453c9207d1241da0b3dfb8bc38b7af.png" width="1895" height="785" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="文件系统导航">文件系统导航<a href="#文件系统导航" class="hash-link" aria-label="文件系统导航的直接链接" title="文件系统导航的直接链接">​</a></h3>
+<ul>
+<li><strong>路径导航栏</strong>：显示当前所在的文件系统路径，支持快速跳转</li>
+<li><strong>导航按钮</strong>：提供&quot;Navigate&quot;按钮用于路径跳转</li>
+<li><strong>面包屑导航</strong>：显示完整的目录层级结构</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="文件和目录管理">文件和目录管理<a href="#文件和目录管理" class="hash-link" aria-label="文件和目录管理的直接链接" title="文件和目录管理的直接链接">​</a></h3>
+<ul>
+<li><strong>文件列表视图</strong>：以列表形式展示当前目录下的文件和子目录</li>
+<li><strong>文件详细信息</strong>：显示文件大小、修改时间、权限等属性信息</li>
+<li><strong>目录操作</strong>：支持创建新目录、删除目录等操作</li>
+<li><strong>文件操作</strong>：支持文件的查看、下载、删除等基本操作</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="存储统计">存储统计<a href="#存储统计" class="hash-link" aria-label="存储统计的直接链接" title="存储统计的直接链接">​</a></h3>
+<ul>
+<li><strong>目录项统计</strong>：显示当前目录下的文件和子目录数量</li>
+<li><strong>Grid View按钮</strong>：提供网格视图切换选项，方便不同的浏览需求</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="空目录提示">空目录提示<a href="#空目录提示" class="hash-link" aria-label="空目录提示的直接链接" title="空目录提示的直接链接">​</a></h3>
+<p>当目录为空时，界面会显示友好的提示信息：&quot;Directory is empty - No files or folders found in this location&quot;，帮助用户理解当前状态。</p>
+<p>Browse页面使用户能够直观地管理分布式文件系统，就像操作本地文件系统一样简单便捷。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="workers---工作节点管理">Workers - 工作节点管理<a href="#workers---工作节点管理" class="hash-link" aria-label="Workers - 工作节点管理的直接链接" title="Workers - 工作节点管理的直接链接">​</a></h2>
+<p>Workers页面专门用于监控和管理集群中的工作节点，提供详细的节点状态信息和性能指标。</p>
+<p><img decoding="async" loading="lazy" alt="Workers页面" src="/zh-cn/assets/images/workers-c9dc1cb1421f7419247b78c0da962bff.png" width="1894" height="773" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="实时节点状态">实时节点状态<a href="#实时节点状态" class="hash-link" aria-label="实时节点状态的直接链接" title="实时节点状态的直接链接">​</a></h3>
+<ul>
+<li><strong>总容量显示</strong>：显示所有工作节点的总存储容量</li>
+<li><strong>可用容量显示</strong>：显示当前可用的存储容量</li>
+<li><strong>容量统计</strong>：实时更新的容量使用情况</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="活跃工作节点列表">活跃工作节点列表<a href="#活跃工作节点列表" class="hash-link" aria-label="活跃工作节点列表的直接链接" title="活跃工作节点列表的直接链接">​</a></h3>
+<p>对于每个在线的工作节点，显示以下详细信息：</p>
+<ul>
+<li><strong>节点ID</strong>：唯一标识工作节点的ID号</li>
+<li><strong>IP地址</strong>：工作节点的网络地址</li>
+<li><strong>最后心跳时间</strong>：显示节点最后一次与Master通信的时间</li>
+<li><strong>节点容量信息</strong>：<!-- -->
+<ul>
+<li>总容量：节点的总存储容量</li>
+<li>可用容量：节点当前可用的存储空间</li>
+<li>已用容量：节点当前已使用的存储空间</li>
+</ul>
+</li>
+<li><strong>使用率指示器</strong>：通过进度条直观显示节点的存储使用率</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="离线节点监控">离线节点监控<a href="#离线节点监控" class="hash-link" aria-label="离线节点监控的直接链接" title="离线节点监控的直接链接">​</a></h3>
+<ul>
+<li><strong>离线节点列表</strong>：显示当前离线或无响应的工作节点</li>
+<li><strong>故障检测</strong>：帮助管理员快速识别有问题的节点</li>
+<li><strong>节点恢复状态</strong>：跟踪离线节点的恢复情况</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="集群健康监控">集群健康监控<a href="#集群健康监控" class="hash-link" aria-label="集群健康监控的直接链接" title="集群健康监控的直接链接">​</a></h3>
+<p>通过Workers页面，管理员可以：</p>
+<ul>
+<li>监控各个节点的健康状态和性能表现</li>
+<li>及时发现存储容量不足或节点故障问题</li>
+<li>评估集群的负载分布和资源利用情况</li>
+<li>为集群扩容或维护提供决策依据</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="configuration---系统配置">Configuration - 系统配置<a href="#configuration---系统配置" class="hash-link" aria-label="Configuration - 系统配置的直接链接" title="Configuration - 系统配置的直接链接">​</a></h2>
+<p>Configuration页面提供了Curvine集群的详细配置信息查看功能，帮助管理员了解和验证系统配置。</p>
+<p><img decoding="async" loading="lazy" alt="Configuration页面" src="/zh-cn/assets/images/configuration-cd802e3142827e16bb42631820a47691.png" width="1896" height="822" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="配置参数部分展示">配置参数部分展示<a href="#配置参数部分展示" class="hash-link" aria-label="配置参数部分展示的直接链接" title="配置参数部分展示的直接链接">​</a></h3>
+<p>页面以表格形式展示所有重要的系统配置参数：</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="格式化配置">格式化配置<a href="#格式化配置" class="hash-link" aria-label="格式化配置的直接链接" title="格式化配置的直接链接">​</a></h4>
+<ul>
+<li><strong>format_master</strong>：Master节点格式化状态</li>
+<li><strong>format_worker</strong>：Worker节点格式化状态</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="测试和调试配置">测试和调试配置<a href="#测试和调试配置" class="hash-link" aria-label="测试和调试配置的直接链接" title="测试和调试配置的直接链接">​</a></h4>
+<ul>
+<li><strong>testing</strong>：测试模式开关状态</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="集群标识">集群标识<a href="#集群标识" class="hash-link" aria-label="集群标识的直接链接" title="集群标识的直接链接">​</a></h4>
+<ul>
+<li><strong>cluster_id</strong>：集群的唯一标识符</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="网络配置">网络配置<a href="#网络配置" class="hash-link" aria-label="网络配置的直接链接" title="网络配置的直接链接">​</a></h4>
+<ul>
+<li><strong>master_hostname</strong>：Master节点的主机名</li>
+<li><strong>master_rpc_port</strong>：Master节点RPC服务端口</li>
+<li><strong>master_web_port</strong>：Master节点Web服务端口</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="性能调优参数">性能调优参数<a href="#性能调优参数" class="hash-link" aria-label="性能调优参数的直接链接" title="性能调优参数的直接链接">​</a></h4>
+<ul>
+<li><strong>master_io_threads</strong>：Master节点IO线程数</li>
+<li><strong>master_worker_threads</strong>：Master节点工作线程数</li>
+<li><strong>master_io_timeout</strong>：Master节点IO超时时间</li>
+<li><strong>master_io_close_idle</strong>：Master节点空闲连接关闭配置</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="元数据管理">元数据管理<a href="#元数据管理" class="hash-link" aria-label="元数据管理的直接链接" title="元数据管理的直接链接">​</a></h4>
+<ul>
+<li><strong>master_meta_dir</strong>：Master节点元数据存储目录</li>
+<li><strong>master_meta_disable_wal</strong>：元数据WAL日志开关</li>
+<li><strong>master_meta_compression_type</strong>：元数据压缩类型</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="配置验证和诊断">配置验证和诊断<a href="#配置验证和诊断" class="hash-link" aria-label="配置验证和诊断的直接链接" title="配置验证和诊断的直接链接">​</a></h3>
+<p>通过Configuration页面，管理员可以：</p>
+<ul>
+<li><strong>验证配置正确性</strong>：确认各项配置参数是否符合预期</li>
+<li><strong>性能调优参考</strong>：根据当前配置评估性能优化空间</li>
+<li><strong>故障诊断支持</strong>：在出现问题时快速检查相关配置</li>
+<li><strong>集群对比</strong>：对比不同环境的配置差异</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="配置管理最佳实践">配置管理最佳实践<a href="#配置管理最佳实践" class="hash-link" aria-label="配置管理最佳实践的直接链接" title="配置管理最佳实践的直接链接">​</a></h3>
+<ul>
+<li>定期检查关键配置参数，确保与业务需求匹配</li>
+<li>在进行性能调优前，记录当前配置作为基线</li>
+<li>配置变更后，通过此页面验证变更是否生效</li>
+<li>结合性能监控数据，优化线程数、超时时间等参数</li>
+</ul>
+<p>通过Web管理界面，Curvine为用户提供了完整的集群管理和监控能力，大大简化了分布式缓存系统的运维工作，提高了管理效率和系统可观测性。</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/curvineio/curvine-doc/edit/main/docs/3-User-Manuals/03-webui.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/zh-cn/docs/User-Manuals/cache"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">缓存</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/zh-cn/docs/User-Manuals/cli"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">命令行工具</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#overview---集群概览" class="table-of-contents__link toc-highlight">Overview - 集群概览</a><ul><li><a href="#集群状态信息" class="table-of-contents__link toc-highlight">集群状态信息</a></li><li><a href="#工作节点状态" class="table-of-contents__link toc-highlight">工作节点状态</a></li><li><a href="#存储容量统计" class="table-of-contents__link toc-highlight">存储容量统计</a></li><li><a href="#文件系统统计" class="table-of-contents__link toc-highlight">文件系统统计</a></li></ul></li><li><a href="#browse---文件系统浏览" class="table-of-contents__link toc-highlight">Browse - 文件系统浏览</a><ul><li><a href="#文件系统导航" class="table-of-contents__link toc-highlight">文件系统导航</a></li><li><a href="#文件和目录管理" class="table-of-contents__link toc-highlight">文件和目录管理</a></li><li><a href="#存储统计" class="table-of-contents__link toc-highlight">存储统计</a></li><li><a href="#空目录提示" class="table-of-contents__link toc-highlight">空目录提示</a></li></ul></li><li><a href="#workers---工作节点管理" class="table-of-contents__link toc-highlight">Workers - 工作节点管理</a><ul><li><a href="#实时节点状态" class="table-of-contents__link toc-highlight">实时节点状态</a></li><li><a href="#活跃工作节点列表" class="table-of-contents__link toc-highlight">活跃工作节点列表</a></li><li><a href="#离线节点监控" class="table-of-contents__link toc-highlight">离线节点监控</a></li><li><a href="#集群健康监控" class="table-of-contents__link toc-highlight">集群健康监控</a></li></ul></li><li><a href="#configuration---系统配置" class="table-of-contents__link toc-highlight">Configuration - 系统配置</a><ul><li><a href="#配置参数部分展示" class="table-of-contents__link toc-highlight">配置参数部分展示</a></li><li><a href="#配置验证和诊断" class="table-of-contents__link toc-highlight">配置验证和诊断</a></li><li><a href="#配置管理最佳实践" class="table-of-contents__link toc-highlight">配置管理最佳实践</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/zh-cn/docs/Deploy/quick-start">快速开始</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">社区</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://discordapp.com/invite/curvinecache" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://x.com/curvinecache" target="_blank" rel="noopener noreferrer" class="footer__link-item">X<svg width="13.5" height="13.5" aria-hidden="true" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">更多</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/zh-cn/blog">博客</a></li><li class="footer__item"><a href="https://github.com/curvineio/curvine" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Curvine Project Authors.<br> Open source under Apache License 2.0. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
