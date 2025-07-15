@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[7472],{5513:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Curvine Caching now comming!","permalink":"/blog/welcome","unlisted":false,"date":"2025-05-29T00:00:00.000Z"}]}')}}]);

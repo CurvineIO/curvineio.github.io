@@ -2,11 +2,62 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://curvineio.github.io/zh-cn/blog</id>
     <title>Curvine Blog</title>
-    <updated>2025-05-29T00:00:00.000Z</updated>
+    <updated>2025-07-15T07:06:45.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://curvineio.github.io/zh-cn/blog"/>
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/zh-cn/img/curvine_logo.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Curvine: High-Performance Distributed Cache(Now Open Source)]]></title>
+        <id>https://curvineio.github.io/zh-cn/blog/curvine-blog/blog</id>
+        <link href="https://curvineio.github.io/zh-cn/blog/curvine-blog/blog"/>
+        <updated>2025-07-15T07:06:45.000Z</updated>
+        <summary type="html"><![CDATA[What is Curvine]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-is-curvine">What is Curvine<a href="https://curvineio.github.io/zh-cn/blog/curvine-blog/blog#what-is-curvine" class="hash-link" aria-label="What is Curvine的直接链接" title="What is Curvine的直接链接">​</a></h2>
+<p> Curvine is a distributed caching system implemented in Rust, featuring high concurrency, high throughput, low latency, and low resource consumption. Unlike KV caches like Redis or TiKV, Curvine exclusively provides file caching capabilities. It is not a storage system but rather a caching layer - data persistence still relies on underlying file systems or object storage systems for support.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-problem-does-it-solve">What problem does it solve<a href="https://curvineio.github.io/zh-cn/blog/curvine-blog/blog#what-problem-does-it-solve" class="hash-link" aria-label="What problem does it solve的直接链接" title="What problem does it solve的直接链接">​</a></h2>
+<ol>
+<li>Large-scale Data I/O Performance Bottlenecks;</li>
+<li>Single-Machine Cache Capacity Limitations.</li>
+</ol>
+<p> In practical applications, what scenarios are suitable for Curvine acceleration?</p>
+<div style="text-align:center"><img src="data:image/png;base64," alt="Curvine Application Scenarios." style="width:80%;max-width:800px"><p style="font-size:0.8em;color:#666;margin-top:8px"></p><p><b>Fig. 1</b>：Curvine Application Scenarios.</p><p></p></div>
+<p> As shown in the figure above, Curvine is designed for the following five core scenarios:</p>
+<ol>
+<li>Accelerating intermediate data processing in big data shuffle operations</li>
+<li>Caching hot table data for faster big data analytics</li>
+<li>Boosting AI training efficiency through dataset caching</li>
+<li>Accelerating model file distribution via caching layer</li>
+<li>Cross-cloud data caching to mitigate performance bottlenecks of dedicated cloud connections</li>
+</ol>
+<p> These use cases are just the beginning. In simple terms, Curvine fundamentally addresses: The growing conflict between escalating computational demands and the I/O bottlenecks of distributed cache systems.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="performance">Performance<a href="https://curvineio.github.io/zh-cn/blog/curvine-blog/blog#performance" class="hash-link" aria-label="Performance的直接链接" title="Performance的直接链接">​</a></h2>
+<p> We demonstrate performance and resource utilization from the following aspects:​</p>
+<p><strong>1. Metadata operation performance</strong></p>
+<table><thead><tr style="background-color:#2ecc71;color:white"><th>Operation Type</th><th>Curvine (QPS)</th><th>Juicefs (QPS)</th><th>oss (QPS)</th></tr></thead><tbody><tr><td>create</td><td style="text-align:right">19,985</td><td style="text-align:right">16,000</td><td style="text-align:right">2,000</td></tr><tr><td>open</td><td style="text-align:right">60,376</td><td style="text-align:right">50,000</td><td style="text-align:right">3,900</td></tr><tr><td>rename</td><td style="text-align:right">43,009</td><td style="text-align:right">21,000</td><td style="text-align:right">200</td></tr><tr><td>delete</td><td style="text-align:right">39,013</td><td style="text-align:right">41,000</td><td style="text-align:right">1,900</td></tr></tbody></table>
+<p> <strong>Note</strong>: All benchmark comparisons were conducted with a concurrency level of 40.</p>
+<p> <strong>Detailed results</strong>: <a href="https://curvineio.github.io/docs/Benchmark/meta/" target="_blank" rel="noopener noreferrer">https://curvineio.github.io/docs/Benchmark/meta/</a></p>
+<p> <strong>Industry benchmark test data of comparable products</strong>: <a href="https://juicefs.com/zh-cn/blog/engineering/meta-perf-hdfs-oss-jfs" target="_blank" rel="noopener noreferrer">https://juicefs.com/zh-cn/blog/engineering/meta-perf-hdfs-oss-jfs</a></p>
+<p><strong>2. Data Read/Write Performance</strong></p>
+<p> Benchmarking Alluxio performance under identical hardware conditions:</p>
+<p>● 256K sequential read</p>
+<table style="width:100%;border-collapse:collapse"><thead><tr style="background-color:#2ecc71;color:white"><th>Thread count</th><th>Curvine Open Source Edition (GiB/s)</th><th>Throughput of Open Source Alluxio (GiB/s)</th></tr></thead><tbody><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">1</td><td style="text-align:right">2.2</td><td style="text-align:right">0.6</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">2</td><td style="text-align:right">3.7</td><td style="text-align:right">1.1</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">4</td><td style="text-align:right">6.8</td><td style="text-align:right">2.3</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">8</td><td style="text-align:right">8.9</td><td style="text-align:right">4.5</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">16</td><td style="text-align:right">9.2</td><td style="text-align:right">7.9</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">32</td><td style="text-align:right">9.5</td><td style="text-align:right">8.8</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">64</td><td style="text-align:right">9.2</td><td style="text-align:right">N/A</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">128</td><td style="text-align:right">9.2</td><td style="text-align:right">N/A</td></tr></tbody></table>
+<p>● 256K random read</p>
+<table style="width:100%;border-collapse:collapse"><thead><tr style="background-color:#2ecc71;color:white"><th>Thread count</th><th>Curvine Open Source Edition (GiB/s)</th><th>Throughput of Open Source Alluxio (GiB/s)</th></tr></thead><tbody><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">1</td><td style="text-align:right">0.3</td><td style="text-align:right">0.0</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">2</td><td style="text-align:right">0.7</td><td style="text-align:right">0.1</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">4</td><td style="text-align:right">1.4</td><td style="text-align:right">0.1</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">8</td><td style="text-align:right">2.8</td><td style="text-align:right">0.2</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">16</td><td style="text-align:right">5.2</td><td style="text-align:right">0.4</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">32</td><td style="text-align:right">7.8</td><td style="text-align:right">0.3</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">64</td><td style="text-align:right">8.7</td><td style="text-align:right">N/A</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">128</td><td style="text-align:right">9.0</td><td style="text-align:right">N/A</td></tr></tbody></table>
+<p>  Data disclosure from Alluxio official website: <a href="https://www.alluxio.com.cn/alluxio-enterprise-vs-open-source/" target="_blank" rel="noopener noreferrer">https://www.alluxio.com.cn/alluxio-enterprise-vs-open-source/</a>.</p>
+<p><strong>3. Resource consumption</strong></p>
+<p>  Thanks to Rust's language features, in the big data shuffle acceleration scenario, our comparison of online resource consumption between Curvine and Alluxio shows a ​90%+ reduction in memory usage​ and ​50%+ reduction in CPU usage.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="architecture-overview">Architecture Overview<a href="https://curvineio.github.io/zh-cn/blog/curvine-blog/blog#architecture-overview" class="hash-link" aria-label="Architecture Overview的直接链接" title="Architecture Overview的直接链接">​</a></h2>
+<p>  Curvine's architectural design philosophy: Simplicity, Excellence, and Universality.</p>
+<div style="text-align:center"><img src="data:image/png;base64," alt="Curvine Architecture Diagram." style="width:80%;max-width:800px"><p style="font-size:0.8em;color:#666;margin-top:8px"></p><p><b>Fig. 2</b>：Curvine Application Scenarios.</p><p></p></div>
+<p> <strong>Simplicity</strong>: Lightweight design with only two roles in the caching service: master and worker. For non-performance-critical modules, maximize reuse of open-source or existing technologies, ensuring minimal code complexity.</p>
+<p> <strong>Excellence</strong>: Key performance-impacting components (e.g., underlying RPC communication framework, Fuse implementation) are independently designed and optimized with a performance-first mindset.</p>
+<p> <strong>Generality</strong>: Compatible with multiple existing access modes. The underlying storage supports mainstream distributed file and object storage systems, ensuring versatility and ease of use.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="on-open-source">On Open-Source<a href="https://curvineio.github.io/zh-cn/blog/curvine-blog/blog#on-open-source" class="hash-link" aria-label="On Open-Source的直接链接" title="On Open-Source的直接链接">​</a></h2>
+<p> We have achieved significant performance gains by deploying Curvine in high-concurrency, high-throughput big data scenarios internally. Now, we aim to collaborate with external partners to co-build this solution and collectively accelerate the infrastructure transition to Rust.</p>
+<p> <a href="https://github.com/curvineio/curvine" target="_blank" rel="noopener noreferrer">https://github.com/curvineio/curvine</a></p>
+<p> Powered by OPPO Bigdata.</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Curvine分布式缓存系统，来了！!]]></title>
         <id>https://curvineio.github.io/zh-cn/blog/welcome</id>
