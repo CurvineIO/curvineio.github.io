@@ -8,55 +8,55 @@
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/zh-cn/img/curvine_logo.ico</icon>
     <entry>
-        <title type="html"><![CDATA[what-is-curvine]]></title>
+        <title type="html"><![CDATA[高性能分布式缓存Curvine，低调开源]]></title>
         <id>https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine</id>
         <link href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine"/>
         <updated>2025-07-15T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[What is Curvine]]></summary>
-        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-is-curvine">What is Curvine<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#what-is-curvine" class="hash-link" aria-label="What is Curvine的直接链接" title="What is Curvine的直接链接">​</a></h2>
-<p> Curvine is a distributed caching system implemented in Rust, featuring high concurrency, high throughput, low latency, and low resource consumption. Unlike KV caches like Redis or TiKV, Curvine exclusively provides file caching capabilities. It is not a storage system but rather a caching layer - data persistence still relies on underlying file systems or object storage systems for support.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-problem-does-it-solve">What problem does it solve<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#what-problem-does-it-solve" class="hash-link" aria-label="What problem does it solve的直接链接" title="What problem does it solve的直接链接">​</a></h2>
+        <summary type="html"><![CDATA[Curvine是什么]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="curvine是什么">Curvine是什么<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#curvine%E6%98%AF%E4%BB%80%E4%B9%88" class="hash-link" aria-label="Curvine是什么的直接链接" title="Curvine是什么的直接链接">​</a></h2>
+<p> Curvine是一套分布式缓存系统，基于Rust实现，具备 高并发，高吞吐，低延迟，资源消耗低等特点。不同于Redis、TiKV等KV缓存，Curvine只提供文件缓存能力。Curvine不是存储系统，只提供缓存能力，数据持久化还是需要底层文件或者对象存储系统支撑。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="解决什么问题">解决什么问题<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98" class="hash-link" aria-label="解决什么问题的直接链接" title="解决什么问题的直接链接">​</a></h2>
 <ol>
-<li>Large-scale Data I/O Performance Bottlenecks;</li>
-<li>Single-Machine Cache Capacity Limitations.</li>
+<li>大规模数据IO性能瓶颈</li>
+<li>单机缓存系统容量瓶颈</li>
 </ol>
-<p> In practical applications, what scenarios are suitable for Curvine acceleration?</p>
+<p>实际应用中，有哪些场景适用Curvine加速？</p>
 <div style="text-align:center"><img src="https://curvineio.github.io/zh-cn/assets/images/Curvine-application-d648229ff01cab5c013e96616f9c4e1a.png" alt="Curvine Application Scenarios." style="width:80%;max-width:800px"><p style="font-size:0.8em;color:#666;margin-top:8px"></p><p><b>Fig. 1</b>：Curvine Application Scenarios.</p><p></p></div>
-<p> As shown in the figure above, Curvine is designed for the following five core scenarios:</p>
+<p>如上图所示，Curvine适用于以下五大场景：</p>
 <ol>
-<li>Accelerating intermediate data processing in big data shuffle operations</li>
-<li>Caching hot table data for faster big data analytics</li>
-<li>Boosting AI training efficiency through dataset caching</li>
-<li>Accelerating model file distribution via caching layer</li>
-<li>Cross-cloud data caching to mitigate performance bottlenecks of dedicated cloud connections</li>
+<li>大数据shuffle 中间数据加速</li>
+<li>大数据热表数据缓存加速</li>
+<li>AI训练数据缓存加速</li>
+<li>模型文件分发缓存加速</li>
+<li>多云数据缓存，解决跨云专线性能瓶颈</li>
 </ol>
-<p> These use cases are just the beginning. In simple terms, Curvine fundamentally addresses: The growing conflict between escalating computational demands and the I/O bottlenecks of distributed cache systems.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="performance">Performance<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#performance" class="hash-link" aria-label="Performance的直接链接" title="Performance的直接链接">​</a></h2>
-<p> We demonstrate performance and resource utilization from the following aspects:​</p>
-<p><strong>1. Metadata operation performance</strong></p>
+<p>以上场景总结，只是抛砖引玉，通俗的理解，Curvine其实就是解决： 日益增长的计算性能需求与分布式存储系统的IO能力瓶颈的矛盾。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="性能表现">性能表现<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#%E6%80%A7%E8%83%BD%E8%A1%A8%E7%8E%B0" class="hash-link" aria-label="性能表现的直接链接" title="性能表现的直接链接">​</a></h2>
+<p>我们从以下几个方面展示性能和资源使用情况：</p>
+<p><strong>1. 元数据操作性能</strong></p>
 <table><thead><tr style="background-color:#2ecc71;color:white"><th>Operation Type</th><th>Curvine (QPS)</th><th>Juicefs (QPS)</th><th>oss (QPS)</th></tr></thead><tbody><tr><td>create</td><td style="text-align:right">19,985</td><td style="text-align:right">16,000</td><td style="text-align:right">2,000</td></tr><tr><td>open</td><td style="text-align:right">60,376</td><td style="text-align:right">50,000</td><td style="text-align:right">3,900</td></tr><tr><td>rename</td><td style="text-align:right">43,009</td><td style="text-align:right">21,000</td><td style="text-align:right">200</td></tr><tr><td>delete</td><td style="text-align:right">39,013</td><td style="text-align:right">41,000</td><td style="text-align:right">1,900</td></tr></tbody></table>
-<p> <strong>Note</strong>: All benchmark comparisons were conducted with a concurrency level of 40.</p>
-<p> <strong>Detailed results</strong>: <a href="https://curvineio.github.io/docs/Benchmark/meta/" target="_blank" rel="noopener noreferrer">https://curvineio.github.io/docs/Benchmark/meta/</a></p>
-<p> <strong>Industry benchmark test data of comparable products</strong>: <a href="https://juicefs.com/zh-cn/blog/engineering/meta-perf-hdfs-oss-jfs" target="_blank" rel="noopener noreferrer">https://juicefs.com/zh-cn/blog/engineering/meta-perf-hdfs-oss-jfs</a></p>
-<p><strong>2. Data Read/Write Performance</strong></p>
-<p> Benchmarking Alluxio performance under identical hardware conditions:</p>
-<p>● 256K sequential read</p>
+<p> <strong>注</strong>： 对比数据选取的并发度均为40</p>
+<p> <strong>详细结果</strong>： <a href="https://curvineio.github.io/docs/Benchmark/meta/" target="_blank" rel="noopener noreferrer">https://curvineio.github.io/docs/Benchmark/meta/</a></p>
+<p> <strong>业界类似产品测试数据</strong>：<a href="https://juicefs.com/zh-cn/blog/engineering/meta-perf-hdfs-oss-jfs" target="_blank" rel="noopener noreferrer">https://juicefs.com/zh-cn/blog/engineering/meta-perf-hdfs-oss-jfs</a></p>
+<p><strong>2. 数据读写性能</strong></p>
+<p>相同硬件条件下，测试对比Alluxio性能：</p>
+<p>● 256k顺序读</p>
 <table style="width:100%;border-collapse:collapse"><thead><tr style="background-color:#2ecc71;color:white"><th>Thread count</th><th>Curvine Open Source Edition (GiB/s)</th><th>Throughput of Open Source Alluxio (GiB/s)</th></tr></thead><tbody><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">1</td><td style="text-align:right">2.2</td><td style="text-align:right">0.6</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">2</td><td style="text-align:right">3.7</td><td style="text-align:right">1.1</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">4</td><td style="text-align:right">6.8</td><td style="text-align:right">2.3</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">8</td><td style="text-align:right">8.9</td><td style="text-align:right">4.5</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">16</td><td style="text-align:right">9.2</td><td style="text-align:right">7.9</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">32</td><td style="text-align:right">9.5</td><td style="text-align:right">8.8</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">64</td><td style="text-align:right">9.2</td><td style="text-align:right">N/A</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">128</td><td style="text-align:right">9.2</td><td style="text-align:right">N/A</td></tr></tbody></table>
-<p>● 256K random read</p>
+<p>● 256k随机读</p>
 <table style="width:100%;border-collapse:collapse"><thead><tr style="background-color:#2ecc71;color:white"><th>Thread count</th><th>Curvine Open Source Edition (GiB/s)</th><th>Throughput of Open Source Alluxio (GiB/s)</th></tr></thead><tbody><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">1</td><td style="text-align:right">0.3</td><td style="text-align:right">0.0</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">2</td><td style="text-align:right">0.7</td><td style="text-align:right">0.1</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">4</td><td style="text-align:right">1.4</td><td style="text-align:right">0.1</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">8</td><td style="text-align:right">2.8</td><td style="text-align:right">0.2</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">16</td><td style="text-align:right">5.2</td><td style="text-align:right">0.4</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">32</td><td style="text-align:right">7.8</td><td style="text-align:right">0.3</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">64</td><td style="text-align:right">8.7</td><td style="text-align:right">N/A</td></tr><tr style="border-bottom:1px solid #e1e4e8"><td style="text-align:right">128</td><td style="text-align:right">9.0</td><td style="text-align:right">N/A</td></tr></tbody></table>
-<p>  Data disclosure from Alluxio official website: <a href="https://www.alluxio.com.cn/alluxio-enterprise-vs-open-source/" target="_blank" rel="noopener noreferrer">https://www.alluxio.com.cn/alluxio-enterprise-vs-open-source/</a>.</p>
-<p><strong>3. Resource consumption</strong></p>
-<p>  Thanks to Rust's language features, in the big data shuffle acceleration scenario, our comparison of online resource consumption between Curvine and Alluxio shows a ​90%+ reduction in memory usage​ and ​50%+ reduction in CPU usage.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="architecture-overview">Architecture Overview<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#architecture-overview" class="hash-link" aria-label="Architecture Overview的直接链接" title="Architecture Overview的直接链接">​</a></h2>
-<p>  Curvine's architectural design philosophy: Simplicity, Excellence, and Universality.</p>
+<p>  Alluxio官网数据披露：<a href="https://www.alluxio.com.cn/alluxio-enterprise-vs-open-source/" target="_blank" rel="noopener noreferrer">https://www.alluxio.com.cn/alluxio-enterprise-vs-open-source/</a></p>
+<p><strong>3. 资源消耗情况</strong></p>
+<p>  得益于Rust语言的特性，我们在大数据shuffle加速场景下，对比线上使用Curvine和Alluxio资源消耗情况，内存降低90%+，cpu降低50%+。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="架构简介">架构简介<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B" class="hash-link" aria-label="架构简介的直接链接" title="架构简介的直接链接">​</a></h2>
+<p> Curvine架构设计理念：简单、极致、通用。</p>
 <div style="text-align:center"><img src="https://curvineio.github.io/zh-cn/assets/images/Curvine-architechure-ed8e3e75a50ee79638f22550d895668a.png" alt="Curvine Architecture Diagram." style="width:80%;max-width:800px"><p style="font-size:0.8em;color:#666;margin-top:8px"></p><p><b>Fig. 2</b>：Curvine Application Scenarios.</p><p></p></div>
-<p> <strong>Simplicity</strong>: Lightweight design with only two roles in the caching service: master and worker. For non-performance-critical modules, maximize reuse of open-source or existing technologies, ensuring minimal code complexity.</p>
-<p> <strong>Excellence</strong>: Key performance-impacting components (e.g., underlying RPC communication framework, Fuse implementation) are independently designed and optimized with a performance-first mindset.</p>
-<p> <strong>Generality</strong>: Compatible with multiple existing access modes. The underlying storage supports mainstream distributed file and object storage systems, ensuring versatility and ease of use.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="on-open-source">On Open-Source<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#on-open-source" class="hash-link" aria-label="On Open-Source的直接链接" title="On Open-Source的直接链接">​</a></h2>
-<p> We have achieved significant performance gains by deploying Curvine in high-concurrency, high-throughput big data scenarios internally. Now, we aim to collaborate with external partners to co-build this solution and collectively accelerate the infrastructure transition to Rust.</p>
-<p> <a href="https://github.com/curvineio/curvine" target="_blank" rel="noopener noreferrer">https://github.com/curvineio/curvine</a></p>
-<p> Powered by OPPO Bigdata.</p>]]></content>
+<p> <strong>简单</strong>：简单轻量，缓存服务只有两个角色：master、worker。非性能瓶颈的模块，尽量复用开源或者已有的技术，代码最大可能轻量化。</p>
+<p> <strong>极致</strong>：对性能影响较大的关键节点：底层rpc通信架构、Fuse 实现性能等关键组件，自主设计实现，以极致性能优化思维构建。</p>
+<p> <strong>通用</strong>:：兼容多种现有接入模式，底层存储兼容主流分布式文件和对象存储做到足够通用，易用。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="关于开源">关于开源<a href="https://curvineio.github.io/zh-cn/blog/2025/07/15/what-is-curvine#%E5%85%B3%E4%BA%8E%E5%BC%80%E6%BA%90" class="hash-link" aria-label="关于开源的直接链接" title="关于开源的直接链接">​</a></h2>
+<p> 我们在内部大数据高并发高吞吐场景下使用Curvine加速数据IO，取得比较大的收益。希望吸引外部的伙伴共同建设，一起加速基础设施向Rust转变。
+ <a href="https://github.com/curvineio/curvine" target="_blank" rel="noopener noreferrer">https://github.com/curvineio/curvine</a></p>
+<p>  由OPPO大数据提供支持。</p>]]></content>
         <author>
             <name>David</name>
             <uri>https://curvine.io</uri>
