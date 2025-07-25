@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[8121],{8070:e=>{e.exports=JSON.parse('{"tags":[{"label":"teams","permalink":"/blog/tags/teams","description":"teams activities of curvine","count":2}]}')}}]);
