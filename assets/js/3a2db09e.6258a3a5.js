@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[8121],{8070:e=>{e.exports=JSON.parse('{"tags":[{"label":"benchmark","permalink":"/blog/tags/benchmark","description":"benchmark of curvine","count":1},{"label":"teams","permalink":"/blog/tags/teams","description":"teams activities of curvine","count":3}]}')}}]);
