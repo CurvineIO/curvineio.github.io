@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[2068],{2068:(e,c,r)=>{r.d(c,{createInfoServices:()=>s.v});var s=r(1366);r(8198)}}]);

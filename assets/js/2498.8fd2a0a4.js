@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[2498],{2498:(e,c,r)=>{r.d(c,{createArchitectureServices:()=>u.S});var u=r(3009);r(8198)}}]);
