@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.8.0">
 <title data-rh="true">监控指标 | Curvine</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://curvineio.github.io/zh-cn/docs/User-Manuals/Operations/monitoring"><meta data-rh="true" property="og:locale" content="zh_cn"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-cn"><meta data-rh="true" name="docsearch:language" content="zh-cn"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="监控指标 | Curvine"><meta data-rh="true" name="description" content="本章介绍Curvine的可观测监控指标，用于监控集群状态、性能和资源使用情况。"><meta data-rh="true" property="og:description" content="本章介绍Curvine的可观测监控指标，用于监控集群状态、性能和资源使用情况。"><link data-rh="true" rel="icon" href="/zh-cn/img/curvine_logo.ico"><link data-rh="true" rel="canonical" href="https://curvineio.github.io/zh-cn/docs/User-Manuals/Operations/monitoring"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/User-Manuals/Operations/monitoring" hreflang="en"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/zh-cn/docs/User-Manuals/Operations/monitoring" hreflang="zh-cn"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/User-Manuals/Operations/monitoring" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"用户手册","item":"https://curvineio.github.io/zh-cn/docs/category/user-manuals"},{"@type":"ListItem","position":2,"name":"监控指标","item":"https://curvineio.github.io/zh-cn/docs/User-Manuals/Operations/monitoring"}]}</script><link rel="alternate" type="application/rss+xml" href="/zh-cn/blog/rss.xml" title="Curvine RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/zh-cn/blog/atom.xml" title="Curvine Atom Feed"><link rel="stylesheet" href="/zh-cn/assets/css/styles.b44d61cb.css">
-<script src="/zh-cn/assets/js/runtime~main.4e493b49.js" defer="defer"></script>
+<script src="/zh-cn/assets/js/runtime~main.ef50355b.js" defer="defer"></script>
 <script src="/zh-cn/assets/js/main.a4869d3e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -16,10 +16,12 @@
 <p>本章介绍Curvine的可观测监控指标，用于监控集群状态、性能和资源使用情况。</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="指标收集">指标收集<a href="#指标收集" class="hash-link" aria-label="指标收集的直接链接" title="指标收集的直接链接">​</a></h3>
 <p>master,worker,fuse,s3 gateway会通过http接口暴露监控指标，可以在prometheus采集这些指标，然后通过grafana可视化这些指标。</p>
-<p>master指标：http://URL_ADDRESS:9000/metrics<br>
-<!-- -->worker指标：http://URL_ADDRESS:9001/metrics
-fuse指标：http://URL_ADDRESS:9002/metrics<br>
-<!-- -->s3 gateway指标：http://URL_ADDRESS:9003/metrics</p>
+<ul>
+<li>master指标：http://URL_ADDRESS:9000/metrics</li>
+<li>worker指标：http://URL_ADDRESS:9001/metrics</li>
+<li>fuse指标：http://URL_ADDRESS:9002/metrics</li>
+<li>s3 gateway指标：http://URL_ADDRESS:9003/metrics</li>
+</ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="master-指标">Master 指标<a href="#master-指标" class="hash-link" aria-label="Master 指标的直接链接" title="Master 指标的直接链接">​</a></h2>
 <table><thead><tr><th>指标名称</th><th>描述</th></tr></thead><tbody><tr><td>inode_dir_num</td><td>目录数量</td></tr><tr><td>inode_file_num</td><td>文件数量</td></tr><tr><td>num_blocks</td><td>block 总数</td></tr><tr><td>blocks_size_avg</td><td>block 平均大小</td></tr><tr><td>capacity</td><td>总存储容量</td></tr><tr><td>available</td><td>可用存储空间</td></tr><tr><td>fs_used</td><td>文件系统已用空间</td></tr><tr><td>used_memory_bytes</td><td>已用内存字节数</td></tr><tr><td>rocksdb_used_memory_bytes</td><td>rocksdb 内存占用</td></tr><tr><td>worker_num</td><td>worker 数量（按状态分类）</td></tr><tr><td>rpc_request_total_count</td><td>RPC 总请求计数</td></tr><tr><td>rpc_request_total_time</td><td>RPC 总请求时间</td></tr><tr><td>replication_staging_number</td><td>等待复制的块数量</td></tr><tr><td>replication_inflight_number</td><td>正在进行复制的块数量</td></tr><tr><td>replication_failure_count</td><td>累计复制失败的总次数</td></tr><tr><td>operation_duration</td><td>操作耗时（按类型分类，不包括心跳）</td></tr></tbody></table>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="journal-node-指标">Journal Node 指标<a href="#journal-node-指标" class="hash-link" aria-label="Journal Node 指标的直接链接" title="Journal Node 指标的直接链接">​</a></h2>
