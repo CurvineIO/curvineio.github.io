@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[511],{3298:e=>{e.exports=JSON.parse('{"categoryGeneratedIndex":{"title":"Overview","slug":"/category/overview","permalink":"/docs/category/overview","sidebar":"tutorialSidebar","navigation":{"next":{"title":"Curvine Overview","permalink":"/docs/Overview/instroduction"}}}}')}}]);
