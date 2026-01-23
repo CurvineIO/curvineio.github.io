@@ -5,8 +5,8 @@
 <meta name="generator" content="Docusaurus v3.8.0">
 <title data-rh="true">安装说明 | Curvine</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://curvineio.github.io/zh-cn/docs/User-Manuals/K8S-CSI-Driver/Setup"><meta data-rh="true" property="og:locale" content="zh_cn"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-cn"><meta data-rh="true" name="docsearch:language" content="zh-cn"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="安装说明 | Curvine"><meta data-rh="true" name="description" content="为了更方便在云原生环境下快速接入curvine, curinve提供了csi驱动支持, 你的Pod容器可以通过PV(Persisit Volume) 的方式来访问curvine, 无需对应用进行改造，即可使用curvine缓存能力；"><meta data-rh="true" property="og:description" content="为了更方便在云原生环境下快速接入curvine, curinve提供了csi驱动支持, 你的Pod容器可以通过PV(Persisit Volume) 的方式来访问curvine, 无需对应用进行改造，即可使用curvine缓存能力；"><link data-rh="true" rel="icon" href="/zh-cn/img/curvine_logo.ico"><link data-rh="true" rel="canonical" href="https://curvineio.github.io/zh-cn/docs/User-Manuals/K8S-CSI-Driver/Setup"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/User-Manuals/K8S-CSI-Driver/Setup" hreflang="en"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/zh-cn/docs/User-Manuals/K8S-CSI-Driver/Setup" hreflang="zh-cn"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/User-Manuals/K8S-CSI-Driver/Setup" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"用户手册","item":"https://curvineio.github.io/zh-cn/docs/category/user-manuals"},{"@type":"ListItem","position":2,"name":"安装说明","item":"https://curvineio.github.io/zh-cn/docs/User-Manuals/K8S-CSI-Driver/Setup"}]}</script><link rel="alternate" type="application/rss+xml" href="/zh-cn/blog/rss.xml" title="Curvine RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/zh-cn/blog/atom.xml" title="Curvine Atom Feed"><link rel="stylesheet" href="/zh-cn/assets/css/styles.ca5a6d7d.css">
-<script src="/zh-cn/assets/js/runtime~main.2002fe62.js" defer="defer"></script>
-<script src="/zh-cn/assets/js/main.bfbfc676.js" defer="defer"></script>
+<script src="/zh-cn/assets/js/runtime~main.2c38bf0a.js" defer="defer"></script>
+<script src="/zh-cn/assets/js/main.04447417.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -96,61 +96,7 @@
 <div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token key atrule" style="color:#00a4db">apiVersion</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> storage.k8s.io/v1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">kind</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> StorageClass</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">metadata</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">name</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> curvine</span><span class="token punctuation" style="color:#393A34">-</span><span class="token plain">sc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">provisioner</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> curvine                      </span><span class="token comment" style="color:#999988;font-style:italic"># CSI 驱动名称</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">reclaimPolicy</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> Delete                     </span><span class="token comment" style="color:#999988;font-style:italic"># 回收策略</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">volumeBindingMode</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> Immediate              </span><span class="token comment" style="color:#999988;font-style:italic"># 绑定模式</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">allowVolumeExpansion</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token boolean important" style="color:#36acaa">true</span><span class="token plain">                </span><span class="token comment" style="color:#999988;font-style:italic"># 允许扩容</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">parameters</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token comment" style="color:#999988;font-style:italic"># 必需：Curvine 集群连接信息</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">master-addrs</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;master1:8995,master2:8995,master3:8995&quot;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token comment" style="color:#999988;font-style:italic"># 必需：文件系统路径前缀</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">fs-path</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;/k8s-volumes&quot;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token comment" style="color:#999988;font-style:italic"># 可选：路径创建策略</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">path-type</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;DirectoryOrCreate&quot;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token comment" style="color:#999988;font-style:italic"># 可选：FUSE 参数</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">io-threads</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;4&quot;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">worker-threads</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;8&quot;</span><br></span></code></pre></div></div>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="32-参数详解">3.2 参数详解<a href="#32-参数详解" class="hash-link" aria-label="3.2 参数详解的直接链接" title="3.2 参数详解的直接链接">​</a></h3>
 <h4 class="anchor anchorWithStickyNavbar_LWe7" id="核心参数">核心参数<a href="#核心参数" class="hash-link" aria-label="核心参数的直接链接" title="核心参数的直接链接">​</a></h4>
-<table><thead><tr><th>参数</th><th>必需</th><th>说明</th><th>示例</th></tr></thead><tbody><tr><td><code>master-addrs</code></td><td>✅</td><td>Curvine Master 节点地址列表，用逗号分隔</td><td><code>&quot;10.0.0.1:8995,10.0.0.2:8995&quot;</code></td></tr><tr><td><code>fs-path</code></td><td>✅</td><td>动态 PV 的路径前缀，实际路径为 <code>fs-path + pv-name</code></td><td><code>&quot;/k8s-volumes&quot;</code></td></tr><tr><td><code>path-type</code></td><td>❌</td><td>路径创建策略，默认 <code>Directory</code></td><td><code>&quot;DirectoryOrCreate&quot;</code></td></tr><tr><td><code>io-threads</code></td><td>❌</td><td>FUSE IO 线程数</td><td><code>&quot;4&quot;</code></td></tr><tr><td><code>worker-threads</code></td><td>❌</td><td>FUSE 工作线程数</td><td><code>&quot;8&quot;</code></td></tr></tbody></table>
-<h4 class="anchor anchorWithStickyNavbar_LWe7" id="路径创建策略-path-type">路径创建策略 (path-type)<a href="#路径创建策略-path-type" class="hash-link" aria-label="路径创建策略 (path-type)的直接链接" title="路径创建策略 (path-type)的直接链接">​</a></h4>
-<ul>
-<li>
-<p><strong><code>Directory</code></strong> (默认)</p>
-<ul>
-<li>路径必须已存在</li>
-<li>推荐用于生产环境</li>
-<li>确保路径由管理员预先创建</li>
-</ul>
-</li>
-<li>
-<p><strong><code>DirectoryOrCreate</code></strong></p>
-<ul>
-<li>路径不存在时自动创建</li>
-<li>适合测试和开发环境</li>
-<li>注意权限问题</li>
-</ul>
-</li>
-</ul>
-<h4 class="anchor anchorWithStickyNavbar_LWe7" id="回收策略-reclaimpolicy">回收策略 (reclaimPolicy)<a href="#回收策略-reclaimpolicy" class="hash-link" aria-label="回收策略 (reclaimPolicy)的直接链接" title="回收策略 (reclaimPolicy)的直接链接">​</a></h4>
-<ul>
-<li>
-<p><strong><code>Delete</code></strong> (推荐用于动态 PV)</p>
-<ul>
-<li>PVC 删除时，自动删除 PV 和存储数据</li>
-<li>适合临时数据和测试环境</li>
-</ul>
-</li>
-<li>
-<p><strong><code>Retain</code></strong></p>
-<ul>
-<li>PVC 删除后，PV 保留</li>
-<li>数据需要手动清理</li>
-<li>适合重要数据保护</li>
-</ul>
-</li>
-</ul>
-<h4 class="anchor anchorWithStickyNavbar_LWe7" id="绑定模式-volumebindingmode">绑定模式 (volumeBindingMode)<a href="#绑定模式-volumebindingmode" class="hash-link" aria-label="绑定模式 (volumeBindingMode)的直接链接" title="绑定模式 (volumeBindingMode)的直接链接">​</a></h4>
-<ul>
-<li>
-<p><strong><code>Immediate</code></strong> (默认)</p>
-<ul>
-<li>PVC 创建后立即绑定 PV</li>
-<li>适合单 AZ 集群</li>
-</ul>
-</li>
-<li>
-<p><strong><code>WaitForFirstConsumer</code></strong></p>
-<ul>
-<li>等到 Pod 调度后再绑定 PV</li>
-<li>适合多 AZ 集群，确保 PV 在 Pod 所在节点可用</li>
-</ul>
-</li>
-</ul>
+<table><thead><tr><th>参数</th><th>必需</th><th>说明</th><th>示例</th></tr></thead><tbody><tr><td><code>master-addrs</code></td><td>✅</td><td>Curvine Master 节点地址列表，用逗号分隔</td><td><code>&quot;10.0.0.1:8995,10.0.0.2:8995&quot;</code></td></tr><tr><td><code>fs-path</code></td><td>✅</td><td>动态 PV 的路径前缀，实际路径为 <code>fs-path + pv-name</code></td><td><code>&quot;/k8s-volumes&quot;</code></td></tr><tr><td><code>path-type</code></td><td>❌</td><td>路径创建策略，默认 <code>Directory</code></td><td><code>&quot;DirectoryOrCreate&quot;</code>（路径不存在时自动创建）；<code>&quot;Directory&quot;</code>（路径不存在时报错）</td></tr><tr><td><code>reclaimPolicy</code></td><td>❌</td><td>卷删除策略，决定PV删除时如何处理底层存储</td><td><code>&quot;Delete&quot;</code>（PVC 删除时，自动删除 PV 和存储数据）；<code>&quot;Retain&quot;</code>（PVC 删除后，PV 保留）</td></tr><tr><td><code>volumeBindingMode</code></td><td>❌</td><td>卷绑定模式，控制卷绑定和调度的时机</td><td><code>&quot;Immediate&quot;</code>（PVC 创建后立即绑定 PV）；<code>&quot;WaitForFirstConsumer&quot;</code>（等到 Pod 调度后再绑定 PV）</td></tr><tr><td><code>io-threads</code></td><td>❌</td><td>FUSE IO 线程数</td><td><code>&quot;4&quot;</code></td></tr><tr><td><code>worker-threads</code></td><td>❌</td><td>FUSE 工作线程数</td><td><code>&quot;8&quot;</code></td></tr></tbody></table>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="33-动态-pv-路径生成规则">3.3 动态 PV 路径生成规则<a href="#33-动态-pv-路径生成规则" class="hash-link" aria-label="3.3 动态 PV 路径生成规则的直接链接" title="3.3 动态 PV 路径生成规则的直接链接">​</a></h3>
 <div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">实际挂载路径 = fs-path + &quot;/&quot; + pv-name</span><br></span></code></pre></div></div>
 <p><strong>示例：</strong></p>
