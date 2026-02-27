@@ -410,4 +410,62 @@
         </author>
         <category label="teams" term="teams"/>
     </entry>
+    <entry>
+        <title type="html"><![CDATA[starrocks-compute-storage-separation-curvine]]></title>
+        <id>https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine</id>
+        <link href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine"/>
+        <updated>2025-02-11T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[In cloud deployments, compute-storage separation is an increasingly popular choice: object storage cuts cost and compute can scale independently. The trade-off many teams worry about is performance. How much slower is separation, and can a cache layer like Curvine make it competitive with colocated storage?]]></summary>
+        <content type="html"><![CDATA[<p>In cloud deployments, compute-storage separation is an increasingly popular choice: object storage cuts cost and compute can scale independently. The trade-off many teams worry about is <strong>performance</strong>. How much slower is separation, and can a cache layer like Curvine make it competitive with colocated storage?</p>
+<p>We ran a standard <strong>TPC-DS 100GB</strong> benchmark on StarRocks, comparing colocated (SSD/HDD) and compute-storage separation (Curvine + OSS, and raw OSS) under identical compute. Here’s what we found — and how a single parameter change eliminated an 8× slow-query gap.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-why-this-benchmark">1. Why This Benchmark?<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#1-why-this-benchmark" class="hash-link" aria-label="Direct link to 1. Why This Benchmark?" title="Direct link to 1. Why This Benchmark?">​</a></h2>
+<p>We wanted to measure the impact of <strong>storage architecture</strong> and <strong>disk type</strong> on StarRocks query performance. Same workload, same hardware tier: <strong>99 TPC-DS queries</strong> across 24 tables, with total runtime and average latency as the main metrics.</p>
+<p><strong>Environment (summary):</strong></p>
+<table><thead><tr><th>Item</th><th>Details</th></tr></thead><tbody><tr><td>Compute</td><td>Alibaba Cloud ECS r6.8xlarge (32 vCPU, 256 GB RAM), 3-node cluster for all setups</td></tr><tr><td>Configurations</td><td>5: colocated SSD, colocated HDD, separation + Curvine SSD, separation + Curvine HDD, separation + raw OSS</td></tr><tr><td>Dataset</td><td>TPC-DS 100 GB, 99 standard complex queries</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-main-takeaways-four-findings">2. Main Takeaways: Four Findings<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#2-main-takeaways-four-findings" class="hash-link" aria-label="Direct link to 2. Main Takeaways: Four Findings" title="Direct link to 2. Main Takeaways: Four Findings">​</a></h2>
+<p><strong>1. Architecture matters more than media.</strong><br>
+<!-- -->Colocated storage consistently outperformed compute-storage separation, mainly because it avoids cross-node data transfer.</p>
+<p><strong>2. Curvine cache narrows the separation gap.</strong><br>
+<!-- -->With separation, <strong>Curvine on SSD (362 s total)</strong> was <strong>~16% faster</strong> than raw OSS (419 s). In on-prem or hybrid setups, using Curvine in front of object storage gives a clear performance win.</p>
+<p><strong>3. SSD wins across the board.</strong><br>
+<!-- -->For both colocated and Curvine-based separation, SSD beat HDD, especially on large scans.</p>
+<p><strong>4. Raw OSS: best cost/performance for non–latency-critical workloads.</strong><br>
+<!-- -->Raw OSS was the slowest but still only <strong>~41% slower</strong> than the fastest colocated-SSD run. Given its low cost and elasticity, it remains a strong option when peak latency is not the main concern.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-results-side-by-side-numbers">3. Results: Side-by-Side Numbers<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#3-results-side-by-side-numbers" class="hash-link" aria-label="Direct link to 3. Results: Side-by-Side Numbers" title="Direct link to 3. Results: Side-by-Side Numbers">​</a></h2>
+<table><thead><tr><th>Metric</th><th>Colocated (SSD)</th><th>Colocated (HDD)</th><th>Separation (Curvine SSD)</th><th>Separation (Curvine HDD)</th><th>Separation (OSS)</th></tr></thead><tbody><tr><td><strong>Total time</strong></td><td>297.96 s</td><td>313.68 s</td><td>361.86 s</td><td>385.20 s</td><td>419.15 s</td></tr><tr><td><strong>Relative</strong></td><td>Baseline (100%)</td><td>+5.3%</td><td>+21.4%</td><td>+29.3%</td><td>+40.7%</td></tr><tr><td><strong>Avg per query</strong></td><td>3.01 s</td><td>3.17 s</td><td>3.66 s</td><td>3.89 s</td><td>4.23 s</td></tr><tr><td><strong>Slowest query</strong></td><td>52.94 s</td><td>54.40 s</td><td>54.87 s</td><td>55.19 s</td><td>52.66 s</td></tr></tbody></table>
+<p>In short: colocated SSD is fastest (under 300 s total); Curvine-based separation closes much of the gap; and even raw OSS stays at ~4.23 s average per query, which is acceptable for many use cases.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-fixing-slow-queries-two-case-studies">4. Fixing Slow Queries: Two Case Studies<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#4-fixing-slow-queries-two-case-studies" class="hash-link" aria-label="Direct link to 4. Fixing Slow Queries: Two Case Studies" title="Direct link to 4. Fixing Slow Queries: Two Case Studies">​</a></h2>
+<p>Two queries (Q05 and Q77) were <strong>5–8× slower</strong> in the separation setup. Root-cause analysis led to a small change that brought them in line with colocated performance.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="query-05-why-8-slower">Query 05: Why 8× slower?<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#query-05-why-8-slower" class="hash-link" aria-label="Direct link to Query 05: Why 8× slower?" title="Direct link to Query 05: Why 8× slower?">​</a></h3>
+<ul>
+<li><strong>Observed:</strong> ~15 s (separation) vs ~1.8 s (colocated).</li>
+<li><strong>Cause:</strong> A 3-table union produced ~275M rows (15.33 GB); separation had to pull this across the network (~10 s of the 15 s).</li>
+<li><strong>Takeaway:</strong> In separation, data is read remotely and then transferred; colocated can read locally.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="query-77-full-scan-trap">Query 77: Full-scan trap<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#query-77-full-scan-trap" class="hash-link" aria-label="Direct link to Query 77: Full-scan trap" title="Direct link to Query 77: Full-scan trap">​</a></h3>
+<ul>
+<li><strong>Observed:</strong> ~11 s (separation) vs ~1.8 s (colocated).</li>
+<li><strong>Cause:</strong> Full scan of ~288M rows (14.43 GB); network I/O for remote reads was far slower than local SSD. The optimizer’s “pre-aggregation” strategy also disabled “dynamic filtering,” so unnecessary data was shipped.</li>
+<li><strong>Fix:</strong> Turn off aggregate pushdown so dynamic filtering can kick in:</li>
+</ul>
+<div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token keyword" style="color:#00009f">SET</span><span class="token plain"> cbo_push_down_aggregate_mode </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">-</span><span class="token number" style="color:#36acaa">1</span><span class="token punctuation" style="color:#393A34">;</span><br></span></code></pre></div></div>
+<p><strong>Effect:</strong> Rows scanned dropped from 275M to 6.11M, and latency matched the colocated run.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-summary-and-recommendations">5. Summary and Recommendations<a href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine#5-summary-and-recommendations" class="hash-link" aria-label="Direct link to 5. Summary and Recommendations" title="Direct link to 5. Summary and Recommendations">​</a></h2>
+<table><thead><tr><th>Goal</th><th>Recommendation</th></tr></thead><tbody><tr><td><strong>Highest performance</strong></td><td>Colocated SSD — for real-time analytics and high concurrency.</td></tr><tr><td><strong>On-prem / cost-sensitive</strong></td><td>Curvine-based compute-storage separation (SSD backend when possible) — good balance of performance and elasticity.</td></tr><tr><td><strong>Public cloud, large storage</strong></td><td>Raw OSS separation — best cost efficiency for non–real-time analytics.</td></tr><tr><td><strong>Already on separation</strong></td><td>Apply the optimizer setting above to avoid the slow-query pattern we hit; expect large gains on similar queries.</td></tr></tbody></table>
+<p>Compute-storage separation does not have to mean “slow.” With Curvine as a high-performance cache layer and a few targeted optimizations, StarRocks can deliver strong query performance while keeping the cost and elasticity benefits of object storage.</p>
+<hr>
+<p><em>Original article (Chinese): <a href="https://mp.weixin.qq.com/s/dOlQiXplY5bzl4B8NpNkLw" target="_blank" rel="noopener noreferrer">实测！StarRocks存算分离性能大揭秘：Curvine缓存竟有这波神操作</a></em></p>]]></content>
+        <author>
+            <name>David</name>
+            <uri>https://curvine.io</uri>
+        </author>
+        <category label="benchmark" term="benchmark"/>
+        <category label="starrocks" term="starrocks"/>
+        <category label="storage" term="storage"/>
+    </entry>
 </feed>
