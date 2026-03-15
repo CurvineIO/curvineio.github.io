@@ -4,10 +4,81 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/zh-cn/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Thu, 27 Nov 2025 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 15 Mar 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-cn</language>
+        <item>
+            <title><![CDATA[distributed-cache-pain]]></title>
+            <link>https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain</link>
+            <guid>https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain</guid>
+            <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[在经历了半年的开源之旅，调研了多个用户，我们对分布式缓存这个模式的利弊有了清晰的认识。针对分布式缓存的应用场景局限性，这里做一个简单的反思。]]></description>
+            <content:encoded><![CDATA[<p>在经历了半年的开源之旅，调研了多个用户，我们对分布式缓存这个模式的利弊有了清晰的认识。针对分布式缓存的应用场景局限性，这里做一个简单的反思。</p>
+<p>在大数据与人工智能蓬勃发展的今天，"存算分离"已成为云原生数据架构的主流范式。计算资源可以弹性伸缩，而数据则统一沉淀于低成本的对象存储（如 S3、OSS）中。然而，这一架构带来了一个致命痛点：对象存储的高延迟与低吞吐，严重拖累计算性能。于是，分布式缓存层应运而生——它被寄予厚望，要成为连接"灵活计算"与"廉价存储"的高速桥梁。</p>
+<p>分布式文件缓存系统，能"透明加速"对远程存储的访问，并提供统一命名空间。然而，当企业满怀期待将其引入生产环境后，却常常陷入性能未达预期、运维复杂、语义不符的困境。本文将深入剖析分布式缓存的技术理想与其落地现实之间的鸿沟，揭示分布式缓存在通用场景下的结构性局限。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="一分布式缓存的理想统一透明高性能">一、分布式缓存的理想：统一、透明、高性能<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E4%B8%80%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E7%9A%84%E7%90%86%E6%83%B3%E7%BB%9F%E4%B8%80%E9%80%8F%E6%98%8E%E9%AB%98%E6%80%A7%E8%83%BD" class="hash-link" aria-label="一、分布式缓存的理想：统一、透明、高性能的直接链接" title="一、分布式缓存的理想：统一、透明、高性能的直接链接">​</a></h2>
+<p>设计初衷极具吸引力：</p>
+<ul>
+<li><strong>统一命名空间</strong>：将 HDFS、S3、GCS 等异构存储挂载到单一目录树下，应用只需访问 <code>xx://</code>；</li>
+<li><strong>透明缓存</strong>：首次读取远程数据后自动缓存至内存/SSD，后续访问毫秒级响应；</li>
+<li><strong>生态兼容</strong>：无缝集成 Spark、Presto、Pytorch 等主流计算引擎，无需修改代码；</li>
+<li><strong>分层存储</strong>：支持内存 → SSD → HDD 的多级缓存，平衡性能与成本。</li>
+</ul>
+<p>在演示环境中，分布式缓存确实能大幅提升对象存储的访问性能，尤其是在模型训练反复读取输入的场景下。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="二现实之殇三大结构性缺陷">二、现实之殇：三大结构性缺陷<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E4%BA%8C%E7%8E%B0%E5%AE%9E%E4%B9%8B%E6%AE%87%E4%B8%89%E5%A4%A7%E7%BB%93%E6%9E%84%E6%80%A7%E7%BC%BA%E9%99%B7" class="hash-link" aria-label="二、现实之殇：三大结构性缺陷的直接链接" title="二、现实之殇：三大结构性缺陷的直接链接">​</a></h2>
+<p>然而，理想丰满，现实骨感。分布式缓存在真实业务场景中暴露出三大难以回避的缺陷。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="殇之一posix-语义残缺通用性受限">殇之一：POSIX 语义残缺，通用性受限<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E6%AE%87%E4%B9%8B%E4%B8%80posix-%E8%AF%AD%E4%B9%89%E6%AE%8B%E7%BC%BA%E9%80%9A%E7%94%A8%E6%80%A7%E5%8F%97%E9%99%90" class="hash-link" aria-label="殇之一：POSIX 语义残缺，通用性受限的直接链接" title="殇之一：POSIX 语义残缺，通用性受限的直接链接">​</a></h3>
+<p>分布式缓存通过 FUSE 提供类 POSIX 接口，使传统应用可像访问本地文件一样读取远程数据。但其对 POSIX 语义的支持是高度残缺的：</p>
+<ul>
+<li>❌ <strong>不支持随机写</strong>：无法在文件中间修改字节，仅允许创建新文件或全量覆盖；</li>
+<li>❌ <strong>不支持 truncate、硬链接、文件锁</strong>；</li>
+<li>⚠️ <strong>强一致性缺失</strong>：多客户端可能读到过期缓存，需手动刷新元数据。</li>
+</ul>
+<p>这意味着，分布式缓存根本无法运行数据库、日志系统或任何需要原地更新的程序。它本质上是一个为 WORM（Write-Once-Read-Many），而非通用文件系统。许多团队在尝试将现有业务"无缝迁移"到分布式缓存后，才发现应用因写操作失败而崩溃。</p>
+<blockquote>
+<p><strong>真相</strong>：分布式缓存不是"分布式 POSIX 文件系统"，而是"面向批处理优化的数据编排层"。</p>
+</blockquote>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="殇之二资源占用高">殇之二：资源占用高<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E6%AE%87%E4%B9%8B%E4%BA%8C%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8%E9%AB%98" class="hash-link" aria-label="殇之二：资源占用高的直接链接" title="殇之二：资源占用高的直接链接">​</a></h3>
+<p>目前使用 Java 或者 Go 语言的分布式缓存系统，普遍存在资源占用比较高的问题。</p>
+<p>例如 Java 进程动辄占用几十 G 的内存，对于使用内存作为缓存的系统来讲，属实有点浪费资源。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="殇之三运维复杂roi-难以兑现">殇之三：运维复杂，ROI 难以兑现<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E6%AE%87%E4%B9%8B%E4%B8%89%E8%BF%90%E7%BB%B4%E5%A4%8D%E6%9D%82roi-%E9%9A%BE%E4%BB%A5%E5%85%91%E7%8E%B0" class="hash-link" aria-label="殇之三：运维复杂，ROI 难以兑现的直接链接" title="殇之三：运维复杂，ROI 难以兑现的直接链接">​</a></h3>
+<p>分布式缓存的部署涉及 Master、Worker、Journal、UFS 连接器等多个组件，资源调优（内存分配、缓存策略、网络配置）极其复杂。更致命的是：</p>
+<ul>
+<li><strong>缓存命中率依赖数据访问模式</strong>：若作业为一次性扫描（如 ETL），缓存毫无价值；</li>
+<li><strong>资源竞争</strong>：Worker 占用的内存/SSD 与 Spark Executor 争抢节点资源；</li>
+<li><strong>故障排查困难</strong>：缓存不一致、块丢失、UFS 同步失败等问题需深入源码才能定位。</li>
+</ul>
+<p>许多团队投入数月搭建调优缓存集群，最终发现性能提升有限，但运维负担倍增，不得不弃用。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="三反思分布式缓存是否可以代替文件系统">三、反思：分布式缓存是否可以代替文件系统<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E4%B8%89%E5%8F%8D%E6%80%9D%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E4%BB%A3%E6%9B%BF%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F" class="hash-link" aria-label="三、反思：分布式缓存是否可以代替文件系统的直接链接" title="三、反思：分布式缓存是否可以代替文件系统的直接链接">​</a></h2>
+<p>分布式缓存的困境折射出一个更深层问题：试图用一个通用中间层解决所有 I/O 问题，本身就是一种技术偏执。</p>
+<p>分布式缓存在大数据和 AI 训练等大规模数据 IO 场景有明显的作用，但是，作为一个公司，采购或者部署一套分布式缓存集群，无法做到各个场景通用，无法做到物尽其用，充分发挥其作用。</p>
+<blockquote>
+<p><strong>趋势</strong>："专用优于通用" —— 与其维护一个重量级分布式集群，不如构建更具通用性的分层文件系统，中间提供缓存加速层，以文件系统语义提供更通用支持。</p>
+</blockquote>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="四出路理性选择场景驱动">四、出路：理性选择，场景驱动<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E5%9B%9B%E5%87%BA%E8%B7%AF%E7%90%86%E6%80%A7%E9%80%89%E6%8B%A9%E5%9C%BA%E6%99%AF%E9%A9%B1%E5%8A%A8" class="hash-link" aria-label="四、出路：理性选择，场景驱动的直接链接" title="四、出路：理性选择，场景驱动的直接链接">​</a></h2>
+<p>分布式缓存并非一无是处。在以下场景中，它仍具价值：</p>
+<ul>
+<li>✅ <strong>混合云/多云架构</strong>：统一访问不同云厂商的对象存储；</li>
+<li>✅ <strong>高复用只读数据集</strong>：如 AI 训练中反复使用的基准数据集；</li>
+<li>✅ <strong>有专职平台团队</strong>：能承担其运维与调优成本。</li>
+</ul>
+<p>但对于大多数企业，更务实的路径是：</p>
+<ol>
+<li><strong>先评估 I/O 是否真为瓶颈</strong>：通过 Profiling 确认；</li>
+<li><strong>优先优化数据格式与查询逻辑</strong>：用 Iceberg/Lance 替代原始文件；</li>
+<li><strong>避免"为了用缓存而用缓存"</strong>：缓存是手段，不是目的；</li>
+<li><strong>构建通用性文件系统能力</strong>：构建比肩文件系统能力的缓存，充分挖掘通用性。</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="结语">结语<a href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain#%E7%BB%93%E8%AF%AD" class="hash-link" aria-label="结语的直接链接" title="结语的直接链接">​</a></h2>
+<p>分布式缓存是一个阶段性的技术实验，它推动了数据编排理念的发展。但它的"殇"也警示我们：没有银弹，只有权衡。在追求高性能的道路上，盲目引入通用中间件往往适得其反。真正的工程智慧，在于理解业务本质，选择最匹配的工具，哪怕它不够"酷"。</p>
+<p>分布式缓存不该是架构的标配，而应是特定场景下的精准手术刀。构建更通用、更轻量、更高效的分层文件系统，我们才能避免陷入"缓存之殇"，让数据真正流动起来，而非困在层层抽象之中。</p>
+<hr>
+<p><em>Powered by OPPO Bigdata.</em></p>]]></content:encoded>
+            <category>reflection</category>
+            <category>distributed-cache</category>
+            <category>architecture</category>
+        </item>
         <item>
             <title><![CDATA[Curvine 可观测性建设]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2025/11/27/observability</link>

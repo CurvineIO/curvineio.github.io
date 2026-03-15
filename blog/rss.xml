@@ -4,10 +4,81 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Thu, 27 Nov 2025 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 15 Mar 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[distributed-cache-pain]]></title>
+            <link>https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain</link>
+            <guid>https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain</guid>
+            <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[After six months of open-source journey and surveying multiple users, we have gained a clear understanding of the pros and cons of the distributed cache model. In light of the limitations of distributed cache application scenarios, here is a simple reflection.]]></description>
+            <content:encoded><![CDATA[<p>After six months of open-source journey and surveying multiple users, we have gained a clear understanding of the pros and cons of the distributed cache model. In light of the limitations of distributed cache application scenarios, here is a simple reflection.</p>
+<p>In today's booming era of big data and artificial intelligence, "storage-compute separation" has become the mainstream paradigm of cloud-native data architecture. Computing resources can elastically scale, while data is uniformly settled in low-cost object storage (such as S3, OSS). However, this architecture brings a fatal pain point: the high latency and low throughput of object storage seriously drag down computing performance. Thus, the distributed cache layer emerged as needed—it was hoped to become a high-speed bridge connecting "flexible computing" and "cheap storage."</p>
+<p>Distributed file cache systems can "transparently accelerate" access to remote storage and provide a unified namespace. However, when enterprises eagerly introduce them into production environments, they often fall into the predicament of underwhelming performance, operational complexity, and semantic mismatch. This article will deeply analyze the gap between the technical ideal of distributed cache and its landing reality, revealing the structural limitations of distributed cache in general scenarios.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="i-the-ideal-of-distributed-cache-unified-transparent-high-performance">I. The Ideal of Distributed Cache: Unified, Transparent, High-Performance<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#i-the-ideal-of-distributed-cache-unified-transparent-high-performance" class="hash-link" aria-label="Direct link to I. The Ideal of Distributed Cache: Unified, Transparent, High-Performance" title="Direct link to I. The Ideal of Distributed Cache: Unified, Transparent, High-Performance">​</a></h2>
+<p>The original design intention was highly attractive:</p>
+<ul>
+<li><strong>Unified Namespace</strong>: Mount heterogeneous storage such as HDFS, S3, GCS into a single directory tree, applications only need to access <code>xx://</code>;</li>
+<li><strong>Transparent Cache</strong>: After the first read of remote data, automatically cache to memory/SSD, subsequent responses in milliseconds;</li>
+<li><strong>Ecosystem Compatibility</strong>: Seamlessly integrate with mainstream computing engines such as Spark, Presto, Pytorch, without code modifications;</li>
+<li><strong>Tiered Storage</strong>: Support memory → SSD → HDD multi-level caching, balancing performance and cost.</li>
+</ul>
+<p>In demonstration environments, distributed cache can indeed significantly improve the access performance of object storage, especially in scenarios where model training repeatedly reads input.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="ii-realitys-pain-three-structural-defects">II. Reality's Pain: Three Structural Defects<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#ii-realitys-pain-three-structural-defects" class="hash-link" aria-label="Direct link to II. Reality's Pain: Three Structural Defects" title="Direct link to II. Reality's Pain: Three Structural Defects">​</a></h2>
+<p>However, the ideal is full, but the reality is bony. Distributed cache exposes three unavoidable defects in real business scenarios.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="pain-1-incomplete-posix-semantics-limited-versatility">Pain 1: Incomplete POSIX Semantics, Limited Versatility<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#pain-1-incomplete-posix-semantics-limited-versatility" class="hash-link" aria-label="Direct link to Pain 1: Incomplete POSIX Semantics, Limited Versatility" title="Direct link to Pain 1: Incomplete POSIX Semantics, Limited Versatility">​</a></h3>
+<p>Distributed cache provides POSIX-like interfaces through FUSE, enabling traditional applications to read remote data like accessing local files. However, its support for POSIX semantics is highly incomplete:</p>
+<ul>
+<li>❌ <strong>No random write support</strong>: Cannot modify bytes in the middle of a file, only allows creating new files or full overwrites;</li>
+<li>❌ <strong>No truncate, hard links, or file locks</strong>;</li>
+<li>⚠️ <strong>Strong consistency missing</strong>: Multiple clients may read expired cache, requiring manual metadata refresh.</li>
+</ul>
+<p>This means distributed cache simply cannot run databases, log systems, or any programs requiring in-place updates. It is essentially designed for WORM (Write-Once-Read-Many), not a general-purpose file system. Many teams, after attempting to "seamlessly migrate" existing business to distributed cache, discover their applications crash due to write operation failures.</p>
+<blockquote>
+<p><strong>Truth</strong>: Distributed cache is not a "distributed POSIX file system," but a "data orchestration layer optimized for batch processing."</p>
+</blockquote>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="pain-2-high-resource-consumption">Pain 2: High Resource Consumption<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#pain-2-high-resource-consumption" class="hash-link" aria-label="Direct link to Pain 2: High Resource Consumption" title="Direct link to Pain 2: High Resource Consumption">​</a></h3>
+<p>Currently, distributed cache systems using Java or Go languages generally have high resource consumption problems.</p>
+<p>For example, Java processes often occupy tens of GB of memory, which is somewhat wasteful for systems that use memory as cache.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="pain-3-operational-complexity-roi-hard-to-deliver">Pain 3: Operational Complexity, ROI Hard to Deliver<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#pain-3-operational-complexity-roi-hard-to-deliver" class="hash-link" aria-label="Direct link to Pain 3: Operational Complexity, ROI Hard to Deliver" title="Direct link to Pain 3: Operational Complexity, ROI Hard to Deliver">​</a></h3>
+<p>The deployment of distributed cache involves multiple components such as Master, Worker, Journal, UFS connectors, etc., and resource tuning (memory allocation, cache policies, network configuration) is extremely complex. More fatally:</p>
+<ul>
+<li><strong>Cache hit rate depends on data access patterns</strong>: If jobs are one-time scans (such as ETL), caching has no value;</li>
+<li><strong>Resource competition</strong>: Memory/SSD occupied by Workers competes with Spark Executors for node resources;</li>
+<li><strong>Troubleshooting difficulties</strong>: Issues like cache inconsistency, block loss, and UFS synchronization failures require deep source code analysis to locate.</li>
+</ul>
+<p>Many teams invest months in building and tuning cache clusters, only to find limited performance improvement but doubled operational burden, forcing them to abandon it.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="iii-reflection-can-distributed-cache-replace-file-systems">III. Reflection: Can Distributed Cache Replace File Systems?<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#iii-reflection-can-distributed-cache-replace-file-systems" class="hash-link" aria-label="Direct link to III. Reflection: Can Distributed Cache Replace File Systems?" title="Direct link to III. Reflection: Can Distributed Cache Replace File Systems?">​</a></h2>
+<p>The dilemma of distributed cache reflects a deeper issue: attempting to use a general-purpose intermediate layer to solve all I/O problems is itself a form of technical dogmatism.</p>
+<p>Distributed cache has significant effects in large-scale data I/O scenarios such as big data and AI training. However, as a company, purchasing or deploying a distributed cache cluster cannot achieve universal application across scenarios, nor can it fully utilize its capabilities.</p>
+<blockquote>
+<p><strong>Trend</strong>: "Specialized is better than generalized" — Rather than maintaining a heavyweight distributed cluster, it is better to build a more versatile tiered file system with a cache acceleration layer in the middle, providing more general support with file system semantics.</p>
+</blockquote>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="iv-way-out-rational-choice-scenario-driven">IV. Way Out: Rational Choice, Scenario-Driven<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#iv-way-out-rational-choice-scenario-driven" class="hash-link" aria-label="Direct link to IV. Way Out: Rational Choice, Scenario-Driven" title="Direct link to IV. Way Out: Rational Choice, Scenario-Driven">​</a></h2>
+<p>Distributed cache is not without merit. It still has value in the following scenarios:</p>
+<ul>
+<li>✅ <strong>Hybrid cloud/multi-cloud architecture</strong>: Unified access to object storage from different cloud providers;</li>
+<li>✅ <strong>High-reuse read-only datasets</strong>: Such as benchmark datasets repeatedly used in AI training;</li>
+<li>✅ <strong>Dedicated platform teams available</strong>: Can bear its operational and tuning costs.</li>
+</ul>
+<p>However, for most enterprises, a more pragmatic path is:</p>
+<ol>
+<li><strong>First evaluate whether I/O is truly a bottleneck</strong>: Confirm through profiling;</li>
+<li><strong>Prioritize optimizing data formats and query logic</strong>: Use Iceberg/Lance instead of raw files;</li>
+<li><strong>Avoid "using cache for the sake of using cache"</strong>: Caching is a means, not an end;</li>
+<li><strong>Build general-purpose file system capabilities</strong>: Build cache that rivals file system capabilities, fully exploring versatility.</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="conclusion">Conclusion<a href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain#conclusion" class="hash-link" aria-label="Direct link to Conclusion" title="Direct link to Conclusion">​</a></h2>
+<p>Distributed cache is a phased technical experiment that has promoted the development of data orchestration concepts. However, its "pain" also warns us: there is no silver bullet, only trade-offs. On the road to pursuing high performance, blindly introducing general-purpose middleware often backfires. True engineering wisdom lies in understanding the essence of business and choosing the most matching tool, even if it's not "cool" enough.</p>
+<p>Distributed cache should not be a standard configuration of architecture, but rather a precise scalpel for specific scenarios. Only by building more general, lightweight, and efficient tiered file systems can we avoid falling into the "cache pain" and let data truly flow, rather than being trapped in layers of abstraction.</p>
+<hr>
+<p><em>Powered by OPPO Bigdata.</em></p>]]></content:encoded>
+            <category>reflection</category>
+            <category>distributed-cache</category>
+            <category>architecture</category>
+        </item>
         <item>
             <title><![CDATA[Observability Construction for Curvine]]></title>
             <link>https://curvineio.github.io/blog/2025/11/27/observability</link>
