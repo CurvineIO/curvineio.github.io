@@ -4,10 +4,101 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/zh-cn/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Sun, 15 Mar 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 19 Mar 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-cn</language>
+        <item>
+            <title><![CDATA[curvine-cache-fs-mode]]></title>
+            <link>https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode</link>
+            <guid>https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode</guid>
+            <pubDate>Thu, 19 Mar 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[在分布式缓存的实践过程中，我们发现用户面临着 POSIX 语义支持不足、资源消耗高、运维复杂等核心痛点。为了更好地解决这些问题，我们对 Curvine 的模式和发展路线进行了全新调整，打造这一兼具强 POSIX 语义与高性能缓存的下一代统一数据接入层，让远程数据访问体验迎来质的提升。]]></description>
+            <content:encoded><![CDATA[<p>在分布式缓存的实践过程中，我们发现用户面临着 POSIX 语义支持不足、资源消耗高、运维复杂等核心痛点。为了更好地解决这些问题，我们对 Curvine 的模式和发展路线进行了全新调整，打造这一兼具强 POSIX 语义与高性能缓存的下一代统一数据接入层，让远程数据访问体验迎来质的提升。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="两种核心挂载模式适配多样业务需求">两种核心挂载模式，适配多样业务需求<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#%E4%B8%A4%E7%A7%8D%E6%A0%B8%E5%BF%83%E6%8C%82%E8%BD%BD%E6%A8%A1%E5%BC%8F%E9%80%82%E9%85%8D%E5%A4%9A%E6%A0%B7%E4%B8%9A%E5%8A%A1%E9%9C%80%E6%B1%82" class="hash-link" aria-label="两种核心挂载模式，适配多样业务需求的直接链接" title="两种核心挂载模式，适配多样业务需求的直接链接">​</a></h2>
+<p>Curvine 将数据读写模式优化为简洁的 <strong>CacheMode</strong> 和 <strong>FsMode</strong> 两种挂载点读写模式，分别对应不同的业务场景诉求，兼顾缓存加速与完整语义支持，让用户可以根据实际需求灵活选择。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="cachemode轻量读缓存加速与-ufs-强绑定">CacheMode：轻量读缓存加速，与 UFS 强绑定<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#cachemode%E8%BD%BB%E9%87%8F%E8%AF%BB%E7%BC%93%E5%AD%98%E5%8A%A0%E9%80%9F%E4%B8%8E-ufs-%E5%BC%BA%E7%BB%91%E5%AE%9A" class="hash-link" aria-label="CacheMode：轻量读缓存加速，与 UFS 强绑定的直接链接" title="CacheMode：轻量读缓存加速，与 UFS 强绑定的直接链接">​</a></h3>
+<p>CacheMode 以 UFS（底层文件系统）为核心，主要承担 UFS 的读缓存加速和统一代理角色。读写操作均以 UFS 为基准：</p>
+<ul>
+<li><strong>元数据缓存</strong>可有效加速 ls 等常用操作</li>
+<li><strong>写数据时</strong>直接写入 UFS</li>
+<li>用户能对 UFS 形成强感知，无需改变原有数据操作习惯</li>
+</ul>
+<p>这是轻量提升 UFS 读取性能的优选方案。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="fsmode全量性能加速强-posix-语义加持">FsMode：全量性能加速，强 POSIX 语义加持<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#fsmode%E5%85%A8%E9%87%8F%E6%80%A7%E8%83%BD%E5%8A%A0%E9%80%9F%E5%BC%BA-posix-%E8%AF%AD%E4%B9%89%E5%8A%A0%E6%8C%81" class="hash-link" aria-label="FsMode：全量性能加速，强 POSIX 语义加持的直接链接" title="FsMode：全量性能加速，强 POSIX 语义加持的直接链接">​</a></h3>
+<p>FsMode 则以 Curvine 自身为核心，元数据由 Curvine 独立管理，其路径与 UFS 实现一一映射，UFS 仅作为 Curvine 的冷存层。该模式提供：</p>
+<ul>
+<li><strong>全方位的读写缓存加速</strong></li>
+<li><strong>更好地支持 POSIX 语义读写</strong></li>
+<li><strong>完美适配大规模文件的性能加速需求</strong></li>
+<li><strong>是对语义完整性和性能均有高要求场景的最佳选择</strong></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="fsmode-深度解析分层设计兼顾性能与一致性">FsMode 深度解析：分层设计，兼顾性能与一致性<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#fsmode-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1%E5%85%BC%E9%A1%BE%E6%80%A7%E8%83%BD%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7" class="hash-link" aria-label="FsMode 深度解析：分层设计，兼顾性能与一致性的直接链接" title="FsMode 深度解析：分层设计，兼顾性能与一致性的直接链接">​</a></h2>
+<p>作为 Curvine 的核心模式，FsMode 采用分层文件系统的挂载写入设计，通过清晰的语义定义和流程规划，实现了性能、语义与数据一致性的平衡。下面为大家拆解其核心设计细节。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="核心语义规则">核心语义规则<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#%E6%A0%B8%E5%BF%83%E8%AF%AD%E4%B9%89%E8%A7%84%E5%88%99" class="hash-link" aria-label="核心语义规则的直接链接" title="核心语义规则的直接链接">​</a></h3>
+<ol>
+<li>
+<p><strong>统一 IO 入口</strong>：所有数据读写操作均通过 Curvine 完成，应用仅使用 Curvine 路径，不建议直接访问 UFS，否则将无法保障数据一致性。</p>
+</li>
+<li>
+<p><strong>异步写入冷存</strong>：写数据时先落地 Curvine（包含元数据 + 块），由 Master 侧根据策略在后台定期提交 Load/Dump 任务，将数据异步刷新到 UFS（如 S3），让前端写入操作更高效。</p>
+</li>
+<li>
+<p><strong>智能读取回填</strong>：读数据时优先从 Curvine 读取；若数据已被淘汰或仅存在于 UFS，则通过 Load 操作将 UFS 数据回填至 Curvine，本次读取则直接透读 UFS，兼顾读取速度与数据可用性。</p>
+</li>
+<li>
+<p><strong>灵活副本形态</strong>：允许仅 UFS 存在数据的状态，此时 UFS 中的数据将作为该文件的唯一数据副本，最大化利用存储资源。</p>
+</li>
+<li>
+<p><strong>按需元数据同步</strong>：mount 操作时会同步目录下所有元数据，后期不再主动做全量同步；若需同步，可通过 <code>mount resync</code> 命令手动更新挂载点元数据（仅同步仅在 UFS 存在的文件元数据）。</p>
+</li>
+<li>
+<p><strong>缓存懒加载机制</strong>：若读取的文件在 Curvine 无元数据但在 UFS 存在，首次读取会失败，重试时将主动获取 UFS 文件；也可提前手动触发 <code>mount resync</code> 命令同步元数据，避免读取失败。</p>
+</li>
+<li>
+<p><strong>故障容错设计</strong>：master 故障时，用户可通过 UFS 接口正常访问数据；worker 故障时，多副本场景可访问其他副本，单副本场景则直读 UFS，保障业务连续性。</p>
+</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="一致性设计当下可用未来更优">一致性设计：当下可用，未来更优<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#%E4%B8%80%E8%87%B4%E6%80%A7%E8%AE%BE%E8%AE%A1%E5%BD%93%E4%B8%8B%E5%8F%AF%E7%94%A8%E6%9C%AA%E6%9D%A5%E6%9B%B4%E4%BC%98" class="hash-link" aria-label="一致性设计：当下可用，未来更优的直接链接" title="一致性设计：当下可用，未来更优的直接链接">​</a></h3>
+<p>目前 FsMode 的一致性实现方案为：</p>
+<ul>
+<li>UFS 路径首次挂载到 Curvine 时，会将该目录下的元数据整体映射至 Curvine</li>
+<li>若绕开 Curvine 直接向 UFS 写入文件，Curvine 无法自动感知</li>
+<li>可通过同步命令手动重新同步</li>
+</ul>
+<p><strong>未来规划</strong>：Curvine 将实现自动感知 UFS 的元数据变化 event 消息，准实时同步 UFS 元数据，从技术层面彻底保障数据一致性，让用户无需关注同步操作，实现无感使用。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="fsmode-核心设计目标">FsMode 核心设计目标<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#fsmode-%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87" class="hash-link" aria-label="FsMode 核心设计目标的直接链接" title="FsMode 核心设计目标的直接链接">​</a></h3>
+<p>FsMode 的所有设计均围绕明确的目标展开，确保每一项能力都能精准解决业务痛点：</p>
+<ul>
+<li><strong>统一入口</strong>：所有操作通过 Curvine 路径进行，应用无需适配 UFS，降低开发和运维成本。</li>
+<li><strong>POSIX 语义</strong>：支持完整的 POSIX 文件系统语义，包含目录树、随机读写、重命名、原子性、强一致性等，适配各类传统及新型应用。</li>
+<li><strong>分层存储</strong>：Curvine 层存储热数据（元数据 + 可选本地块），UFS 作为持久/冷副本，实现热冷数据分离，提升存储效率和访问性能。</li>
+<li><strong>后台刷新</strong>：Master 根据业务操作与预设策略，定期提交 Load/Dump 任务，将 Curvine 数据异步刷新到 UFS，不影响前端业务。</li>
+<li><strong>仅 UFS 副本</strong>：支持数据仅存在于 UFS（如 S3）的场景，读数据时按需回填或透读，兼顾存储灵活性与数据访问性。</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="cachemode-vs-fsmode一张表看懂核心差异">CacheMode vs FsMode：一张表看懂核心差异<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#cachemode-vs-fsmode%E4%B8%80%E5%BC%A0%E8%A1%A8%E7%9C%8B%E6%87%82%E6%A0%B8%E5%BF%83%E5%B7%AE%E5%BC%82" class="hash-link" aria-label="CacheMode vs FsMode：一张表看懂核心差异的直接链接" title="CacheMode vs FsMode：一张表看懂核心差异的直接链接">​</a></h2>
+<p>为了让大家更清晰地分辨两种模式的区别，精准匹配业务场景，我们整理了核心对比维度，一目了然：</p>
+<table><thead><tr><th>对比项</th><th>CacheMode</th><th>FsMode</th></tr></thead><tbody><tr><td><strong>语义支持</strong></td><td>仅支持 UFS 本身语义</td><td>支持完整 POSIX 语义（目录树、随机读写、重命名、原子性、强一致性等）</td></tr><tr><td><strong>写入方式</strong></td><td>数据直接写 UFS，应用与 UFS 强耦合</td><td>数据写 Curvine，由 JM 异步刷新到 UFS，应用仅面向 Curvine</td></tr><tr><td><strong>元数据管理</strong></td><td>元数据缓存，但是与 UFS 保持强一致性</td><td>元数据由 Curvine Master 维护，定期同步到 UFS，冲突以 Curvine 为准；其他接口修改 UFS 不会被 Curvine 主动感知</td></tr><tr><td><strong>读取逻辑</strong></td><td>缓存存在则从 Curvine 读；无缓存则提交异步任务加载到 Curvine，本次直接从 UFS 读取</td><td>优先从 Curvine 读；Curvine 无数据时由 Master 标记热数据并回填 Curvine，本次直接从 UFS 读取</td></tr><tr><td><strong>数据过期处理</strong></td><td>删除 Curvine 中元数据和数据块</td><td>仅删 Curvine 数据块，保留元数据</td></tr><tr><td><strong>一致性保障</strong></td><td>受 UFS 约束（如 S3 最终一致性）</td><td>Curvine 侧强一致；与 UFS 间通过异步任务实现最终一致</td></tr></tbody></table>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="极致资源优化轻量运行更友好">极致资源优化，轻量运行更友好<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#%E6%9E%81%E8%87%B4%E8%B5%84%E6%BA%90%E4%BC%98%E5%8C%96%E8%BD%BB%E9%87%8F%E8%BF%90%E8%A1%8C%E6%9B%B4%E5%8F%8B%E5%A5%BD" class="hash-link" aria-label="极致资源优化，轻量运行更友好的直接链接" title="极致资源优化，轻量运行更友好的直接链接">​</a></h2>
+<p>除了功能和性能的打磨，Curvine 在资源消耗上也做了深度优化，从底层技术栈到实现手段进行全方位升级：</p>
+<p>Curvine 基于 <strong>Rust 语言</strong>构建，天生具备高性能、低资源消耗的特性；同时采用 <strong>异步</strong>、<strong>零拷贝</strong> 等前沿优化手段，进一步降低资源占用。</p>
+<p><strong>线上实践数据显示</strong>：Curvine 的单 worker 进程占用内存资源<strong>不足 1G</strong>。在大规模集群部署时，能有效减少服务器资源投入，降低运维成本，即使是资源紧张的场景也能轻松适配。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="产品哲学不做替代只做更好的数访方式">产品哲学：不做替代，只做更好的数访方式<a href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode#%E4%BA%A7%E5%93%81%E5%93%B2%E5%AD%A6%E4%B8%8D%E5%81%9A%E6%9B%BF%E4%BB%A3%E5%8F%AA%E5%81%9A%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%95%B0%E8%AE%BF%E6%96%B9%E5%BC%8F" class="hash-link" aria-label="产品哲学：不做替代，只做更好的数访方式的直接链接" title="产品哲学：不做替代，只做更好的数访方式的直接链接">​</a></h2>
+<p>Curvine 从一开始就有着清晰的产品定位：</p>
+<blockquote>
+<p><strong>不追求成为通用 POSIX 文件系统，也不试图替代任何存储产品。</strong></p>
+</blockquote>
+<p>我们始终专注于一件事：<strong>在不改变用户原有数据操作习惯的前提下，让远程数据访问快到感觉不到"远程"</strong>。这不仅是技术层面的挑战，更是 Curvine 的核心产品哲学——最好的基础设施，就是让人感觉不到它的存在。</p>
+<p>在 AI 时代，数据量呈爆炸式增长，远程数据访问的性能和体验成为影响业务效率的关键因素。Curvine 融合了分布式缓存技术智慧与分布式文件系统的 POSIX 完整性，同时坚守"元数据透明、文件结构不变"的核心原则，无需用户对现有业务系统做大幅改造，即可实现远程数据访问性能的跃升。</p>
+<p>未来，Curvine 将持续深耕统一数据接入层领域，不断优化性能、稳定性、完善语义支持、简化运维流程，致力于成为 AI 时代数据基础设施的关键一环，为各类业务的数字化升级提供高效、稳定、轻量的数据访问支撑。</p>
+<p>最后，希望更多的存储、Rust 领域的开源爱好者共同加入，共建共享！</p>
+<hr>
+<p><em>Powered by OPPO Bigdata.</em></p>]]></content:encoded>
+            <category>architecture</category>
+            <category>cache-mode</category>
+            <category>fs-mode</category>
+            <category>posix</category>
+        </item>
         <item>
             <title><![CDATA[distributed-cache-pain]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain</link>

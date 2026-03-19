@@ -2,11 +2,106 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://curvineio.github.io/blog</id>
     <title>Curvine Blog</title>
-    <updated>2026-03-15T00:00:00.000Z</updated>
+    <updated>2026-03-19T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://curvineio.github.io/blog"/>
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/img/curvine_logo.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[curvine-cache-fs-mode]]></title>
+        <id>https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode</id>
+        <link href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode"/>
+        <updated>2026-03-19T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[In our practice with distributed cache, we have identified core pain points users face: insufficient POSIX semantics support, high resource consumption, and complex operations. To better address these challenges, we have restructured Curvine's architecture and development roadmap, creating a next-generation unified data access layer that combines strong POSIX semantics with high-performance caching, delivering a qualitative improvement in remote data access experience.]]></summary>
+        <content type="html"><![CDATA[<p>In our practice with distributed cache, we have identified core pain points users face: insufficient POSIX semantics support, high resource consumption, and complex operations. To better address these challenges, we have restructured Curvine's architecture and development roadmap, creating a next-generation unified data access layer that combines strong POSIX semantics with high-performance caching, delivering a qualitative improvement in remote data access experience.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="two-core-mount-modes-for-diverse-business-needs">Two Core Mount Modes for Diverse Business Needs<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#two-core-mount-modes-for-diverse-business-needs" class="hash-link" aria-label="Direct link to Two Core Mount Modes for Diverse Business Needs" title="Direct link to Two Core Mount Modes for Diverse Business Needs">​</a></h2>
+<p>Curvine optimizes data read/write patterns into two concise mount point modes: <strong>CacheMode</strong> and <strong>FsMode</strong>, each targeting different business scenarios. This design balances cache acceleration with complete semantics support, allowing users to choose flexibly based on actual requirements.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="cachemode-lightweight-read-cache-acceleration-tightly-coupled-with-ufs">CacheMode: Lightweight Read Cache Acceleration, Tightly Coupled with UFS<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#cachemode-lightweight-read-cache-acceleration-tightly-coupled-with-ufs" class="hash-link" aria-label="Direct link to CacheMode: Lightweight Read Cache Acceleration, Tightly Coupled with UFS" title="Direct link to CacheMode: Lightweight Read Cache Acceleration, Tightly Coupled with UFS">​</a></h3>
+<p>CacheMode centers on UFS (Underlying File System), primarily serving as a read cache accelerator and unified proxy for UFS. All read/write operations are UFS-centric:</p>
+<ul>
+<li><strong>Metadata caching</strong> effectively accelerates common operations like <code>ls</code></li>
+<li><strong>Write operations</strong> go directly to UFS</li>
+<li>Users maintain strong awareness of UFS without changing existing data operation habits</li>
+</ul>
+<p>This is the preferred solution for lightweight UFS read performance improvement.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="fsmode-full-performance-acceleration-with-strong-posix-semantics">FsMode: Full Performance Acceleration with Strong POSIX Semantics<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#fsmode-full-performance-acceleration-with-strong-posix-semantics" class="hash-link" aria-label="Direct link to FsMode: Full Performance Acceleration with Strong POSIX Semantics" title="Direct link to FsMode: Full Performance Acceleration with Strong POSIX Semantics">​</a></h3>
+<p>FsMode places Curvine itself at the core, with metadata independently managed by Curvine. Its path structure maps one-to-one with UFS, while UFS serves only as Curvine's cold storage layer. This mode provides:</p>
+<ul>
+<li><strong>Comprehensive read/write cache acceleration</strong></li>
+<li><strong>Better POSIX semantics support</strong> for read/write operations</li>
+<li><strong>Ideal for large-scale file performance acceleration</strong></li>
+<li><strong>Best choice for scenarios requiring both semantic completeness and high performance</strong></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="fsmode-deep-dive-layered-design-balancing-performance-and-consistency">FsMode Deep Dive: Layered Design Balancing Performance and Consistency<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#fsmode-deep-dive-layered-design-balancing-performance-and-consistency" class="hash-link" aria-label="Direct link to FsMode Deep Dive: Layered Design Balancing Performance and Consistency" title="Direct link to FsMode Deep Dive: Layered Design Balancing Performance and Consistency">​</a></h2>
+<p>As Curvine's core mode, FsMode employs a layered filesystem mount/write design. Through clear semantic definitions and process planning, it achieves balance among performance, semantics, and data consistency. Let's examine its core design details.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="core-semantic-rules">Core Semantic Rules<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#core-semantic-rules" class="hash-link" aria-label="Direct link to Core Semantic Rules" title="Direct link to Core Semantic Rules">​</a></h3>
+<ol>
+<li>
+<p><strong>Unified IO Entry Point</strong>: All data read/write operations go through Curvine. Applications should use only Curvine paths; direct UFS access is not recommended as it cannot guarantee data consistency.</p>
+</li>
+<li>
+<p><strong>Asynchronous Cold Storage Writes</strong>: When writing data, it first lands in Curvine (metadata + blocks). The Master side periodically submits Load/Dump tasks based on policies to asynchronously flush data to UFS (e.g., S3), making frontend write operations more efficient.</p>
+</li>
+<li>
+<p><strong>Intelligent Read Backfill</strong>: When reading data, Curvine is prioritized. If data has been evicted or exists only in UFS, a Load operation backfills UFS data to Curvine. The current read passes through directly from UFS, balancing read speed with data availability.</p>
+</li>
+<li>
+<p><strong>Flexible Replica Forms</strong>: Allows states where only UFS contains data. In such cases, UFS data serves as the file's sole replica, maximizing storage resource utilization.</p>
+</li>
+<li>
+<p><strong>On-Demand Metadata Synchronization</strong>: The <code>mount</code> operation synchronizes all metadata under the directory. Full synchronization is not performed actively afterward. If needed, use the <code>mount resync</code> command to manually update mount point metadata (synchronizing only file metadata that exists solely in UFS).</p>
+</li>
+<li>
+<p><strong>Lazy Cache Loading</strong>: If a file being read has no metadata in Curvine but exists in UFS, the first read will fail. On retry, UFS files are actively fetched. Alternatively, manually trigger the <code>mount resync</code> command in advance to synchronize metadata and avoid read failures.</p>
+</li>
+<li>
+<p><strong>Fault Tolerance Design</strong>: When Master fails, users can access data normally through UFS interfaces. When Worker fails, other replicas can be accessed in multi-replica scenarios; in single-replica scenarios, direct UFS reading ensures business continuity.</p>
+</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="consistency-design-usable-now-better-in-future">Consistency Design: Usable Now, Better in Future<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#consistency-design-usable-now-better-in-future" class="hash-link" aria-label="Direct link to Consistency Design: Usable Now, Better in Future" title="Direct link to Consistency Design: Usable Now, Better in Future">​</a></h3>
+<p>The current FsMode consistency implementation:</p>
+<ul>
+<li>When a UFS path is first mounted to Curvine, all metadata under that directory is mapped to Curvine as a whole</li>
+<li>If files are written directly to UFS bypassing Curvine, Curvine cannot automatically perceive these changes</li>
+<li>Manual re-synchronization via sync commands is required in such cases</li>
+</ul>
+<p><strong>Future Planning</strong>: Curvine will implement automatic perception of UFS metadata change events, enabling near real-time UFS metadata synchronization. This will technically guarantee data consistency completely, allowing users to operate without concerning themselves with synchronization—truly seamless usage.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="fsmode-core-design-objectives">FsMode Core Design Objectives<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#fsmode-core-design-objectives" class="hash-link" aria-label="Direct link to FsMode Core Design Objectives" title="Direct link to FsMode Core Design Objectives">​</a></h3>
+<p>All FsMode designs revolve around clear objectives, ensuring every capability precisely addresses business pain points:</p>
+<ul>
+<li><strong>Unified Entry Point</strong>: All operations go through Curvine paths. Applications don't need to adapt to UFS, reducing development and operations costs.</li>
+<li><strong>POSIX Semantics</strong>: Supports complete POSIX filesystem semantics, including directory trees, random read/write, renaming, atomicity, strong consistency, etc., adapting to various traditional and new applications.</li>
+<li><strong>Tiered Storage</strong>: Curvine layer stores hot data (metadata + optional local blocks), UFS serves as persistent/cold replica, achieving hot/cold data separation for improved storage efficiency and access performance.</li>
+<li><strong>Background Flushing</strong>: Master periodically submits Load/Dump tasks based on business operations and preset policies to asynchronously flush Curvine data to UFS without affecting frontend business.</li>
+<li><strong>UFS-Only Replica</strong>: Supports scenarios where data exists only in UFS (e.g., S3). Data is backfilled on-demand or read-through as needed, balancing storage flexibility with data accessibility.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="cachemode-vs-fsmode-core-differences-at-a-glance">CacheMode vs FsMode: Core Differences at a Glance<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#cachemode-vs-fsmode-core-differences-at-a-glance" class="hash-link" aria-label="Direct link to CacheMode vs FsMode: Core Differences at a Glance" title="Direct link to CacheMode vs FsMode: Core Differences at a Glance">​</a></h2>
+<p>To help you clearly distinguish between the two modes and precisely match business scenarios, we've organized the core comparison dimensions:</p>
+<table><thead><tr><th>Comparison Item</th><th>CacheMode</th><th>FsMode</th></tr></thead><tbody><tr><td><strong>Semantics Support</strong></td><td>Only supports UFS's native semantics</td><td>Supports complete POSIX semantics (directory trees, random read/write, renaming, atomicity, strong consistency, etc.)</td></tr><tr><td><strong>Write Method</strong></td><td>Data writes directly to UFS; applications tightly coupled with UFS</td><td>Data writes to Curvine; JM asynchronously flushes to UFS; applications face only Curvine</td></tr><tr><td><strong>Metadata Management</strong></td><td>Metadata cached but maintains strong consistency with UFS</td><td>Metadata maintained by Curvine Master, periodically synchronized to UFS; Curvine prevails in conflicts; UFS modifications via other interfaces are not actively perceived by Curvine</td></tr><tr><td><strong>Read Logic</strong></td><td>If cache exists, read from Curvine; if no cache, submit async task to load to Curvine, current read directly from UFS</td><td>Prioritize reading from Curvine; if no data in Curvine, Master marks as hot data and backfills to Curvine; current read directly from UFS</td></tr><tr><td><strong>Data Expiration Handling</strong></td><td>Deletes both metadata and data blocks in Curvine</td><td>Deletes only Curvine data blocks, retains metadata</td></tr><tr><td><strong>Consistency Guarantee</strong></td><td>Constrained by UFS (e.g., S3 eventual consistency)</td><td>Strong consistency on Curvine side; eventual consistency with UFS via async tasks</td></tr></tbody></table>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="extreme-resource-optimization-lighter-and-more-friendly">Extreme Resource Optimization, Lighter and More Friendly<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#extreme-resource-optimization-lighter-and-more-friendly" class="hash-link" aria-label="Direct link to Extreme Resource Optimization, Lighter and More Friendly" title="Direct link to Extreme Resource Optimization, Lighter and More Friendly">​</a></h2>
+<p>Beyond refining functionality and performance, Curvine has made deep optimizations in resource consumption, upgrading comprehensively from underlying technology stack to implementation methods:</p>
+<p>Curvine is built on <strong>Rust</strong>, naturally possessing high performance and low resource consumption characteristics. It also employs cutting-edge optimization techniques such as <strong>asynchronous operations</strong> and <strong>zero-copy</strong>, further reducing resource footprint.</p>
+<p><strong>Online practice data shows</strong>: A single Curvine Worker process occupies <strong>less than 1GB of memory</strong>. In large-scale cluster deployments, this effectively reduces server resource investment and operational costs, making it easily adaptable even in resource-constrained scenarios.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="product-philosophy-not-a-replacement-just-a-better-data-access-method">Product Philosophy: Not a Replacement, Just a Better Data Access Method<a href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode#product-philosophy-not-a-replacement-just-a-better-data-access-method" class="hash-link" aria-label="Direct link to Product Philosophy: Not a Replacement, Just a Better Data Access Method" title="Direct link to Product Philosophy: Not a Replacement, Just a Better Data Access Method">​</a></h2>
+<p>Curvine has had a clear product positioning from the start:</p>
+<blockquote>
+<p><strong>Not pursuing to become a general-purpose POSIX filesystem, nor attempting to replace any storage product.</strong></p>
+</blockquote>
+<p>We have always focused on one thing: <strong>making remote data access so fast that you can't feel the "remote" aspect, without changing users' original data operation habits</strong>. This is not only a technical challenge but also Curvine's core product philosophy—the best infrastructure is the kind that makes you unaware of its existence.</p>
+<p>In the AI era, data volume is exploding. Remote data access performance and experience have become key factors affecting business efficiency. Curvine integrates the wisdom of distributed cache technology with POSIX completeness of distributed filesystems, while adhering to the core principle of "metadata transparency, unchanged file structure." Users can achieve a leap in remote data access performance without major modifications to existing business systems.</p>
+<p>In the future, Curvine will continue to深耕 the unified data access layer field, continuously optimizing performance, stability, improving semantics support, and simplifying operations processes. We are committed to becoming a key part of data infrastructure in the AI era, providing efficient, stable, and lightweight data access support for digital upgrades of various businesses.</p>
+<p>Finally, we hope more open-source enthusiasts from the storage and Rust fields will join us in building and sharing together!</p>
+<hr>
+<p><em>Powered by OPPO Bigdata.</em></p>]]></content>
+        <author>
+            <name>Barry</name>
+            <uri>https://curvine.io</uri>
+        </author>
+        <category label="architecture" term="architecture"/>
+        <category label="cache-mode" term="cache-mode"/>
+        <category label="fs-mode" term="fs-mode"/>
+        <category label="posix" term="posix"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[distributed-cache-pain]]></title>
         <id>https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain</id>
