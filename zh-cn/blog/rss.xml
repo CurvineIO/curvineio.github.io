@@ -9,7 +9,7 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-cn</language>
         <item>
-            <title><![CDATA[curvine-cache-fs-mode]]></title>
+            <title><![CDATA[Curvine：下一代统一数据接入层，兼顾 Posix 和高速缓存]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode</link>
             <guid>https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode</guid>
             <pubDate>Thu, 19 Mar 2026 00:00:00 GMT</pubDate>
@@ -94,13 +94,9 @@
 <p>最后，希望更多的存储、Rust 领域的开源爱好者共同加入，共建共享！</p>
 <hr>
 <p><em>Powered by OPPO Bigdata.</em></p>]]></content:encoded>
-            <category>architecture</category>
-            <category>cache-mode</category>
-            <category>fs-mode</category>
-            <category>posix</category>
         </item>
         <item>
-            <title><![CDATA[distributed-cache-pain]]></title>
+            <title><![CDATA[分布式缓存之殇：理想与现实]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain</link>
             <guid>https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain</guid>
             <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
@@ -166,9 +162,6 @@
 <p>分布式缓存不该是架构的标配，而应是特定场景下的精准手术刀。构建更通用、更轻量、更高效的分层文件系统，我们才能避免陷入"缓存之殇"，让数据真正流动起来，而非困在层层抽象之中。</p>
 <hr>
 <p><em>Powered by OPPO Bigdata.</em></p>]]></content:encoded>
-            <category>reflection</category>
-            <category>distributed-cache</category>
-            <category>architecture</category>
         </item>
         <item>
             <title><![CDATA[Curvine 可观测性建设]]></title>

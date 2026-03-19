@@ -8,7 +8,7 @@
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/zh-cn/img/curvine_logo.ico</icon>
     <entry>
-        <title type="html"><![CDATA[curvine-cache-fs-mode]]></title>
+        <title type="html"><![CDATA[Curvine：下一代统一数据接入层，兼顾 Posix 和高速缓存]]></title>
         <id>https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode</id>
         <link href="https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode"/>
         <updated>2026-03-19T00:00:00.000Z</updated>
@@ -93,17 +93,9 @@
 <p>最后，希望更多的存储、Rust 领域的开源爱好者共同加入，共建共享！</p>
 <hr>
 <p><em>Powered by OPPO Bigdata.</em></p>]]></content>
-        <author>
-            <name>Barry</name>
-            <uri>https://curvine.io</uri>
-        </author>
-        <category label="architecture" term="architecture"/>
-        <category label="cache-mode" term="cache-mode"/>
-        <category label="fs-mode" term="fs-mode"/>
-        <category label="posix" term="posix"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[distributed-cache-pain]]></title>
+        <title type="html"><![CDATA[分布式缓存之殇：理想与现实]]></title>
         <id>https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain</id>
         <link href="https://curvineio.github.io/zh-cn/blog/2026/03/15/distributed-cache-pain"/>
         <updated>2026-03-15T00:00:00.000Z</updated>
@@ -169,13 +161,6 @@
 <p>分布式缓存不该是架构的标配，而应是特定场景下的精准手术刀。构建更通用、更轻量、更高效的分层文件系统，我们才能避免陷入"缓存之殇"，让数据真正流动起来，而非困在层层抽象之中。</p>
 <hr>
 <p><em>Powered by OPPO Bigdata.</em></p>]]></content>
-        <author>
-            <name>David</name>
-            <uri>https://curvine.io</uri>
-        </author>
-        <category label="reflection" term="reflection"/>
-        <category label="distributed-cache" term="distributed-cache"/>
-        <category label="architecture" term="architecture"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Curvine 可观测性建设]]></title>
