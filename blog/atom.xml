@@ -8,7 +8,7 @@
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/img/curvine_logo.ico</icon>
     <entry>
-        <title type="html"><![CDATA[curvine-cache-fs-mode]]></title>
+        <title type="html"><![CDATA[Curvine: Next-Generation Unified Data Access Layer, Combining POSIX and High-Speed Cache]]></title>
         <id>https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode</id>
         <link href="https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode"/>
         <updated>2026-03-19T00:00:00.000Z</updated>
@@ -93,17 +93,9 @@
 <p>Finally, we hope more open-source enthusiasts from the storage and Rust fields will join us in building and sharing together!</p>
 <hr>
 <p><em>Powered by OPPO Bigdata.</em></p>]]></content>
-        <author>
-            <name>Barry</name>
-            <uri>https://curvine.io</uri>
-        </author>
-        <category label="architecture" term="architecture"/>
-        <category label="cache-mode" term="cache-mode"/>
-        <category label="fs-mode" term="fs-mode"/>
-        <category label="posix" term="posix"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[distributed-cache-pain]]></title>
+        <title type="html"><![CDATA[The Pain of Distributed Cache: Ideal vs. Reality]]></title>
         <id>https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain</id>
         <link href="https://curvineio.github.io/blog/2026/03/15/distributed-cache-pain"/>
         <updated>2026-03-15T00:00:00.000Z</updated>
@@ -169,13 +161,6 @@
 <p>Distributed cache should not be a standard configuration of architecture, but rather a precise scalpel for specific scenarios. Only by building more general, lightweight, and efficient tiered file systems can we avoid falling into the "cache pain" and let data truly flow, rather than being trapped in layers of abstraction.</p>
 <hr>
 <p><em>Powered by OPPO Bigdata.</em></p>]]></content>
-        <author>
-            <name>David</name>
-            <uri>https://curvine.io</uri>
-        </author>
-        <category label="reflection" term="reflection"/>
-        <category label="distributed-cache" term="distributed-cache"/>
-        <category label="architecture" term="architecture"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Observability Construction for Curvine]]></title>
