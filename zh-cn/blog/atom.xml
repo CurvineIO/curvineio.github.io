@@ -2,11 +2,92 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://curvineio.github.io/zh-cn/blog</id>
     <title>Curvine Blog</title>
-    <updated>2026-03-19T00:00:00.000Z</updated>
+    <updated>2026-04-06T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://curvineio.github.io/zh-cn/blog"/>
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/zh-cn/img/curvine_logo.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Curvine 压测：3 亿文件仅占 38G 内存，开源项目天花板]]></title>
+        <id>https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark</id>
+        <link href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark"/>
+        <updated>2026-04-06T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[在分布式文件系统领域，元数据的内存效率、并发处理能力、小文件吞吐性能，一直是衡量产品核心能力的关键指标。近期，Curvine 完成了一组高规格元数据压测，结果显示：Curvine 的元数据内存效率达到了开源项目中的顶尖水平，核心能力可与商业版分布式存储产品相当。]]></summary>
+        <content type="html"><![CDATA[<p>在分布式文件系统领域，元数据的内存效率、并发处理能力、小文件吞吐性能，一直是衡量产品核心能力的关键指标。近期，Curvine 完成了一组高规格元数据压测，结果显示：Curvine 的元数据内存效率达到了开源项目中的顶尖水平，核心能力可与商业版分布式存储产品相当。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-开篇结论">🔥 开篇结论<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E5%BC%80%E7%AF%87%E7%BB%93%E8%AE%BA" class="hash-link" aria-label="🔥 开篇结论的直接链接" title="🔥 开篇结论的直接链接">​</a></h3>
+<ul>
+<li><strong>内存高效利用</strong>：在 <strong>80 万目录</strong>、<strong>3 亿文件</strong>、每个文件写入一个 block 的条件下，Curvine 仅占用 <strong>38G</strong> 内存，与参考材料 [1] 中 JuiceFS 商业版的元数据能力大致相当。</li>
+<li><strong>高并发低延迟</strong>：在 <strong>10 万客户端</strong> 循环操作的压力下，QPS 稳定在 <strong>5.3 万每秒</strong>，命令操作<strong>平均时延低于 2ms</strong>，<strong>P99 时延低于 9ms</strong>。</li>
+<li><strong>小文件高吞吐</strong>：高并发写入大量小文件时，Curvine 可实现<strong>每小时写入 1200 万小文件</strong>，平均写入一个小文件仅需 <strong>0.3ms</strong>。</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-测试条件">📝 测试条件<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E6%B5%8B%E8%AF%95%E6%9D%A1%E4%BB%B6" class="hash-link" aria-label="📝 测试条件的直接链接" title="📝 测试条件的直接链接">​</a></h2>
+<ul>
+<li><strong>Curvine 集群</strong>：一台 Master，一台 Worker</li>
+<li><strong>测试机型</strong>：阿里云 <code>ecs.i5.8xlarge</code>，32 核，256G 内存</li>
+<li><strong>客户端</strong>：10 万个 FUSE 客户端</li>
+<li><strong>操作</strong>：客户端循环执行 <code>mkdir</code>、<code>touch</code>、写文件、<code>ls</code> 等高频命令</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-核心压测数据">📊 核心压测数据<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E6%A0%B8%E5%BF%83%E5%8E%8B%E6%B5%8B%E6%95%B0%E6%8D%AE" class="hash-link" aria-label="📊 核心压测数据的直接链接" title="📊 核心压测数据的直接链接">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-内存效率开源第一梯队">🧠 内存效率：开源第一梯队<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E5%86%85%E5%AD%98%E6%95%88%E7%8E%87%E5%BC%80%E6%BA%90%E7%AC%AC%E4%B8%80%E6%A2%AF%E9%98%9F" class="hash-link" aria-label="🧠 内存效率：开源第一梯队的直接链接" title="🧠 内存效率：开源第一梯队的直接链接">​</a></h3>
+<ul>
+<li>管理规模：<strong>80 万目录 + 3 亿文件</strong></li>
+<li>单文件写入：<strong>1 个 block</strong></li>
+<li>内存占用：<strong>仅 38G</strong></li>
+<li>对标结论：与 JuiceFS 商业版的元数据内存能力相当</li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="内存效率压测" src="https://curvineio.github.io/zh-cn/assets/images/memory-efficiency-6f8a9e732535adcc87c3d9ce8eba4653.png" width="1080" height="263" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="️-高并发低延迟10-万客户端快跑稳跑">⏱️ 高并发低延迟：10 万客户端快跑稳跑<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#%EF%B8%8F-%E9%AB%98%E5%B9%B6%E5%8F%91%E4%BD%8E%E5%BB%B6%E8%BF%9F10-%E4%B8%87%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BF%AB%E8%B7%91%E7%A8%B3%E8%B7%91" class="hash-link" aria-label="⏱️ 高并发低延迟：10 万客户端快跑稳跑的直接链接" title="⏱️ 高并发低延迟：10 万客户端快跑稳跑的直接链接">​</a></h3>
+<ul>
+<li>并发客户端：<strong>10 万 FUSE 客户端</strong></li>
+<li>稳定吞吐：<strong>5.3 万次/秒</strong></li>
+<li>平均时延：<strong>不超过 2ms</strong></li>
+<li>P99 时延：<strong>不超过 9ms</strong></li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="高并发 QPS" src="https://curvineio.github.io/zh-cn/assets/images/qps-54f99d33b783719459eda6161f05e79d.png" width="1080" height="461" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="高并发时延" src="https://curvineio.github.io/zh-cn/assets/images/latency-529335485d4ab71a4b40f52a02a0462d.png" width="1080" height="713" class="img_ev3q"></p>
+<p>连接开销同样很低：<strong>10 万连接仅消耗 1.1G 内存</strong>，平均每个连接约 <strong>11.5KB</strong>。</p>
+<p><img decoding="async" loading="lazy" alt="连接开销" src="https://curvineio.github.io/zh-cn/assets/images/connection-overhead-a0c21ab0dc3964ccf57a13f424f69405.png" width="1080" height="764" class="img_ev3q"></p>
+<p>压测停止后，Master 内存会立刻从 <strong>39.1G</strong> 回落到 <strong>38G</strong>。</p>
+<p><img decoding="async" loading="lazy" alt="压测停止后的 Master 内存" src="https://curvineio.github.io/zh-cn/assets/images/master-memory-recovery-eeb52732e9921075696acdeb2f2862ad.png" width="1080" height="530" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-小文件高吞吐海量场景无压力">🚀 小文件高吞吐：海量场景无压力<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E5%B0%8F%E6%96%87%E4%BB%B6%E9%AB%98%E5%90%9E%E5%90%90%E6%B5%B7%E9%87%8F%E5%9C%BA%E6%99%AF%E6%97%A0%E5%8E%8B%E5%8A%9B" class="hash-link" aria-label="🚀 小文件高吞吐：海量场景无压力的直接链接" title="🚀 小文件高吞吐：海量场景无压力的直接链接">​</a></h3>
+<ul>
+<li>每小时写入：<strong>1200 万小文件</strong></li>
+<li>单文件平均写入时延：<strong>0.3ms</strong></li>
+<li>高并发下吞吐持续打满</li>
+</ul>
+<p><strong>15:00</strong> 时，Curvine 已写入 <strong>2.87 亿文件</strong>：</p>
+<p><img decoding="async" loading="lazy" alt="15 点文件总量" src="https://curvineio.github.io/zh-cn/assets/images/small-file-count-1500-8a3bb369937eb7e8facca4026ac54fda.png" width="1080" height="655" class="img_ev3q"></p>
+<p><strong>16:00</strong> 时，文件总量达到 <strong>2.99 亿</strong>：</p>
+<p><img decoding="async" loading="lazy" alt="16 点文件总量" src="https://curvineio.github.io/zh-cn/assets/images/small-file-count-1600-7de60faa2c7dbd7ec64b79fe8b12e264.png" width="1080" height="659" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-元数据架构">🏗️ 元数据架构<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#%EF%B8%8F-%E5%85%83%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84" class="hash-link" aria-label="🏗️ 元数据架构的直接链接" title="🏗️ 元数据架构的直接链接">​</a></h2>
+<p>Curvine 的元数据能力不仅在大规模内存效率和高并发性能上表现突出，与其他开源产品相比也具备明显优势。其背后是一套经过精心设计的元数据架构。</p>
+<p><img decoding="async" loading="lazy" alt="Curvine 元数据架构概览" src="https://curvineio.github.io/zh-cn/assets/images/metadata-architecture-b207447deae1a223b695a64a4974f31d.png" width="1080" height="930" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-设计理念">💡 设计理念<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E8%AE%BE%E8%AE%A1%E7%90%86%E5%BF%B5" class="hash-link" aria-label="💡 设计理念的直接链接" title="💡 设计理念的直接链接">​</a></h3>
+<ol>
+<li>单 Master 支撑大规模文件与海量小文件。</li>
+<li>以高并发、低延迟应对频繁的创建、删除、修改等高频元数据操作。</li>
+<li>尽量减少对外部组件的依赖，降低运维复杂度，同时保证系统稳定性。</li>
+</ol>
+<p>基于这些目标，Curvine 选择了 <strong>内存目录树 + 单机 RocksDB + Raft 一致性机制</strong> 的三层组合，在性能、规模和稳定性之间取得平衡。</p>
+<table><thead><tr><th>层次</th><th>核心职责</th><th>设计动机</th></tr></thead><tbody><tr><td>内存目录树</td><td>存储目录结构信息，包括目录名、父子关系，并处理路径解析、目录列举等高频操作</td><td>将高频命名空间操作放在内存中，把目录查询和路径匹配延迟控制在微秒级；只维护轻量目录结构，最大化可支撑规模</td></tr><tr><td>元数据 RocksDB（<code>inode</code> 引擎）</td><td>持久化文件和目录的完整元数据，包括文件大小、权限、<code>mtime</code>、block 位置以及完整目录关系</td><td>通过列族机制拆分不同类型的元数据，提升读写效率，并更好地适配频繁的元数据更新</td></tr><tr><td>Raft 日志 RocksDB</td><td>持久化所有元数据修改日志，包括创建、删除、更新等操作，并按顺序用于多节点同步</td><td>将日志存储与元数据存储完全隔离，避免互相干扰，同时便于同步、压缩、清理和故障恢复</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="️-fsmode与-ufs-协同保障数据兜底安全">🛡️ FsMode：与 UFS 协同，保障数据兜底安全<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#%EF%B8%8F-fsmode%E4%B8%8E-ufs-%E5%8D%8F%E5%90%8C%E4%BF%9D%E9%9A%9C%E6%95%B0%E6%8D%AE%E5%85%9C%E5%BA%95%E5%AE%89%E5%85%A8" class="hash-link" aria-label="🛡️ FsMode：与 UFS 协同，保障数据兜底安全的直接链接" title="🛡️ FsMode：与 UFS 协同，保障数据兜底安全的直接链接">​</a></h3>
+<p>Curvine 支持 <strong>FsMode</strong>，会将元数据和文件数据同步到底层统一文件系统（UFS），形成<strong>本地存储 + 磁盘兜底</strong>的双重保障，在不影响系统性能的前提下避免数据丢失。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-未来演进方向">🚀 未来演进方向<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E6%9C%AA%E6%9D%A5%E6%BC%94%E8%BF%9B%E6%96%B9%E5%90%91" class="hash-link" aria-label="🚀 未来演进方向的直接链接" title="🚀 未来演进方向的直接链接">​</a></h2>
+<p>Curvine 的元数据能力还会继续向前推进，重点包括三个方向：</p>
+<ol>
+<li><strong>单机百亿</strong>：继续深挖单机能力，让普通 <strong>512G 内存</strong> 机器也能支撑 <strong>百亿级文件元数据</strong>。</li>
+<li><strong>联邦 Federation</strong>：增强元数据集群扩展性，采用类似 HDFS Federation 的模式，通过目录拆分支撑 <strong>千亿级以上</strong> 的规模。该模式对 <code>mv</code>、<code>ls</code> 等集中式元数据操作尤其友好，但需要在初始化时规划目录结构。</li>
+<li><strong>插件式元数据管理</strong>：抽象元数据接口，支持插件化元数据后端，进一步提升灵活性和适配能力。</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-参考材料">📚 参考材料<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E5%8F%82%E8%80%83%E6%9D%90%E6%96%99" class="hash-link" aria-label="📚 参考材料的直接链接" title="📚 参考材料的直接链接">​</a></h2>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/zbBUQ4P53PPWQjOHQmw8uw" target="_blank" rel="noopener noreferrer">https://mp.weixin.qq.com/s/zbBUQ4P53PPWQjOHQmw8uw</a></li>
+<li><a href="https://hadoop.apache.org/docs/r3.4.0/hadoop-project-dist/hadoop-hdfs-rbf/HDFS%20RouterFederation.html" target="_blank" rel="noopener noreferrer">https://hadoop.apache.org/docs/r3.4.0/hadoop-project-dist/hadoop-hdfs-rbf/HDFS%20RouterFederation.html</a></li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-关注我们">👇 关注我们<a href="https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark#-%E5%85%B3%E6%B3%A8%E6%88%91%E4%BB%AC" class="hash-link" aria-label="👇 关注我们的直接链接" title="👇 关注我们的直接链接">​</a></h3>
+<p>我们会持续分享分布式存储、元数据优化和高并发压测等实战内容。</p>
+<p>GitHub：<a href="https://github.com/CurvineIO/curvine" target="_blank" rel="noopener noreferrer">https://github.com/CurvineIO/curvine</a></p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Curvine：下一代统一数据接入层，兼顾 Posix 和高速缓存]]></title>
         <id>https://curvineio.github.io/zh-cn/blog/2026/03/19/curvine-cache-fs-mode</id>

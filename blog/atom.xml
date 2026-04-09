@@ -2,11 +2,93 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://curvineio.github.io/blog</id>
     <title>Curvine Blog</title>
-    <updated>2026-03-19T00:00:00.000Z</updated>
+    <updated>2026-04-06T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://curvineio.github.io/blog"/>
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/img/curvine_logo.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Curvine Benchmark: 300 Million Files in Just 38 GB of Memory]]></title>
+        <id>https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark</id>
+        <link href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark"/>
+        <updated>2026-04-06T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Translated from the original Chinese article published on April 6, 2026.]]></summary>
+        <content type="html"><![CDATA[<p><em>Translated from the original Chinese article published on April 6, 2026.</em></p>
+<p>In distributed file systems, metadata memory efficiency, concurrent request handling, and small-file throughput are core indicators of overall system capability. Curvine recently completed a high-intensity metadata benchmark, and the results were clear: Curvine reached a new high-water mark for open-source metadata efficiency while delivering core capabilities comparable to commercial distributed storage products.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-key-takeaways">🔥 Key Takeaways<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-key-takeaways" class="hash-link" aria-label="Direct link to 🔥 Key Takeaways" title="Direct link to 🔥 Key Takeaways">​</a></h3>
+<ul>
+<li><strong>Efficient memory usage</strong>: With <strong>800,000 directories</strong> and <strong>300 million files</strong>, and one block written per file, Curvine used just <strong>38 GB</strong> of memory. That is roughly on par with the metadata-memory capability described for the commercial edition of JuiceFS in reference [1].</li>
+<li><strong>Low latency under massive concurrency</strong>: With <strong>100,000 clients</strong> looping operations, throughput held steady at <strong>53,000 ops/s</strong>. Average command latency stayed <strong>below 2 ms</strong>, and <strong>P99 latency stayed below 9 ms</strong>.</li>
+<li><strong>High small-file throughput</strong>: Under heavy concurrent small-file writes, Curvine sustained <strong>12 million small files per hour</strong>, with an average write time of <strong>0.3 ms per file</strong>.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-test-setup">📝 Test Setup<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-test-setup" class="hash-link" aria-label="Direct link to 📝 Test Setup" title="Direct link to 📝 Test Setup">​</a></h2>
+<ul>
+<li><strong>Curvine cluster</strong>: one Master and one Worker</li>
+<li><strong>Benchmark machine</strong>: Alibaba Cloud <code>ecs.i5.8xlarge</code>, 32 cores, 256 GB RAM</li>
+<li><strong>Clients</strong>: 100,000 FUSE clients</li>
+<li><strong>Operations</strong>: repeated high-frequency commands such as <code>mkdir</code>, <code>touch</code>, file writes, and <code>ls</code></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-core-benchmark-results">📊 Core Benchmark Results<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-core-benchmark-results" class="hash-link" aria-label="Direct link to 📊 Core Benchmark Results" title="Direct link to 📊 Core Benchmark Results">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-memory-efficiency-a-new-open-source-high-water-mark">🧠 Memory Efficiency: A New Open-Source High-Water Mark<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-memory-efficiency-a-new-open-source-high-water-mark" class="hash-link" aria-label="Direct link to 🧠 Memory Efficiency: A New Open-Source High-Water Mark" title="Direct link to 🧠 Memory Efficiency: A New Open-Source High-Water Mark">​</a></h3>
+<ul>
+<li>Managed scale: <strong>800,000 directories + 300 million files</strong></li>
+<li>Per-file data written: <strong>1 block</strong></li>
+<li>Total memory usage: <strong>38 GB</strong></li>
+<li>Comparison point: comparable to the metadata-memory capability described for the commercial edition of JuiceFS</li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="Memory efficiency benchmark" src="https://curvineio.github.io/assets/images/memory-efficiency-6f8a9e732535adcc87c3d9ce8eba4653.png" width="1080" height="263" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="️-high-concurrency-low-latency-at-100000-clients">⏱️ High Concurrency, Low Latency at 100,000 Clients<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#%EF%B8%8F-high-concurrency-low-latency-at-100000-clients" class="hash-link" aria-label="Direct link to ⏱️ High Concurrency, Low Latency at 100,000 Clients" title="Direct link to ⏱️ High Concurrency, Low Latency at 100,000 Clients">​</a></h3>
+<ul>
+<li>Concurrent clients: <strong>100,000 FUSE clients</strong></li>
+<li>Stable throughput: <strong>53,000 ops/s</strong></li>
+<li>Average latency: <strong>up to 2 ms</strong></li>
+<li>P99 latency: <strong>up to 9 ms</strong></li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="QPS under concurrency" src="https://curvineio.github.io/assets/images/qps-54f99d33b783719459eda6161f05e79d.png" width="1080" height="461" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Latency under concurrency" src="https://curvineio.github.io/assets/images/latency-529335485d4ab71a4b40f52a02a0462d.png" width="1080" height="713" class="img_ev3q"></p>
+<p>Connection overhead was also low: <strong>100,000 live connections consumed only 1.1 GB</strong>, or about <strong>11.5 KB per connection</strong>.</p>
+<p><img decoding="async" loading="lazy" alt="Connection overhead" src="https://curvineio.github.io/assets/images/connection-overhead-a0c21ab0dc3964ccf57a13f424f69405.png" width="1080" height="764" class="img_ev3q"></p>
+<p>Once the benchmark stopped, Master memory dropped immediately from <strong>39.1 GB</strong> back to <strong>38 GB</strong>.</p>
+<p><img decoding="async" loading="lazy" alt="Master memory after benchmark stop" src="https://curvineio.github.io/assets/images/master-memory-recovery-eeb52732e9921075696acdeb2f2862ad.png" width="1080" height="530" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-small-file-throughput-built-for-scale">🚀 Small-File Throughput: Built for Scale<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-small-file-throughput-built-for-scale" class="hash-link" aria-label="Direct link to 🚀 Small-File Throughput: Built for Scale" title="Direct link to 🚀 Small-File Throughput: Built for Scale">​</a></h3>
+<ul>
+<li>Files written per hour: <strong>12 million small files</strong></li>
+<li>Average write time per file: <strong>0.3 ms</strong></li>
+<li>Throughput remained saturated even under high concurrency</li>
+</ul>
+<p>At <strong>15:00</strong>, Curvine had written <strong>287 million files</strong>:</p>
+<p><img decoding="async" loading="lazy" alt="Small-file count at 15:00" src="https://curvineio.github.io/assets/images/small-file-count-1500-8a3bb369937eb7e8facca4026ac54fda.png" width="1080" height="655" class="img_ev3q"></p>
+<p>At <strong>16:00</strong>, the total had reached <strong>299 million files</strong>:</p>
+<p><img decoding="async" loading="lazy" alt="Small-file count at 16:00" src="https://curvineio.github.io/assets/images/small-file-count-1600-7de60faa2c7dbd7ec64b79fe8b12e264.png" width="1080" height="659" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-metadata-architecture">🏗️ Metadata Architecture<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#%EF%B8%8F-metadata-architecture" class="hash-link" aria-label="Direct link to 🏗️ Metadata Architecture" title="Direct link to 🏗️ Metadata Architecture">​</a></h2>
+<p>Curvine's metadata subsystem stands out not just in large-scale memory efficiency and high-concurrency performance, but also in comparison with other open-source systems. Those results come from a deliberately designed metadata architecture.</p>
+<p><img decoding="async" loading="lazy" alt="Curvine metadata architecture overview" src="https://curvineio.github.io/assets/images/metadata-architecture-b207447deae1a223b695a64a4974f31d.png" width="1080" height="930" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-design-principles">💡 Design Principles<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-design-principles" class="hash-link" aria-label="Direct link to 💡 Design Principles" title="Direct link to 💡 Design Principles">​</a></h3>
+<ol>
+<li>A single Master should support very large namespaces and massive numbers of small files.</li>
+<li>The system should provide high concurrency and low latency for frequent operations such as create, delete, and update.</li>
+<li>External dependencies should be minimized to reduce operational complexity while keeping the system stable.</li>
+</ol>
+<p>Based on those goals, Curvine combines an <strong>in-memory directory tree</strong>, <strong>standalone RocksDB</strong>, and a <strong>Raft-based consistency mechanism</strong>. This three-layer design balances performance, scale, and stability.</p>
+<table><thead><tr><th>Layer</th><th>Core Responsibility</th><th>Why It Exists</th></tr></thead><tbody><tr><td>In-memory directory tree</td><td>Stores directory structure metadata such as directory names and parent-child relationships; handles path resolution, directory listing, and other high-frequency namespace operations</td><td>Keeps the hottest namespace operations in memory so directory lookups and path matching stay in the microsecond range; stores only lightweight directory structure to maximize scale</td></tr><tr><td>Metadata RocksDB (<code>inode</code> engine)</td><td>Persists complete file and directory metadata, including file size, permissions, <code>mtime</code>, block locations, and full directory relationships</td><td>Uses column families to separate different metadata types, improving read/write efficiency and making frequent metadata updates easier to manage</td></tr><tr><td>Raft log RocksDB</td><td>Persists the log of all metadata mutations, including create, delete, and update operations, in order for node-to-node synchronization</td><td>Separates log storage from metadata storage so replication, compaction, cleanup, and recovery do not interfere with metadata reads and writes</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="️-fsmode-working-with-ufs-for-safe-durability">🛡️ FsMode: Working with UFS for Safe Durability<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#%EF%B8%8F-fsmode-working-with-ufs-for-safe-durability" class="hash-link" aria-label="Direct link to 🛡️ FsMode: Working with UFS for Safe Durability" title="Direct link to 🛡️ FsMode: Working with UFS for Safe Durability">​</a></h3>
+<p>Curvine also supports <strong>FsMode</strong>, which synchronizes metadata and file data to the underlying file system (UFS). This creates a dual safety model of <strong>local storage plus disk-backed fallback</strong>, preventing data loss without sacrificing runtime performance.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-future-directions">🚀 Future Directions<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-future-directions" class="hash-link" aria-label="Direct link to 🚀 Future Directions" title="Direct link to 🚀 Future Directions">​</a></h2>
+<p>Curvine's metadata system will keep pushing forward in three areas:</p>
+<ol>
+<li><strong>10 billion files on a single node</strong>: continue deepening single-node capability until a standard <strong>512 GB</strong> memory machine can manage metadata for <strong>10 billion files</strong>.</li>
+<li><strong>Federation</strong>: improve cluster-scale metadata expansion with an HDFS Federation-like model that partitions by directory and can scale beyond <strong>100 billion files</strong>. Federation is especially strong for centralized metadata operations such as <code>mv</code> and <code>ls</code>, but it requires directory planning up front.</li>
+<li><strong>Pluggable metadata management</strong>: abstract the metadata interface and support pluggable metadata backends for better flexibility and adaptability.</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-references">📚 References<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-references" class="hash-link" aria-label="Direct link to 📚 References" title="Direct link to 📚 References">​</a></h2>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/zbBUQ4P53PPWQjOHQmw8uw" target="_blank" rel="noopener noreferrer">https://mp.weixin.qq.com/s/zbBUQ4P53PPWQjOHQmw8uw</a></li>
+<li><a href="https://hadoop.apache.org/docs/r3.4.0/hadoop-project-dist/hadoop-hdfs-rbf/HDFS%20RouterFederation.html" target="_blank" rel="noopener noreferrer">https://hadoop.apache.org/docs/r3.4.0/hadoop-project-dist/hadoop-hdfs-rbf/HDFS%20RouterFederation.html</a></li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-follow-us">👇 Follow Us<a href="https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark#-follow-us" class="hash-link" aria-label="Direct link to 👇 Follow Us" title="Direct link to 👇 Follow Us">​</a></h3>
+<p>We regularly share hands-on work on distributed storage, metadata optimization, and high-concurrency benchmarking.</p>
+<p>GitHub: <a href="https://github.com/CurvineIO/curvine" target="_blank" rel="noopener noreferrer">https://github.com/CurvineIO/curvine</a></p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Curvine: Next-Generation Unified Data Access Layer, Combining POSIX and High-Speed Cache]]></title>
         <id>https://curvineio.github.io/blog/2026/03/19/curvine-cache-fs-mode</id>
