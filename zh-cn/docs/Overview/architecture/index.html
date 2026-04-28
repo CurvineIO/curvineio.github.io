@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.8.0">
 <title data-rh="true">技术架构 | Curvine</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://curvineio.github.io/zh-cn/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://curvineio.github.io/zh-cn/docs/Overview/architecture"><meta data-rh="true" property="og:locale" content="zh_cn"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-cn"><meta data-rh="true" name="docsearch:language" content="zh-cn"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="技术架构 | Curvine"><meta data-rh="true" name="description" content="本章节将深入介绍 Curvine 的技术架构，详细剖析其各层组件的功能、交互方式以及设计理念，帮助你全面了解 Curvine 系统的工作原理。"><meta data-rh="true" property="og:description" content="本章节将深入介绍 Curvine 的技术架构，详细剖析其各层组件的功能、交互方式以及设计理念，帮助你全面了解 Curvine 系统的工作原理。"><link data-rh="true" rel="icon" href="/zh-cn/img/curvine_logo.ico"><link data-rh="true" rel="canonical" href="https://curvineio.github.io/zh-cn/docs/Overview/architecture"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/Overview/architecture" hreflang="en"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/zh-cn/docs/Overview/architecture" hreflang="zh-cn"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/Overview/architecture" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"概览","item":"https://curvineio.github.io/zh-cn/docs/category/overview"},{"@type":"ListItem","position":2,"name":"技术架构","item":"https://curvineio.github.io/zh-cn/docs/Overview/architecture"}]}</script><link rel="alternate" type="application/rss+xml" href="/zh-cn/blog/rss.xml" title="Curvine RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/zh-cn/blog/atom.xml" title="Curvine Atom Feed"><link rel="stylesheet" href="/zh-cn/assets/css/styles.ca5a6d7d.css">
-<script src="/zh-cn/assets/js/runtime~main.ffd5e3ec.js" defer="defer"></script>
+<script src="/zh-cn/assets/js/runtime~main.89b8fc17.js" defer="defer"></script>
 <script src="/zh-cn/assets/js/main.033c91b7.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -16,19 +16,65 @@
 <p>本章节将深入介绍 Curvine 的技术架构，详细剖析其各层组件的功能、交互方式以及设计理念，帮助你全面了解 Curvine 系统的工作原理。</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="整体架构概述">整体架构概述<a href="#整体架构概述" class="hash-link" aria-label="整体架构概述的直接链接" title="整体架构概述的直接链接">​</a></h2>
 <p>Curvine 采用分层设计的分布式架构，各组件职责明确，具备良好的可扩展性和高可用性。整个架构主要分为三层：<strong>控制层</strong>（Master）、<strong>存储层</strong>（Worker）、<strong>接入层</strong>（客户端：FUSE、SDK、CLI、S3 网关），共同完成数据的存储、处理和管理。</p>
-<p>Curvine 由三个核心服务角色、客户端与 UFS 组成：
-<img decoding="async" loading="lazy" alt="mount-arch" src="/zh-cn/assets/images/curvine-c4a51bf07d669d14af8e15a95505f84b.png" width="761" height="711" class="img_ev3q"></p>
-<p><strong>Curvine 客户端</strong>：数据读写由客户端通过 RPC 完成（元数据访问 Master，块数据访问 Worker）。支持的接入方式包括：</p>
+<p>Curvine 由三个主要服务器端角色加上客户端和 UFS 组成：</p>
+<p><img decoding="async" loading="lazy" alt="mount-arch" src="/zh-cn/assets/images/curvine_new-4adcea11ae6dbeb490d3d884660d3443.png" width="2560" height="1960" class="img_ev3q"></p>
+<p><strong>Curvine 客户端</strong>：数据读写操作由客户端实现，通过 RPC 调用 Curvine 服务器端接口（从 Master 获取元数据，从 Worker 获取块数据）。客户端支持多种访问方式：</p>
 <ul>
-<li><strong>FUSE</strong>：POSIX 兼容挂载，作为本地存储使用</li>
-<li><strong>Hadoop Java SDK</strong>：面向 Hadoop 生态的 Java 客户端</li>
-<li><strong>Rust / Python SDK</strong>：Rust、Python 原生 SDK</li>
-<li><strong>S3 网关</strong>：S3 兼容对象 API</li>
-<li><strong>CLI（cv）</strong>：命令行管理、mount、fs 操作、load、report、node</li>
+<li><strong>FUSE 挂载</strong>：通过 libfuse/3 的 POSIX 兼容挂载 (curvine-fuse)</li>
+<li><strong>HDFS &amp; SDK</strong>：Java / Python / libsdk 接口</li>
+<li><strong>S3 网关</strong>：S3 兼容 API (curvine-s3-gateway)</li>
+<li><strong>CSI 驱动</strong>：Kubernetes 卷驱动 (curvine-csi)</li>
+<li><strong>CLI (<code>cv</code>)</strong>：文件系统操作、报告和集群管理的管理工具</li>
 </ul>
-<p><strong>Master</strong>：核心控制节点，负责元数据（目录树、文件 inode、块位置）、Worker 注册、块分配与 UFS 挂载表。可多节点组成 Raft 组实现高可用，仅 Raft Leader 处理元数据写入。</p>
-<p><strong>Worker</strong>：存储块数据并响应块读写 RPC，通过心跳向 Master 上报；不保存文件系统元数据。</p>
-<p><strong>UFS</strong>：底层存储（S3、HDFS 等）通过 Curvine 数据编排访问；Curvine 在已挂载的 UFS 路径与原生路径上提供统一文件系统视图。</p>
+<p>内部，客户端层由以下组成：</p>
+<ul>
+<li><strong>UnifiedFileSystem</strong>：提供 CurvineFS + UFS 回退的统一命名空间</li>
+<li><strong>FsReader / FsWriter</strong>：并行、缓冲的 I/O，具有零拷贝优化</li>
+<li><strong>BlockClient Pool</strong>：管理本地和远程访问的 block_reader / block_writer</li>
+<li><strong>Mount &amp; Meta Cache</strong>：缓存挂载信息和 inode 元数据</li>
+</ul>
+<p><strong>Master</strong>：核心控制节点；负责元数据（目录树、文件 inode、块位置）、Worker 注册、块分配和 UFS 挂载表。Master 可以作为多个节点运行，形成 Raft 组以实现高可用性；只有 Raft Leader 处理元数据写入。</p>
+<p>Master 集群主要包括：</p>
+<ul>
+<li><strong>MasterServer</strong>：RPC 处理和路由</li>
+<li><strong>MasterFilesystem</strong>：文件系统操作（mkdir、create、rename、delete、list）</li>
+<li><strong>FsDir + InodeStore</strong>：内存中的 inode 树和元数据管理</li>
+<li><strong>JournalSystem</strong>：编辑日志和快照以进行恢复</li>
+<li><strong>Worker / Mount Manager</strong>：Worker 心跳和 UFS 挂载管理</li>
+<li><strong>Quota / Job / Replication</strong>：配额控制、TTL、驱逐、复制调度</li>
+<li><strong>RocksDB Metadata Store</strong>：持久元数据存储</li>
+<li><strong>Raft Consensus</strong>：Leader 选举和日志复制</li>
+</ul>
+<p><strong>Worker</strong>：存储块数据并服务块读写 RPC；通过心跳向 Master 上报。不保存文件系统元数据。</p>
+<p>每个 Worker 节点包括：</p>
+<ul>
+<li><strong>WorkerServer</strong>：处理块 I/O RPC 和心跳</li>
+<li><strong>BlockStore</strong>：管理块生命周期和本地存储</li>
+<li><strong>IO Handlers</strong>：读/写管道，具有零拷贝</li>
+<li><strong>Replication / Tasks</strong>：后台复制和任务调度</li>
+</ul>
+<p>Worker 支持<strong>多层存储</strong>：</p>
+<ul>
+<li><strong>MEM</strong>：内存层（&lt; 100 ns）</li>
+<li><strong>SSD</strong>：NVMe / SATA（&lt; 100 µs）</li>
+<li><strong>HDD</strong>：容量层（&lt; 10 ms）</li>
+<li><strong>SPDK</strong>：用户空间 NVMe 加速</li>
+</ul>
+<p><strong>UFS</strong>：底层存储（S3、HDFS 等）通过 Curvine 的数据编排访问；Curvine 在挂载的 UFS 路径和原生路径上提供统一文件系统视图。</p>
+<p>支持的 UFS 类型包括：</p>
+<ul>
+<li><strong>S3 / MinIO</strong></li>
+<li><strong>OSS</strong></li>
+<li><strong>HDFS</strong></li>
+<li><strong>Local FS</strong></li>
+<li><strong>OpenDAL (Azure, GCS, etc.)</strong></li>
+</ul>
+<p>此外，Curvine 提供基础组件：</p>
+<ul>
+<li><strong>orpc</strong>：高性能 RPC 框架（基于 Tokio，零拷贝）</li>
+<li><strong>curvine-web</strong>：管理 UI 和集群管理</li>
+<li><strong>Metrics</strong>：基于 Prometheus 的监控（master/worker/client、job、cache）</li>
+</ul>
 <p>部署拓扑与组件角色见 <a href="/zh-cn/docs/Deploy/Deploy-Curvine-Cluster/Deployment-Architecture">部署架构</a>；内部数据流（journal、回放、客户端读写）见 <a href="/zh-cn/docs/Architecture/introduction">基本架构</a>。</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="高性能设计">高性能设计<a href="#高性能设计" class="hash-link" aria-label="高性能设计的直接链接" title="高性能设计的直接链接">​</a></h2>
 <p>Curvine为了实现高性能、高并发、低资源消耗的目标，采用了以下技术和设计原则：</p>

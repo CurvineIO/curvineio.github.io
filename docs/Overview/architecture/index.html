@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.8.0">
 <title data-rh="true">Technical Architecture | Curvine</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://curvineio.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://curvineio.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://curvineio.github.io/docs/Overview/architecture"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_cn"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Technical Architecture | Curvine"><meta data-rh="true" name="description" content="This chapter provides an in-depth introduction to Curvine&#x27;s technical architecture, detailing the functionality, interaction patterns, and design principles of each layer component to help you comprehensively understand how the Curvine system works."><meta data-rh="true" property="og:description" content="This chapter provides an in-depth introduction to Curvine&#x27;s technical architecture, detailing the functionality, interaction patterns, and design principles of each layer component to help you comprehensively understand how the Curvine system works."><link data-rh="true" rel="icon" href="/img/curvine_logo.ico"><link data-rh="true" rel="canonical" href="https://curvineio.github.io/docs/Overview/architecture"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/Overview/architecture" hreflang="en"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/zh-cn/docs/Overview/architecture" hreflang="zh-cn"><link data-rh="true" rel="alternate" href="https://curvineio.github.io/docs/Overview/architecture" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Overview","item":"https://curvineio.github.io/docs/category/overview"},{"@type":"ListItem","position":2,"name":"Technical Architecture","item":"https://curvineio.github.io/docs/Overview/architecture"}]}</script><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Curvine RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Curvine Atom Feed"><link rel="stylesheet" href="/assets/css/styles.ca5a6d7d.css">
-<script src="/assets/js/runtime~main.a9cf8241.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.123e192d.js" defer="defer"></script>
 <script src="/assets/js/main.21e738ca.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -16,19 +16,65 @@
 <p>This chapter provides an in-depth introduction to Curvine&#x27;s technical architecture, detailing the functionality, interaction patterns, and design principles of each layer component to help you comprehensively understand how the Curvine system works.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="architecture-overview">Architecture Overview<a href="#architecture-overview" class="hash-link" aria-label="Direct link to Architecture Overview" title="Direct link to Architecture Overview">​</a></h2>
 <p>Curvine adopts a layered distributed architecture design that ensures clear component responsibilities with excellent scalability and high availability. The entire architecture is primarily divided into three layers: <strong>control layer</strong> (Master), <strong>storage layer</strong> (Workers), and <strong>access layer</strong> (clients: FUSE, SDK, CLI, S3 gateway), which collaborate to complete data storage, processing, and management tasks.</p>
-<p>Curvine consists of three main server-side roles plus clients and UFS:
-<img decoding="async" loading="lazy" alt="mount-arch" src="/assets/images/curvine-c4a51bf07d669d14af8e15a95505f84b.png" width="761" height="711" class="img_ev3q"></p>
+<p>Curvine consists of three main server-side roles plus clients and UFS:</p>
+<p><img decoding="async" loading="lazy" alt="mount-arch" src="/assets/images/curvine_new-4adcea11ae6dbeb490d3d884660d3443.png" width="2560" height="1960" class="img_ev3q"></p>
 <p><strong>Curvine Client</strong>: Data read/write operations are implemented by the client, which calls Curvine server-side interfaces through RPC (metadata from Master, block data from Workers). The client supports multiple access methods:</p>
 <ul>
-<li><strong>FUSE</strong>: POSIX-compatible mount, functioning as local storage</li>
-<li><strong>Hadoop Java SDK</strong>: Java client for the Hadoop ecosystem</li>
-<li><strong>Rust / Python SDK</strong>: Native SDKs for Rust and Python</li>
-<li><strong>S3 gateway</strong>: S3-compatible object API</li>
-<li><strong>CLI (<code>cv</code>)</strong>: Command-line management, mount, fs operations, load, report, node</li>
+<li><strong>FUSE Mount</strong>: POSIX-compatible mount via libfuse/3 (curvine-fuse)</li>
+<li><strong>HDFS &amp; SDK</strong>: Java / Python / libsdk interfaces</li>
+<li><strong>S3 Gateway</strong>: S3-compatible API (curvine-s3-gateway)</li>
+<li><strong>CSI Driver</strong>: Kubernetes volume driver (curvine-csi)</li>
+<li><strong>CLI (<code>cv</code>)</strong>: Admin tools for fs ops, report, and cluster management</li>
+</ul>
+<p>Internally, the client layer is composed of:</p>
+<ul>
+<li><strong>UnifiedFileSystem</strong>: Provides unified namespace with CurvineFS + UFS fallback</li>
+<li><strong>FsReader / FsWriter</strong>: Parallel, buffered I/O with zero-copy optimization</li>
+<li><strong>BlockClient Pool</strong>: Manages block_reader / block_writer for local and remote access</li>
+<li><strong>Mount &amp; Meta Cache</strong>: Caches mount info and inode metadata</li>
 </ul>
 <p><strong>Master</strong>: The core control node; responsible for metadata (directory tree, file inodes, block locations), Worker registration, block allocation, and UFS mount table. Master can run as multiple nodes forming a Raft group for high availability; only the Raft leader serves metadata writes.</p>
+<p>The Master cluster mainly includes:</p>
+<ul>
+<li><strong>MasterServer</strong>: RPC handling and routing</li>
+<li><strong>MasterFilesystem</strong>: File system operations (mkdir, create, rename, delete, list)</li>
+<li><strong>FsDir + InodeStore</strong>: In-memory inode tree and metadata management</li>
+<li><strong>JournalSystem</strong>: Edit log and snapshot for recovery</li>
+<li><strong>Worker / Mount Manager</strong>: Worker heartbeat and UFS mount management</li>
+<li><strong>Quota / Job / Replication</strong>: Quota control, TTL, eviction, replication scheduling</li>
+<li><strong>RocksDB Metadata Store</strong>: Persistent metadata storage</li>
+<li><strong>Raft Consensus</strong>: Leader election and log replication</li>
+</ul>
 <p><strong>Worker</strong>: Stores block data and serves block read/write RPC; reports to Master via heartbeat. Does not hold file system metadata.</p>
+<p>Each Worker node includes:</p>
+<ul>
+<li><strong>WorkerServer</strong>: Handles block I/O RPC and heartbeat</li>
+<li><strong>BlockStore</strong>: Manages block lifecycle and local storage</li>
+<li><strong>IO Handlers</strong>: Read / Write pipeline with zero-copy</li>
+<li><strong>Replication / Tasks</strong>: Background replication and task scheduling</li>
+</ul>
+<p>Workers support <strong>multi-tier storage</strong>:</p>
+<ul>
+<li><strong>MEM</strong>: In-memory tier (&lt; 100 ns)</li>
+<li><strong>SSD</strong>: NVMe / SATA (&lt; 100 µs)</li>
+<li><strong>HDD</strong>: Capacity tier (&lt; 10 ms)</li>
+<li><strong>SPDK</strong>: User-space NVMe acceleration</li>
+</ul>
 <p><strong>UFS</strong>: Underlying storage (S3, HDFS, etc.) accessed through Curvine’s data orchestration; Curvine provides a unified file system view over mounted UFS paths and native paths.</p>
+<p>Supported UFS types include:</p>
+<ul>
+<li><strong>S3 / MinIO</strong></li>
+<li><strong>OSS</strong></li>
+<li><strong>HDFS</strong></li>
+<li><strong>Local FS</strong></li>
+<li><strong>OpenDAL (Azure, GCS, etc.)</strong></li>
+</ul>
+<p>In addition, Curvine provides foundational components:</p>
+<ul>
+<li><strong>orpc</strong>: High-performance RPC framework (Tokio-based, zero-copy)</li>
+<li><strong>curvine-web</strong>: Admin UI and cluster management</li>
+<li><strong>Metrics</strong>: Prometheus-based monitoring (master/worker/client, job, cache)</li>
+</ul>
 <p>For deployment topology and component roles, see <a href="/docs/Deploy/Deploy-Curvine-Cluster/Deployment-Architecture">Deployment Architecture</a>. For internal data flow (journal, replay, client read/write), see <a href="/docs/Architecture/introduction">Basic Architecture</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="high-performance-design">High-Performance Design<a href="#high-performance-design" class="hash-link" aria-label="Direct link to High-Performance Design" title="Direct link to High-Performance Design">​</a></h2>
 <p>To achieve high performance, high concurrency, and low resource consumption, Curvine adopts the following technologies and design principles:</p>
