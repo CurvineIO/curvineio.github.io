@@ -648,7 +648,7 @@
         <category label="teams" term="teams"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[starrocks-compute-storage-separation-curvine]]></title>
+        <title type="html"><![CDATA[StarRocks Compute-Storage Separation: A Real-World Benchmark ? How Curvine Cache Closes the Performance Gap]]></title>
         <id>https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine</id>
         <link href="https://curvineio.github.io/blog/2025/02/11/starrocks-compute-storage-separation-curvine"/>
         <updated>2025-02-11T00:00:00.000Z</updated>

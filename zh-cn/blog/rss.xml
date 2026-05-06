@@ -630,7 +630,7 @@
             <category>teams</category>
         </item>
         <item>
-            <title><![CDATA[starrocks-compute-storage-separation-curvine]]></title>
+            <title><![CDATA[实测！StarRocks存算分离性能大揭秘：Curvine缓存竟有这波神操作]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2025/02/11/starrocks-compute-storage-separation-curvine</link>
             <guid>https://curvineio.github.io/zh-cn/blog/2025/02/11/starrocks-compute-storage-separation-curvine</guid>
             <pubDate>Tue, 11 Feb 2025 00:00:00 GMT</pubDate>

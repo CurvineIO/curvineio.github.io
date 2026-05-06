@@ -653,7 +653,7 @@
         <category label="teams" term="teams"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[starrocks-compute-storage-separation-curvine]]></title>
+        <title type="html"><![CDATA[实测！StarRocks存算分离性能大揭秘：Curvine缓存竟有这波神操作]]></title>
         <id>https://curvineio.github.io/zh-cn/blog/2025/02/11/starrocks-compute-storage-separation-curvine</id>
         <link href="https://curvineio.github.io/zh-cn/blog/2025/02/11/starrocks-compute-storage-separation-curvine"/>
         <updated>2025-02-11T00:00:00.000Z</updated>
