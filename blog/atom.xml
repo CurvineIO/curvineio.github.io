@@ -2,11 +2,86 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://curvineio.github.io/blog</id>
     <title>Curvine Blog</title>
-    <updated>2026-04-06T00:00:00.000Z</updated>
+    <updated>2026-06-12T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://curvineio.github.io/blog"/>
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/img/curvine_logo.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Performance Leap: How Curvine Uses SPDK to Unlock the Full Potential of NVMe Drives]]></title>
+        <id>https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance</id>
+        <link href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance"/>
+        <updated>2026-06-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Translated from the original Chinese article published on WeChat.]]></summary>
+        <content type="html"><![CDATA[<p><em>Translated from the original Chinese article published on WeChat.</em></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="introduction">Introduction<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#introduction" class="hash-link" aria-label="Direct link to Introduction" title="Direct link to Introduction">​</a></h2>
+<p>As data volumes continue to grow explosively, storage performance has become a key factor in application responsiveness and user experience. Traditional storage I/O paths are often constrained by operating-system kernel overhead, making it difficult to fully utilize modern high-speed storage devices such as NVMe SSDs. To break through this bottleneck, many high-performance storage systems have started to adopt kernel-bypass technologies. This article takes a closer look at how the Curvine storage platform integrates SPDK (Storage Performance Development Kit) to deliver extreme NVMe storage performance, bringing users lower latency and higher throughput.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="the-challenge-with-traditional-io-the-kernel-vfs-bottleneck">The Challenge with Traditional I/O: The Kernel VFS Bottleneck<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#the-challenge-with-traditional-io-the-kernel-vfs-bottleneck" class="hash-link" aria-label="Direct link to The Challenge with Traditional I/O: The Kernel VFS Bottleneck" title="Direct link to The Challenge with Traditional I/O: The Kernel VFS Bottleneck">​</a></h2>
+<p>In a traditional storage architecture without SPDK, application I/O requests must pass through the operating system's Virtual File System (VFS) layer. VFS provides a unified file-operation interface, but it also introduces overhead such as context switches, data copies, and interrupt handling. For NVMe devices, which already provide extremely low latency at the hardware level, these kernel overheads can become the main barrier to further performance improvement. When Curvine Worker processes read and write data through system calls such as <code>pread</code> and <code>pwrite</code>, the system cannot fully unleash the raw performance of NVMe hardware.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="enter-spdk-kernel-bypass-and-user-space-io">Enter SPDK: Kernel Bypass and User-Space I/O<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#enter-spdk-kernel-bypass-and-user-space-io" class="hash-link" aria-label="Direct link to Enter SPDK: Kernel Bypass and User-Space I/O" title="Direct link to Enter SPDK: Kernel Bypass and User-Space I/O">​</a></h2>
+<p>The core idea behind SPDK is to move storage I/O processing from the kernel into user space. By bypassing the kernel VFS path, SPDK allows applications to communicate directly with NVMe devices, significantly reducing unnecessary overhead.</p>
+<p>Curvine takes advantage of this capability by integrating SPDK into its architecture and achieving several key improvements:</p>
+<ol>
+<li><strong>Ultra-low latency</strong>: With kernel bypass, I/O requests no longer travel through a complex kernel path. They complete directly in user space, greatly reducing end-to-end latency.</li>
+<li><strong>Extremely high throughput</strong>: By reducing CPU overhead and context switches, a single CPU core can handle more I/O operations, resulting in higher IOPS. According to official SPDK data, SPDK can natively exceed 10 million IOPS on a single core [1].</li>
+<li><strong>Efficient resource utilization</strong>: SPDK uses hugepages for DMA buffer management, reducing TLB misses and improving memory-access efficiency.</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="deep-integration-between-curvine-and-spdk-architecture-overview">Deep Integration Between Curvine and SPDK: Architecture Overview<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#deep-integration-between-curvine-and-spdk-architecture-overview" class="hash-link" aria-label="Direct link to Deep Integration Between Curvine and SPDK: Architecture Overview" title="Direct link to Deep Integration Between Curvine and SPDK: Architecture Overview">​</a></h2>
+<p>Curvine uses SPDK as its remote block-device layer. Local physical NVMe drives, dedicated SPDK target containers, and remote storage nodes can all communicate with Curvine Worker processes through NVMe-oF (NVMe over Fabrics).</p>
+<p><img decoding="async" loading="lazy" alt="Curvine SPDK simplified architecture" src="https://curvineio.github.io/assets/images/simplified-architecture-d4de51cdcc4615380d4c96eee9663f65.png" width="1920" height="1273" class="img_ev3q"></p>
+<center><em>Overall architecture diagram</em></center>
+<p>This integration is not a thin wrapper around SPDK calls. It reaches deeply into Curvine's architecture.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="spdkenv-the-foundation-of-the-global-environment">SpdkEnv: The Foundation of the Global Environment<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#spdkenv-the-foundation-of-the-global-environment" class="hash-link" aria-label="Direct link to SpdkEnv: The Foundation of the Global Environment" title="Direct link to SpdkEnv: The Foundation of the Global Environment">​</a></h3>
+<p><code>SpdkEnv</code> is the brain of Curvine's SPDK module. It initializes the entire SPDK application framework and acts as a singleton to ensure unified resource management.</p>
+<p>Its main responsibilities include:</p>
+<ul>
+<li><strong>Hugepage allocation</strong>: Reserves large memory pages for DMA buffers to optimize performance.</li>
+<li><strong>CPU affinity configuration</strong>: Uses <code>reactor_mask</code> to bind SPDK I/O threads to specific CPU cores, avoiding scheduling overhead.</li>
+<li><strong>NVMe-oF target discovery</strong>: Automatically discovers and connects to available NVMe-oF storage targets.</li>
+<li><strong>SpdkPoller thread creation</strong>: Starts dedicated I/O polling threads, which are central to SPDK's high-efficiency execution model.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="spdkpoller-the-always-on-io-engine">SpdkPoller: The Always-On I/O Engine<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#spdkpoller-the-always-on-io-engine" class="hash-link" aria-label="Direct link to SpdkPoller: The Always-On I/O Engine" title="Direct link to SpdkPoller: The Always-On I/O Engine">​</a></h3>
+<p><code>SpdkPoller</code> is a critical component in the SPDK architecture. Because SPDK requires NVMe command submission and completion handling to occur on the same thread, <code>SpdkPoller</code> takes on this responsibility. It is a dedicated I/O thread that bridges asynchronous processing threads with SPDK's synchronous polling loop.</p>
+<p><code>SpdkPoller</code> provides two important capabilities:</p>
+<ul>
+<li><strong>Intelligent polling</strong>: When there are no I/O requests, <code>SpdkPoller</code> enters an idle state and uses <code>eventfd</code> to avoid wasting CPU cycles on busy spinning. When new requests arrive, it wakes up, enters an active state, efficiently submits NVMe commands, and polls completion queues. This spin-before-sleep strategy minimizes system-call overhead and keeps the I/O path smooth.</li>
+<li><strong>Error handling</strong>: When a queue pair (<code>qpair</code>) encounters an error, <code>SpdkPoller</code> can mark it as orphaned and force-complete all pending I/O on that queue pair, preserving system stability.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="spdkbdev-and-dma-buffers-the-basis-for-efficient-data-transfer">SpdkBdev and DMA Buffers: The Basis for Efficient Data Transfer<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#spdkbdev-and-dma-buffers-the-basis-for-efficient-data-transfer" class="hash-link" aria-label="Direct link to SpdkBdev and DMA Buffers: The Basis for Efficient Data Transfer" title="Direct link to SpdkBdev and DMA Buffers: The Basis for Efficient Data Transfer">​</a></h3>
+<p><code>SpdkBdev</code> is Curvine's abstract handle for SPDK block devices, similar in role to <code>LocalFile</code> in a traditional file system. It manages connections to NVMe namespaces and queue pairs, and it owns the key DMA buffers (<code>DmaBuf</code>).</p>
+<p>The design focuses on efficient and predictable data transfer:</p>
+<ul>
+<li><strong>Hugepage-backed DMA buffers</strong>: <code>DmaBuf</code> is a preallocated, fixed-size buffer backed by hugepages. Data can move directly between the NVMe device and memory without CPU involvement, avoiding extra copies and TLB misses.</li>
+<li><strong>Buffer reuse</strong>: <code>SpdkBdev</code> allocates read and write buffers during initialization and reuses them across I/O operations. This avoids frequent memory allocation and release overhead, reaching a zero-cost-after-first-allocation model.</li>
+<li><strong>Chunked processing for large I/O</strong>: For large I/O requests, <code>SpdkBdev</code> splits them into chunks of <code>dma_buf_size</code> (1 MB by default) and processes them sequentially through the same fixed buffer. This keeps the implementation efficient while avoiding the complexity of dynamic memory management.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="bdevoffsetallocator-user-space-block-management">BdevOffsetAllocator: User-Space Block Management<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#bdevoffsetallocator-user-space-block-management" class="hash-link" aria-label="Direct link to BdevOffsetAllocator: User-Space Block Management" title="Direct link to BdevOffsetAllocator: User-Space Block Management">​</a></h3>
+<p>With SPDK, Curvine bypasses the kernel file system and directly works with the flat byte-address space provided by NVMe devices. This means the traditional kernel block allocator is no longer applicable.</p>
+<p><code>BdevOffsetAllocator</code> fills that gap by implementing block management in user space:</p>
+<ul>
+<li><strong>Unique byte-range allocation</strong>: Allocates a unique byte range for each Curvine block and reclaims that range when the block is deleted.</li>
+<li><strong>Efficient space management</strong>: Uses a bump cursor for new allocations and a free list to track reclaimed ranges. Adjacent free ranges are coalesced to reduce fragmentation.</li>
+<li><strong>Persistence and thread safety</strong>: Allocator state, including the cursor position and free list, is persisted to RocksDB through <code>SpdkMetaStore</code>, ensuring consistency after restart. The allocator itself is also thread-safe.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="optimized-read-and-write-paths">Optimized Read and Write Paths<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#optimized-read-and-write-paths" class="hash-link" aria-label="Direct link to Optimized Read and Write Paths" title="Direct link to Optimized Read and Write Paths">​</a></h2>
+<p>After integrating SPDK, Curvine's read and write paths become significantly more efficient.</p>
+<p><img decoding="async" loading="lazy" alt="Curvine SPDK read and write path" src="https://curvineio.github.io/assets/images/read-write-path-76755ca4de7a199eff6b5f5b5456de41.png" width="1920" height="1152" class="img_ev3q"></p>
+<center><em>Simplified read and write path diagram</em></center>
+<ul>
+<li><strong>Read path</strong>: The handler submits an <code>IoRequest</code> directly to <code>SpdkPoller</code>. <code>SpdkPoller</code> communicates with the NVMe-oF target and notifies the handler after I/O completion. Data is copied directly from the DMA buffer to the application, keeping the path extremely short.</li>
+<li><strong>Write path</strong>: SPDK requires block-aligned I/O. For unaligned writes, Curvine uses a read-modify-write strategy: it first reads the full aligned block, modifies the target range, and writes the complete aligned block back. For aligned writes, Curvine writes directly, minimizing unnecessary steps.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="the-core-value-spdk-brings-to-curvine">The Core Value SPDK Brings to Curvine<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#the-core-value-spdk-brings-to-curvine" class="hash-link" aria-label="Direct link to The Core Value SPDK Brings to Curvine" title="Direct link to The Core Value SPDK Brings to Curvine">​</a></h2>
+<p>Curvine's deep SPDK integration is more than the introduction of a technical component. It is a comprehensive upgrade to Curvine's high-performance storage architecture. Through kernel bypass, user-space I/O, dedicated polling threads, hugepage-backed DMA buffers, and user-space block management, SPDK brings Curvine several important benefits:</p>
+<ul>
+<li><strong>Outstanding performance</strong>: Under I/O-intensive workloads, Curvine can significantly outperform traditional kernel-VFS-based storage paths, delivering lower latency and higher throughput.</li>
+<li><strong>Higher resource utilization</strong>: Reduced CPU and memory overhead allows hardware resources to serve business logic more efficiently.</li>
+<li><strong>Stronger scalability</strong>: Modular design and user-space control provide a solid foundation for future Curvine features and performance optimizations.</li>
+</ul>
+<p>On the path toward extreme performance, the combination of Curvine and SPDK is a strong example of what modern software-defined storage can achieve. It demonstrates the potential of software-defined storage and points toward the future direction of high-performance storage systems.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="references">References<a href="https://curvineio.github.io/blog/2026/06/12/curvine-spdk-nvme-performance#references" class="hash-link" aria-label="Direct link to References" title="Direct link to References">​</a></h2>
+<p>[1] SPDK official performance data: <a href="https://spdk.io/" target="_blank" rel="noopener noreferrer">SPDK</a></p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Curvine Benchmark: 300 Million Files in Just 38 GB of Memory]]></title>
         <id>https://curvineio.github.io/blog/2026/04/06/curvine-metadata-benchmark</id>

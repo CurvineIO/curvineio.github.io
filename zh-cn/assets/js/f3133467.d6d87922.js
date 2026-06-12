@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[8726],{72615:e=>{e.exports=JSON.parse('{"metadata":{"permalink":"/zh-cn/blog/page/2","page":2,"postsPerPage":10,"totalPages":2,"totalCount":11,"previousPage":"/zh-cn/blog","blogDescription":"Curvine\u535a\u5ba2\u53d1\u5e03","blogTitle":"\u535a\u5ba2"}}')}}]);

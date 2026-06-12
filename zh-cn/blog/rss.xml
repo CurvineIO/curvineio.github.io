@@ -4,10 +4,82 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/zh-cn/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Mon, 06 Apr 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 12 Jun 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-cn</language>
+        <item>
+            <title><![CDATA[性能飞跃：Curvine 如何通过 SPDK 释放 NVMe 盘的极致潜力]]></title>
+            <link>https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance</link>
+            <guid>https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance</guid>
+            <pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[引言]]></description>
+            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="引言">引言<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#%E5%BC%95%E8%A8%80" class="hash-link" aria-label="引言的直接链接" title="引言的直接链接">​</a></h2>
+<p>在数据爆炸式增长的今天，存储性能已成为决定应用响应速度和用户体验的关键因素。传统的存储 I/O 路径往往受限于操作系统内核的开销，难以充分发挥现代高速存储设备（如 NVMe SSD）的潜力。为了突破这一瓶颈，许多高性能存储系统开始探索内核旁路（Kernel-bypass）技术。今天，我们将深入探讨 Curvine 存储平台如何巧妙地集成 SPDK（Storage Performance Development Kit），从而实现 NVMe 存储的极致性能，为用户带来前所未有的低延迟和高吞吐体验。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="传统-io-的困境内核-vfs-的瓶颈">传统 I/O 的困境：内核 VFS 的瓶颈<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#%E4%BC%A0%E7%BB%9F-io-%E7%9A%84%E5%9B%B0%E5%A2%83%E5%86%85%E6%A0%B8-vfs-%E7%9A%84%E7%93%B6%E9%A2%88" class="hash-link" aria-label="传统 I/O 的困境：内核 VFS 的瓶颈的直接链接" title="传统 I/O 的困境：内核 VFS 的瓶颈的直接链接">​</a></h2>
+<p>在没有 SPDK 的传统存储架构中，应用程序的 I/O 请求需要经过操作系统内核的虚拟文件系统（VFS）层。VFS 提供了统一的文件操作接口，但同时也引入了上下文切换、数据拷贝、中断处理等一系列开销。对于 NVMe 这种本身就拥有极低延迟的设备而言，这些内核开销反而成为了性能提升的主要障碍。当 Curvine 的 Worker 进程需要读写数据时，如果依然依赖 <code>pread</code>、<code>pwrite</code> 等系统调用，就意味着无法完全释放 NVMe 硬件的洪荒之力。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="spdk-登场内核旁路与用户态-io">SPDK 登场：内核旁路与用户态 I/O<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#spdk-%E7%99%BB%E5%9C%BA%E5%86%85%E6%A0%B8%E6%97%81%E8%B7%AF%E4%B8%8E%E7%94%A8%E6%88%B7%E6%80%81-io" class="hash-link" aria-label="SPDK 登场：内核旁路与用户态 I/O的直接链接" title="SPDK 登场：内核旁路与用户态 I/O的直接链接">​</a></h2>
+<p>SPDK 的核心理念是将存储 I/O 处理从内核转移到用户空间。通过绕过内核 VFS，SPDK 允许应用程序直接与 NVMe 设备通信，从而大幅减少不必要的开销。</p>
+<p>Curvine 正是抓住了这一核心优势，将 SPDK 集成到其架构中，实现了以下关键突破：</p>
+<ol>
+<li><strong>极致低延迟</strong>：通过内核旁路，I/O 请求不再需要经过复杂的内核路径，而是直接在用户态完成，显著降低端到端延迟。</li>
+<li><strong>超高吞吐量</strong>：减少 CPU 开销和上下文切换，使单个 CPU 核能够处理更多 I/O 操作，从而实现更高 IOPS（每秒输入/输出操作数）。官方数据显示，SPDK 在单核上可原生达到超过 1000 万 IOPS [1]。</li>
+<li><strong>资源高效利用</strong>：SPDK 利用巨页（Hugepage）进行 DMA 缓冲区管理，减少 TLB 未命中，进一步提升内存访问效率。</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="curvine-与-spdk-的深度融合架构解析">Curvine 与 SPDK 的深度融合：架构解析<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#curvine-%E4%B8%8E-spdk-%E7%9A%84%E6%B7%B1%E5%BA%A6%E8%9E%8D%E5%90%88%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90" class="hash-link" aria-label="Curvine 与 SPDK 的深度融合：架构解析的直接链接" title="Curvine 与 SPDK 的深度融合：架构解析的直接链接">​</a></h2>
+<p>Curvine 将 SPDK 作为其远程块设备层。无论是本地物理 NVMe 驱动器、专用的 SPDK 目标容器，还是远程存储节点，都可以通过 NVMe-oF（NVMe over Fabrics）协议与 Curvine Worker 进程通信。</p>
+<p><img decoding="async" loading="lazy" alt="Curvine SPDK 简化架构" src="https://curvineio.github.io/zh-cn/assets/images/simplified-architecture-d4de51cdcc4615380d4c96eee9663f65.png" width="1920" height="1273" class="img_ev3q"></p>
+<center><em>整体架构示意图</em></center>
+<p>这种集成并非简单调用，而是深入到架构的每一个层面。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="spdkenv全局环境的奠基者">SpdkEnv：全局环境的奠基者<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#spdkenv%E5%85%A8%E5%B1%80%E7%8E%AF%E5%A2%83%E7%9A%84%E5%A5%A0%E5%9F%BA%E8%80%85" class="hash-link" aria-label="SpdkEnv：全局环境的奠基者的直接链接" title="SpdkEnv：全局环境的奠基者的直接链接">​</a></h3>
+<p><code>SpdkEnv</code> 是 Curvine 中 SPDK 模块的“大脑”，负责初始化整个 SPDK 应用程序框架。它是一个单例，确保资源统一管理。</p>
+<p><code>SpdkEnv</code> 的主要职责包括：</p>
+<ul>
+<li><strong>巨页分配</strong>：为 DMA 缓冲区预留大内存页，优化性能。</li>
+<li><strong>CPU 亲和性设置</strong>：通过 <code>reactor_mask</code> 将 SPDK I/O 线程绑定到特定 CPU 核，避免调度开销。</li>
+<li><strong>NVMe-oF 目标发现</strong>：自动识别并连接可用的 NVMe-oF 存储目标。</li>
+<li><strong>SpdkPoller 线程创建</strong>：启动专用 I/O 轮询线程，这是 SPDK 高效运行的核心。</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="spdkpollerio-引擎的永动机">SpdkPoller：I/O 引擎的“永动机”<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#spdkpollerio-%E5%BC%95%E6%93%8E%E7%9A%84%E6%B0%B8%E5%8A%A8%E6%9C%BA" class="hash-link" aria-label="SpdkPoller：I/O 引擎的“永动机”的直接链接" title="SpdkPoller：I/O 引擎的“永动机”的直接链接">​</a></h3>
+<p><code>SpdkPoller</code> 是 SPDK 架构中至关重要的组件。由于 SPDK 要求所有 NVMe 命令的提交和完成处理都在同一个线程上进行，<code>SpdkPoller</code> 便承担了这一重任。它是一个专用 I/O 线程，负责桥接异步处理线程与同步的 SPDK 轮询循环。</p>
+<ul>
+<li><strong>智能轮询机制</strong>：<code>SpdkPoller</code> 在没有 I/O 请求时会进入空闲（Idle）状态，通过 <code>eventfd</code> 机制避免空转消耗 CPU。当有新请求到来时，它会被唤醒进入活跃（Active）状态，高效提交 NVMe 命令并轮询完成队列。这种“停顿前旋转”的策略，最大限度减少系统调用开销，确保 I/O 路径流畅。</li>
+<li><strong>错误处理</strong>：当队列对（<code>qpair</code>）出现错误时，<code>SpdkPoller</code> 能够将其标记为“孤儿”，并强制完成其上所有挂起的 I/O，确保系统稳定性。</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="spdkbdev-与-dma-缓冲区高效数据传输的基石">SpdkBdev 与 DMA 缓冲区：高效数据传输的基石<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#spdkbdev-%E4%B8%8E-dma-%E7%BC%93%E5%86%B2%E5%8C%BA%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E7%9A%84%E5%9F%BA%E7%9F%B3" class="hash-link" aria-label="SpdkBdev 与 DMA 缓冲区：高效数据传输的基石的直接链接" title="SpdkBdev 与 DMA 缓冲区：高效数据传输的基石的直接链接">​</a></h3>
+<p><code>SpdkBdev</code> 是 Curvine 中对 SPDK 块设备的抽象句柄，类似于传统文件系统中的 <code>LocalFile</code>。它管理与 NVMe 命名空间和队列对的连接，并持有关键的 DMA 缓冲区（<code>DmaBuf</code>）。</p>
+<ul>
+<li><strong>巨页支持的 DMA 缓冲区</strong>：<code>DmaBuf</code> 是预分配的、固定大小的缓冲区，由巨页支持。这意味着数据可以直接在 NVMe 设备和内存之间传输，无需 CPU 介入，避免数据拷贝和 TLB 未命中，是实现高性能的关键。</li>
+<li><strong>缓冲区复用</strong>：<code>SpdkBdev</code> 在初始化时会分配读写缓冲区，并在所有 I/O 操作中复用这些缓冲区，避免频繁的内存分配和释放开销，实现“首次分配后零成本”的效率。</li>
+<li><strong>大 I/O 分块处理</strong>：对于大型 I/O 请求，<code>SpdkBdev</code> 会将其拆分为 <code>dma_buf_size</code>（默认 1MB）大小的块，通过相同的固定缓冲区串行处理，既高效又避免动态内存管理的复杂性。</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="bdevoffsetallocator用户态的块管理专家">BdevOffsetAllocator：用户态的块管理专家<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#bdevoffsetallocator%E7%94%A8%E6%88%B7%E6%80%81%E7%9A%84%E5%9D%97%E7%AE%A1%E7%90%86%E4%B8%93%E5%AE%B6" class="hash-link" aria-label="BdevOffsetAllocator：用户态的块管理专家的直接链接" title="BdevOffsetAllocator：用户态的块管理专家的直接链接">​</a></h3>
+<p>在 SPDK 架构下，Curvine 绕过了内核文件系统，直接面对 NVMe 设备提供的扁平字节地址空间。这意味着传统的内核块分配器不再适用。</p>
+<p><code>BdevOffsetAllocator</code> 应运而生，它在用户态实现了块管理功能：</p>
+<ul>
+<li><strong>唯一字节范围分配</strong>：为每个 Curvine 块分配唯一的字节范围，并在块删除时回收。</li>
+<li><strong>高效空间管理</strong>：采用移动游标（Bump Cursor）进行新分配，并利用空闲列表（Free-list）跟踪回收范围，通过相邻合并（coalescing）技术有效减少碎片。</li>
+<li><strong>持久化与线程安全</strong>：分配器的状态（游标位置和空闲列表）通过 <code>SpdkMetaStore</code> 持久化到 RocksDB，确保系统重启后数据一致性。同时，分配器本身也是线程安全的。</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="读写路径的优化">读写路径的优化<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#%E8%AF%BB%E5%86%99%E8%B7%AF%E5%BE%84%E7%9A%84%E4%BC%98%E5%8C%96" class="hash-link" aria-label="读写路径的优化的直接链接" title="读写路径的优化的直接链接">​</a></h2>
+<p>Curvine 结合 SPDK 后，其读写路径也得到了显著优化。</p>
+<p><img decoding="async" loading="lazy" alt="Curvine SPDK 读写路径" src="https://curvineio.github.io/zh-cn/assets/images/read-write-path-76755ca4de7a199eff6b5f5b5456de41.png" width="1920" height="1152" class="img_ev3q"></p>
+<center><em>读写路径简化示意图</em></center>
+<ul>
+<li><strong>读路径</strong>：处理程序直接向 <code>SpdkPoller</code> 提交 <code>IoRequest</code>，<code>SpdkPoller</code> 负责与 NVMe-oF 目标通信，并在 I/O 完成后通知处理程序。数据直接从 DMA 缓冲区复制到应用程序，路径极短。</li>
+<li><strong>写路径</strong>：SPDK 要求块对齐的 I/O。对于非对齐写入，Curvine 采用读-修改-写（Read-Modify-Write）策略：先读取完整的对齐块，修改其中需要写入的部分，再将整个对齐块写回。对于对齐写入，则直接进行写入操作，最大限度减少不必要的步骤。</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="总结spdk-为-curvine-带来的核心价值">总结：SPDK 为 Curvine 带来的核心价值<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#%E6%80%BB%E7%BB%93spdk-%E4%B8%BA-curvine-%E5%B8%A6%E6%9D%A5%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BB%B7%E5%80%BC" class="hash-link" aria-label="总结：SPDK 为 Curvine 带来的核心价值的直接链接" title="总结：SPDK 为 Curvine 带来的核心价值的直接链接">​</a></h2>
+<p>Curvine 对 SPDK 的深度集成，不仅仅是引入了一个技术组件，更是对高性能存储架构的一次全面升级。通过内核旁路、用户态 I/O、专用轮询线程、巨页 DMA 缓冲区以及用户态块管理等一系列优化，SPDK 为 Curvine 带来了：</p>
+<ul>
+<li><strong>卓越的性能表现</strong>：在 I/O 密集型工作负载下，显著超越传统基于内核 VFS 的存储方案，提供更低延迟和更高吞吐量。</li>
+<li><strong>更高的资源利用率</strong>：减少 CPU 和内存开销，使硬件资源能够更高效地服务于实际业务逻辑。</li>
+<li><strong>更强的可扩展性</strong>：模块化设计和用户态控制能力，为 Curvine 未来的功能扩展和性能优化奠定坚实基础。</li>
+</ul>
+<p>在追求极致性能的道路上，Curvine 与 SPDK 的结合无疑是一个成功的典范。它不仅展示了软件定义存储的巨大潜力，也为我们描绘了未来高性能存储系统的发展方向。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="参考文献">参考文献<a href="https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE" class="hash-link" aria-label="参考文献的直接链接" title="参考文献的直接链接">​</a></h2>
+<p>[1] SPDK 官方性能数据：<a href="https://spdk.io/" target="_blank" rel="noopener noreferrer">SPDK</a></p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Curvine 压测：3 亿文件仅占 38G 内存，开源项目天花板]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2026/04/06/curvine-metadata-benchmark</link>
