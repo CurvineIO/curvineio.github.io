@@ -4,10 +4,117 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/zh-cn/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Fri, 12 Jun 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-cn</language>
+        <item>
+            <title><![CDATA[AI Agent 存储选型：Curvine 如何在 EKS 上支撑万级Agent运行]]></title>
+            <link>https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks</link>
+            <guid>https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks</guid>
+            <pubDate>Tue, 07 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[一、AI Agent 大规模部署的存储难题]]></description>
+            <content:encoded><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="一ai-agent-大规模部署的存储难题">一、AI Agent 大规模部署的存储难题<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#%E4%B8%80ai-agent-%E5%A4%A7%E8%A7%84%E6%A8%A1%E9%83%A8%E7%BD%B2%E7%9A%84%E5%AD%98%E5%82%A8%E9%9A%BE%E9%A2%98" class="hash-link" aria-label="一、AI Agent 大规模部署的存储难题的直接链接" title="一、AI Agent 大规模部署的存储难题的直接链接">​</a></h2>
+<p>2026 年的 AI 基础设施正在经历一个根本性的架构转变：从"一个大模型实例服务所有请求"的中心化模式，走向"成千上万个 Agent 实例各自独立运行"的分布式模式。</p>
+<p>这不是概念上的变化。以使用 Vite 进行前端开发为例：Agent 在 debug 阶段需要运行 Vite 这类构建工具，Vite 的 dev server 依赖对项目 <code>node_modules</code> 和源码目录的高速随机读取来实现按需编译和模块热更新（HMR），开发者每次保存文件后期望在毫秒级看到页面变化，这对底层文件系统的小文件随机读性能和 <code>inotify</code>/<code>fswatch</code> 事件通知延迟都有很高要求。如果存储层跟不上，整个开发体验就会变得卡顿。</p>
+<p>每一个 Agent 实例都不是无状态的 HTTP handler，而是一个有独立工作目录、需要持久化存储的有状态进程。以 OpenClaw 这类 Agent 平台为例，OpenClaw 的整个记忆和协作系统建立在文件之上：<code>SOUL.md</code> 定义 Agent 的人格与行为边界，<code>AGENTS.md</code> 描述行为规则与会话工作流，<code>MEMORY.md</code> 存储跨会话的长期记忆，此外还有 <code>USER.md</code>、<code>TOOLS.md</code>、<code>HEARTBEAT.md</code> 等一组在启动时自动加载的 Markdown 文件，再加上项目源码、<code>node_modules</code>、<code>.git</code> 历史等。每个 Agent 实例运行在独立沙箱中，这些文件随时被读写和更新。当平台同时为数千个开发者分配各自的 Agent 实例时，就是典型的"万级独立文件系统"需求：每个实例需要隔离的 POSIX 工作空间，文件数量密集，且读写频繁。</p>
+<p>从 Kubernetes 的视角来看，这意味着你的集群需要同时支撑数千甚至上万个独立的 PersistentVolumeClaim。每个 PVC 都要能快速 provision，Agent 弹性扩缩容时不能等几分钟才拿到存储，同时要有低延迟的文件 I/O，并且在 Pod 被调度到其他节点后数据依然可达。</p>
+<p>这种"海量小规模有状态实例"的负载模式，和传统的数据库、消息队列等有状态应用完全不同。后者通常是少数几个大 PVC，前者是上万个小 PVC。亚马逊云科技原生的存储服务在面对这种新模式时，各自存在不同的优劣势。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="11-amazon-ebs隔离性好但挂载数是硬限制">1.1 Amazon EBS：隔离性好，但挂载数是硬限制<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#11-amazon-ebs%E9%9A%94%E7%A6%BB%E6%80%A7%E5%A5%BD%E4%BD%86%E6%8C%82%E8%BD%BD%E6%95%B0%E6%98%AF%E7%A1%AC%E9%99%90%E5%88%B6" class="hash-link" aria-label="1.1 Amazon EBS：隔离性好，但挂载数是硬限制的直接链接" title="1.1 Amazon EBS：隔离性好，但挂载数是硬限制的直接链接">​</a></h3>
+<p>EBS 的优势在于隔离性。每个 Agent 一个独立的 EBS volume，性能互不干扰，故障也不会互相传染。对于需要严格租户隔离的场景，这是最干净的方案。</p>
+<p>但问题是：单个 EC2 实例能挂载的 EBS volume 数量有硬性上限。对于大部分 Nitro 实例（包括本次测试使用的 r6g 系列），最大 attachment 数为 28，这个数字还要和网络接口、NVMe instance store 共享。扣除主网卡后，实际可挂载的 EBS volume 大约在 27 个左右。第 7 代以后的部分实例类型（如 M7i、R7i 等）引入了独立的 EBS volume limit，根据实例大小不同有更高的配额，但对于 r6g 这类仍在 shared limit 下的实例，28 就是天花板。（参考：<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html" target="_blank" rel="noopener noreferrer">Amazon EBS volume limits for Amazon EC2 instances</a>）</p>
+<p>这意味着什么？在我们的测试场景中，每台 r6g.4xlarge 节点跑了约 100 个 Agent Pod。如果用 EBS 给每个 Pod 分配独立 volume，一台节点最多挂 28 个，你需要将近 4 倍的节点数量才能承载相同的 Pod 密度，计算资源利用率直接从 88% 掉到 20% 左右。</p>
+<p>此外，EBS volume 绑定单个 AZ，无法跨 AZ 使用。一旦 Pod 被调度到其他 AZ 的节点上，原有的 EBS volume 就不可达，只能限制 Pod 调度到特定 AZ。对于需要跨 AZ 高可用和快速弹性伸缩的 Agent 平台来说，这是一个架构层面的硬约束。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="12-amazon-efs隔离机制成熟但大规模-provision-是瓶颈">1.2 Amazon EFS：隔离机制成熟，但大规模 provision 是瓶颈<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#12-amazon-efs%E9%9A%94%E7%A6%BB%E6%9C%BA%E5%88%B6%E6%88%90%E7%86%9F%E4%BD%86%E5%A4%A7%E8%A7%84%E6%A8%A1-provision-%E6%98%AF%E7%93%B6%E9%A2%88" class="hash-link" aria-label="1.2 Amazon EFS：隔离机制成熟，但大规模 provision 是瓶颈的直接链接" title="1.2 Amazon EFS：隔离机制成熟，但大规模 provision 是瓶颈的直接链接">​</a></h3>
+<p>EFS 作为托管的 NFS 文件系统，配合 Access Point 可以为每个 Agent 分配隔离的目录视图。每个 Access Point 有独立的 POSIX 权限和根目录，做到了文件系统级别的租户隔离。而且 EFS 支持 ReadWriteMany，Pod 跨节点调度后无需 detach/attach 操作，从调度灵活性的角度看很理想。自 2025 年 2 月起，单个 EFS 文件系统最多支持 10,000 个 Access Point，从配额上看足以覆盖万级 Agent 场景。</p>
+<p>然而在实际大规模部署中，瓶颈出现在 provision 速度上。当你通过 EFS CSI Driver 的动态 provisioning 同时创建数千个 PVC 时，每个 PVC 对应一个 Access Point 的创建。EFS API 对 Access Point 的创建有速率限制，CSI controller 需要串行或小批量地调用 API。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="13-amazon-s3容量无限但不是文件系统">1.3 Amazon S3：容量无限，但不是文件系统<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#13-amazon-s3%E5%AE%B9%E9%87%8F%E6%97%A0%E9%99%90%E4%BD%86%E4%B8%8D%E6%98%AF%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F" class="hash-link" aria-label="1.3 Amazon S3：容量无限，但不是文件系统的直接链接" title="1.3 Amazon S3：容量无限，但不是文件系统的直接链接">​</a></h3>
+<p>S3 的扩展性和成本效益毋庸置疑，作为 Agent 数据的最终归档层没有问题。但 Agent 运行时需要的是 POSIX 文件语义：<code>open</code>、<code>read</code>、<code>write</code>、<code>seek</code>、<code>rename</code>、<code>list directory</code> 这些操作。S3 是对象存储，不支持原地修改、不支持 rename 原子性、不支持目录列举的一致性语义。</p>
+<p>Mountpoint for Amazon S3 提供了 FUSE 挂载方案，但它明确声明只支持顺序写入新文件和读取已有文件，不支持随机写入和修改已有文件。对于需要反复修改 context 文件、append 日志、更新 checkpoint 的 Agent 工作流，这不是一个可行的运行时存储方案。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="二curvine为-agent-规模化设计的分布式缓存文件系统">二、Curvine：为 Agent 规模化设计的分布式缓存文件系统<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#%E4%BA%8Ccurvine%E4%B8%BA-agent-%E8%A7%84%E6%A8%A1%E5%8C%96%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F" class="hash-link" aria-label="二、Curvine：为 Agent 规模化设计的分布式缓存文件系统的直接链接" title="二、Curvine：为 Agent 规模化设计的分布式缓存文件系统的直接链接">​</a></h2>
+<p>Curvine 是一个用 Rust 从头编写的高性能分布式缓存文件系统。名字来自"Curvature Engine"（曲率引擎），刘慈欣《三体》里的超光速推进装置，寓意对数据访问的极致加速。</p>
+<p>它的核心思路是：在云对象存储（如 S3）之上建立一层分布式文件系统缓存，向上提供完整的 POSIX 语义，向下以对象存储作为持久化层。对于 Kubernetes 工作负载，通过原生 CSI 驱动直接以 PVC 的方式挂载使用。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="21-核心架构">2.1 核心架构<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#21-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84" class="hash-link" aria-label="2.1 核心架构的直接链接" title="2.1 核心架构的直接链接">​</a></h3>
+<p>Curvine 采用 Master-Worker 架构：</p>
+<ul>
+<li><strong>Master 节点</strong>：负责元数据管理、Worker 协调和负载均衡，使用 Raft 共识算法保证元数据的一致性和高可用</li>
+<li><strong>Worker 节点</strong>：负责实际的数据缓存和服务，支持内存、SSD、HDD 多层缓存，热数据自动提升到更快的层级</li>
+<li><strong>客户端访问</strong>：通过 FUSE 挂载提供 POSIX 文件系统接口；同时兼容 S3 和 HDFS 协议，可以对接现有的 AI/大数据生态</li>
+</ul>
+<p>在 Kubernetes 环境中，Curvine 以 CSI 驱动的形式集成：CSI Controller 处理 PVC 的动态 provisioning，CSI Node DaemonSet 在每个节点上运行，负责 FUSE 挂载。这意味着存储的 provision 过程不需要调用外部云 API，只是在分布式文件系统上创建一个目录，可以在毫秒级完成。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="22-为什么不是-juicefs">2.2 为什么不是 JuiceFS<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#22-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF-juicefs" class="hash-link" aria-label="2.2 为什么不是 JuiceFS的直接链接" title="2.2 为什么不是 JuiceFS的直接链接">​</a></h3>
+<p>JuiceFS 是这个领域的先行者，用 Go 实现，架构上也是"元数据引擎 + 对象存储"的模式。Curvine 和它的核心差异在于：</p>
+<ul>
+<li><strong>性能层面</strong>：Curvine 用 Rust 实现核心读写路径，多次使用零拷贝技术，官方标称 100μs 级延迟和 100K+ 稳定 QPS。Rust 的异步 runtime（tokio）加上无 GC 的内存模型，在高并发小文件场景下理论上比 Go 的 runtime 有优势</li>
+<li><strong>元数据容量</strong>：Curvine 宣称单集群支持 50 亿小文件，万级 Agent 各自产生的小文件聚合起来是很大的 metadata 压力</li>
+<li><strong>元数据独立性</strong>：Curvine 的文件元数据路径与底层 S3 的对象路径一一对应，即使 Curvine 服务出现问题，S3 上的文件依然保持原始结构、可独立访问，恢复起来很方便。而 JuiceFS 会将文件拆分成 Block 存储，从 S3 的对象名无法识别出原始文件，元数据的可用性强依赖 JuiceFS 服务本身</li>
+<li><strong>缓存架构</strong>：Curvine 原生支持内存 → SSD → HDD 的多层自动分级，JuiceFS 也有本地缓存能力，但 Curvine 在缓存调度策略上做得更细粒度</li>
+<li><strong>定位差异</strong>：JuiceFS 更侧重通用场景和云厂商的深度集成，Curvine 明确将 AI 训练加速和 Agent 云原生存储作为一级用例</li>
+</ul>
+<p>需要说明的是，这里并非要比较孰优孰劣。JuiceFS 与 Curvine 都是优秀的开源项目，在各自的设计目标下都做了大量工程优化，也都有活跃的社区。两者在架构取向上各有侧重，适用的场景也有所不同。具体选型应结合自身的工作负载特征、团队技术栈和运维偏好，通过实际测试来评估，本文不构成任何倾向性建议。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="23-csi-集成方式">2.3 CSI 集成方式<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#23-csi-%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F" class="hash-link" aria-label="2.3 CSI 集成方式的直接链接" title="2.3 CSI 集成方式的直接链接">​</a></h3>
+<p>在 EKS 上使用 Curvine 的 StorageClass 配置：</p>
+<div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token key atrule" style="color:#00a4db">apiVersion</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> storage.k8s.io/v1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">kind</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> StorageClass</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">metadata</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">name</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> curvine</span><span class="token punctuation" style="color:#393A34">-</span><span class="token plain">sc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">provisioner</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> curvine</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">reclaimPolicy</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> Delete</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">volumeBindingMode</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> Immediate</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">allowVolumeExpansion</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token boolean important" style="color:#36acaa">true</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token key atrule" style="color:#00a4db">parameters</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">master-addrs</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">"curvine-master-0.curvine-master.curvine.svc.cluster.local:8995"</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">fs-path</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">"/k8s-volumes"</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">path-type</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">"DirectoryOrCreate"</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">io-threads</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">"4"</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token key atrule" style="color:#00a4db">worker-threads</span><span class="token punctuation" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">"8"</span><br></span></code></pre></div></div>
+<p><code>volumeBindingMode: Immediate</code> 意味着 PVC 创建后立即绑定（不等 Pod 调度），<code>path-type: DirectoryOrCreate</code> 说明每个 PVC 对应的是 Curvine 文件系统上的一个目录，创建速度远快于需要调用云 API 的方案。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="三万级-pod-基准测试验证规模化可行性">三、万级 Pod 基准测试：验证规模化可行性<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#%E4%B8%89%E4%B8%87%E7%BA%A7-pod-%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E9%AA%8C%E8%AF%81%E8%A7%84%E6%A8%A1%E5%8C%96%E5%8F%AF%E8%A1%8C%E6%80%A7" class="hash-link" aria-label="三、万级 Pod 基准测试：验证规模化可行性的直接链接" title="三、万级 Pod 基准测试：验证规模化可行性的直接链接">​</a></h2>
+<p>我们在 Amazon EKS 上进行了一次规模验证测试，目标是回答一个问题：Curvine 能否在生产级 EKS 集群上，为 10,000 个独立的有状态 Pod 提供可靠的持久化存储？</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="31-测试环境">3.1 测试环境<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#31-%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83" class="hash-link" aria-label="3.1 测试环境的直接链接" title="3.1 测试环境的直接链接">​</a></h3>
+<table><thead><tr><th>参数</th><th>配置</th></tr></thead><tbody><tr><td>Region</td><td>us-west-2</td></tr><tr><td>Kubernetes 版本</td><td>v1.31.14-eks</td></tr><tr><td>计算节点</td><td>99 × r6g.4xlarge（Graviton ARM64，16 vCPU，128Gi RAM）</td></tr><tr><td>节点供给</td><td>Karpenter 自动扩缩</td></tr><tr><td>网络</td><td>VPC-CNI</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="32-工作负载配置">3.2 工作负载配置<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#32-%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD%E9%85%8D%E7%BD%AE" class="hash-link" aria-label="3.2 工作负载配置的直接链接" title="3.2 工作负载配置的直接链接">​</a></h3>
+<table><thead><tr><th>参数</th><th>数值</th></tr></thead><tbody><tr><td>部署方式</td><td>StatefulSet（<code>podManagementPolicy: Parallel</code>）</td></tr><tr><td>副本数</td><td>10,000</td></tr><tr><td>每个 Pod 资源</td><td>131m CPU / 1190Mi Memory（Guaranteed QoS）</td></tr><tr><td>每个 Pod 存储</td><td>独立 PVC，1Gi requested</td></tr><tr><td>每节点 Pod 密度</td><td>~100 个 Agent Pod + 2 个系统 Pod</td></tr><tr><td>节点资源利用率</td><td>CPU 88% / Memory 98%</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="33-curvine-存储集群">3.3 Curvine 存储集群<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#33-curvine-%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4" class="hash-link" aria-label="3.3 Curvine 存储集群的直接链接" title="3.3 Curvine 存储集群的直接链接">​</a></h3>
+<table><thead><tr><th>组件</th><th>数量</th><th>说明</th></tr></thead><tbody><tr><td>Master</td><td>1</td><td>元数据管理</td></tr><tr><td>Worker</td><td>3</td><td>数据缓存服务</td></tr><tr><td>CSI Controller</td><td>1</td><td>处理 PVC 动态 provisioning</td></tr><tr><td>CSI Node DaemonSet</td><td>104</td><td>每个节点一个，负责 FUSE 挂载</td></tr><tr><td><strong>存储集群总计</strong></td><td><strong>109 个 Pod</strong></td><td></td></tr></tbody></table>
+<p>这里需要强调的数字是：支撑 10,000 个 PVC 的存储集群本身只有 1 Master + 3 Worker = 4 个核心 Pod。CSI Node DaemonSet 是轻量级的挂载代理，不消耗显著的计算资源。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="34-测试结果">3.4 测试结果<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#34-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C" class="hash-link" aria-label="3.4 测试结果的直接链接" title="3.4 测试结果的直接链接">​</a></h3>
+<p><strong>供给成功率</strong></p>
+<ul>
+<li>10,000 个 PVC：全部 Bound，零 Pending，零 Failed</li>
+<li>10,000 个 Pod：全部 Running，零 CrashLoopBackOff，零存储相关错误</li>
+</ul>
+<p><strong>存储供给规格</strong></p>
+<ul>
+<li>每个 PVC requested 1Gi，实际 provisioned ~30Gi（Curvine 的最小分配单元）</li>
+<li>总 provisioned 存储容量：约 300TB</li>
+<li>文件系统类型：curvinefs（FUSE 挂载）</li>
+</ul>
+<p><strong>数据持久性验证</strong></p>
+<ul>
+<li>在 pod-0、pod-5000、pod-9999 上分别写入数据并验证持久化</li>
+<li>Pod 重启后数据依然存在</li>
+<li>跨节点调度后文件系统视图一致</li>
+</ul>
+<p><strong>Pod 分布均匀性</strong></p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">102 pods × 98 nodes = 9,996 pods</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  4 pods ×  1 node  =     4 pods</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Total                = 10,000 pods</span><br></span></code></pre></div></div>
+<p>每台 r6g.4xlarge 节点稳定承载 ~100 个 Agent Pod，CSI DaemonSet 与业务 Pod 共存无资源争抢。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="35-每个-pod-内看到的存储">3.5 每个 Pod 内看到的存储<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#35-%E6%AF%8F%E4%B8%AA-pod-%E5%86%85%E7%9C%8B%E5%88%B0%E7%9A%84%E5%AD%98%E5%82%A8" class="hash-link" aria-label="3.5 每个 Pod 内看到的存储的直接链接" title="3.5 每个 Pod 内看到的存储的直接链接">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Filesystem    Size      Used     Available  Use%  Mounted on</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">curvinefs     29.8G     354.6M   29.5G      1%    /usr/share/nginx/html</span><br></span></code></pre></div></div>
+<p>每个 Pod 拥有独立的文件系统视图，互相不可见，和 EBS 的逻辑隔离效果一致，但绕过了 EBS 的挂载数量限制。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="36-关键结论">3.6 关键结论<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#36-%E5%85%B3%E9%94%AE%E7%BB%93%E8%AE%BA" class="hash-link" aria-label="3.6 关键结论的直接链接" title="3.6 关键结论的直接链接">​</a></h3>
+<ol>
+<li><strong>Provision 不依赖云厂商控制平面 API</strong>：使用 EBS 时，创建 PVC 会触发 CSI 驱动调用 EBS 的 CreateVolume、AttachVolume 接口；使用 EFS 则会调用 CreateAccessPoint。这些云 API 都有速率限制，大规模并发创建时会排队、变慢。而 Curvine 创建一个 PVC 本质上只是在它自己的分布式文件系统里 <code>mkdir</code> 一个目录，全程不调用任何云厂商 API，因此速度快、也不受云 API 限流的约束</li>
+<li><strong>存储集群的资源开销极小</strong>：4 个核心 Pod 服务万级 PVC，不需要为存储系统本身预留大量计算资源</li>
+<li><strong>单节点 Pod 密度不再受存储限制</strong>：100 个 Pod 共享同一个 FUSE 挂载点的不同路径，没有 EBS 那样的 28/128 上限</li>
+<li><strong>横向扩展路径清晰</strong>：如果需要更大规模或更高吞吐，增加 Worker 节点即可，对已有 PVC 无影响</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="四试试看">四、试试看<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#%E5%9B%9B%E8%AF%95%E8%AF%95%E7%9C%8B" class="hash-link" aria-label="四、试试看的直接链接" title="四、试试看的直接链接">​</a></h2>
+<p>如果你正在 EKS 上构建 AI Agent 平台，面对的是以下任一场景：</p>
+<ul>
+<li>每个 Agent 实例需要独立的 POSIX 文件系统工作空间</li>
+<li>总实例数在千级到万级，且需要快速弹性伸缩</li>
+<li>单节点需要承载高密度的有状态 Pod（&gt;28 个）</li>
+<li>对小文件 I/O 延迟敏感（微秒级 vs 毫秒级）</li>
+</ul>
+<p>那么 Curvine 值得纳入你的技术选型评估。</p>
+<p><strong>快速开始</strong></p>
+<ul>
+<li>GitHub：<a href="https://github.com/CurvineIO/curvine" target="_blank" rel="noopener noreferrer">github.com/CurvineIO/curvine</a></li>
+<li>官方文档：<a href="https://curvineio.github.io/" target="_blank" rel="noopener noreferrer">curvineio.github.io</a></li>
+<li>EKS 集成：通过 Helm Chart 部署 Curvine 集群 + CSI 驱动，配置 StorageClass 后即可使用</li>
+</ul>
+<p>建议的验证路径：从 100–500 个 Pod 开始，验证 provision 速度和 I/O 表现；如果满足预期，再逐步放量到千级甚至万级。存储集群本身从 1 Master + 1 Worker 起步即可，按需增加 Worker 节点扩展吞吐和缓存容量。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="五结语">五、结语<a href="https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks#%E4%BA%94%E7%BB%93%E8%AF%AD" class="hash-link" aria-label="五、结语的直接链接" title="五、结语的直接链接">​</a></h2>
+<p>AI Agent 带来的"海量小规模有状态实例"负载模式，对 Kubernetes 存储提出了全新挑战。EBS 的单实例挂载数限制、EFS 的 provision 瓶颈、S3 缺乏 POSIX 语义，各自在不同维度上难以满足需求。Curvine 作为面向这一场景设计的分布式缓存文件系统，在 EKS 上验证了 10,000 个独立 PVC 可以被可靠供给和服务，且存储集群本身资源开销极小——为 Agent 平台的规模化扩展提供了切实可行的存储底座。</p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[性能飞跃：Curvine 如何通过 SPDK 释放 NVMe 盘的极致潜力]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2026/06/12/curvine-spdk-nvme-performance</link>
