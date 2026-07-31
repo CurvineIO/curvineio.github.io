@@ -4,10 +4,106 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/zh-cn/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Tue, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 31 Jul 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-cn</language>
+        <item>
+            <title><![CDATA[多模态数据湖的最后一公里：Curvine 让 LanceDB 向量检索快 5 倍]]></title>
+            <link>https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search</link>
+            <guid>https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search</guid>
+            <pubDate>Fri, 31 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[LanceDB × Curvine：查询速度提升 5 倍]]></description>
+            <content:encoded><![CDATA[<p><img decoding="async" loading="lazy" alt="LanceDB × Curvine：查询速度提升 5 倍" src="https://curvineio.github.io/zh-cn/assets/images/lancedb-curvine-5x-7711017e8dee9b93e6e37f0f07b6ba1a.png" width="2126" height="904" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="导语">导语<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E5%AF%BC%E8%AF%AD" class="hash-link" aria-label="导语的直接链接" title="导语的直接链接">​</a></h2>
+<p>多模态数据湖这两年成了 AI 基础设施的标准答案：图片、视频、文本、Embedding 全部落在对象存储上，用 Lance / Parquet 这类列式格式统一管理，再用 LanceDB 这样的引擎直接在湖上做向量检索、全文检索和混合检索。存算分离，容量无限，成本极低——听起来近乎完美。</p>
+<p>但真正把在线检索业务搬上去的团队都踩过同一个坑：对象存储的容量和带宽都不缺，缺的是延迟。一次向量召回背后是几十次、几百次小粒度随机读，每一次都要付一遍对象存储的首字节延迟，链路越长，尾延迟越难看。</p>
+<p>我们在阿里云上做了一组实测：同样的 LanceDB、同样的 100 万条 1536 维数据集、同样的 benchmark 脚本，只把底层存储从纯 OSS 换成 Curvine（Rust 编写的高性能分布式缓存系统），结果是向量检索 p50 从 11 ms 降到 2 ms，QPS 从 69 涨到 333，p99 从 62 ms 降到 10 ms。下面是完整的数据和分析，包括那个“提升不明显”的场景——我们也一并给出原因。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="一瓶颈到底在哪向量检索的-io-画像">一、瓶颈到底在哪：向量检索的 I/O 画像<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E4%B8%80%E7%93%B6%E9%A2%88%E5%88%B0%E5%BA%95%E5%9C%A8%E5%93%AA%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%9A%84-io-%E7%94%BB%E5%83%8F" class="hash-link" aria-label="一、瓶颈到底在哪：向量检索的 I/O 画像的直接链接" title="一、瓶颈到底在哪：向量检索的 I/O 画像的直接链接">​</a></h2>
+<p>在湖上做向量检索，一次查询大致要走这几步：</p>
+<ol>
+<li>读索引元数据（IVF 的中心点、分区偏移等）；</li>
+<li>按 <code>nprobes</code> 命中的分区，读取若干个索引分片；</li>
+<li>拿到候选 row ID 后，回表读取原始列（向量、<code>title</code>、<code>text</code> 等），取回真实值做精排；</li>
+<li>全文检索还要额外读倒排结构，混合检索则是两条链路都走一遍，再做 RRF 重排。</li>
+</ol>
+<p>这条链路的特征是小粒度、高扇出、强随机。对象存储在吞吐上很能打，但每次 range read 都要付一次网络往返加服务端寻址的固定开销，通常在几毫秒到十几毫秒量级。一次查询串起几十个这样的读，延迟就被固定开销主导了——这时候再加机器、加带宽都没用，因为瓶颈不是带宽，而是每次 I/O 的固有延迟。</p>
+<p>Curvine 的定位正好切在这里：它是一层分布式缓存文件系统，把热数据下沉到 Worker 节点的内存和本地 NVMe / ESSD 上，客户端通过原生 RPC、FUSE 或 Hadoop 兼容接口访问。数据依然由对象存储做长期归属，但读路径上的每一次随机读，从“跨网络访问对象存储”变成“访问同可用区的缓存节点 + 本地盘”，单次 I/O 延迟直接降低一个数量级。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="二测试环境与方法">二、测试环境与方法<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E4%BA%8C%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E4%B8%8E%E6%96%B9%E6%B3%95" class="hash-link" aria-label="二、测试环境与方法的直接链接" title="二、测试环境与方法的直接链接">​</a></h2>
+<p>为了避免“自己写 benchmark 自己赢”的嫌疑，我们直接用了 LanceDB 官方的 benchmark 套件。</p>
+<table><thead><tr><th>项</th><th>配置</th></tr></thead><tbody><tr><td>LanceDB 版本</td><td>0.34.0</td></tr><tr><td>Benchmark</td><td>LanceDB 官方 <code>lancedb-cloud-benchmarks</code></td></tr><tr><td>数据集</td><td><code>KShivendu/dbpedia-entities-openai-1M</code>（约 100 万条，1536 维）</td></tr><tr><td>查询次数</td><td>每组 10000 次</td></tr><tr><td><code>nprobes</code> / <code>limit</code></td><td>均取默认值</td></tr><tr><td>并发</td><td>单进程（<code>query_processes=1</code>）</td></tr></tbody></table>
+<p>集群部署在阿里云：</p>
+<ul>
+<li><strong>Curvine 测试集群：</strong> 1 台 Master + 1 台 Worker，均为 <code>ecs.r8a.8xlarge</code>（32 vCPU / 247 GB 内存），Worker 额外挂载 1.3 TB ESSD 云盘；</li>
+<li><strong>查询节点：</strong> <code>ecs.r8a.4xlarge</code>（16 vCPU / 123 GB 内存）。</li>
+</ul>
+<p>注意，这是一个单 Worker 的最小集群，没有做任何多副本或多节点并行读的优化——也就是说，下面的数字是 Curvine 的下限而非上限。</p>
+<p>四类查询覆盖了多模态检索的典型形态：</p>
+<ul>
+<li><strong><code>vector</code>：</strong> 随机 1536 维向量检索；</li>
+<li><strong><code>fts</code>：</strong> 从内置词表随机抽词，对 <code>title</code> 做全文检索；</li>
+<li><strong><code>hybrid</code>：</strong> 随机向量 + 随机文本，RRF 重排；</li>
+<li><strong><code>vector_with_filter</code>：</strong> 随机向量 + <code>text LIKE '%词%'</code>，且 <code>prefilter=True</code>。</li>
+</ul>
+<p>三种存储路径是这次对比的核心变量：</p>
+<ul>
+<li><strong><code>oss</code>：</strong> 纯对象存储，数据和索引都在 OSS 上；</li>
+<li><strong><code>curvine-index</code>：</strong> 数据仍在 OSS URI，只把索引目录（<code>_indices</code>）放进 Curvine 缓存；</li>
+<li><strong><code>curvine</code>：</strong> 全程使用 <code>curvine://</code>，数据与索引都走缓存。</li>
+</ul>
+<p>第二种模式值得单独强调：它只需要改索引的存放路径，对现有数据湖的组织方式几乎零侵入，是很多团队最容易落地的一档。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="三实测数据">三、实测数据<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E4%B8%89%E5%AE%9E%E6%B5%8B%E6%95%B0%E6%8D%AE" class="hash-link" aria-label="三、实测数据的直接链接" title="三、实测数据的直接链接">​</a></h2>
+<p>延迟单位均为毫秒（ms），QPS 越高越好，延迟分位越低越好。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="31-vector纯向量检索">3.1 Vector：纯向量检索<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#31-vector%E7%BA%AF%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2" class="hash-link" aria-label="3.1 Vector：纯向量检索的直接链接" title="3.1 Vector：纯向量检索的直接链接">​</a></h3>
+<table><thead><tr><th>存储路径</th><th style="text-align:right">QPS</th><th style="text-align:right">p50</th><th style="text-align:right">p90</th><th style="text-align:right">p95</th><th style="text-align:right">p99</th></tr></thead><tbody><tr><td><code>oss</code></td><td style="text-align:right">69.4</td><td style="text-align:right">11</td><td style="text-align:right">26</td><td style="text-align:right">34</td><td style="text-align:right">62</td></tr><tr><td><code>curvine-index</code></td><td style="text-align:right">76.9</td><td style="text-align:right">9</td><td style="text-align:right">23</td><td style="text-align:right">32</td><td style="text-align:right">51</td></tr><tr><td><code>curvine</code></td><td style="text-align:right"><strong>333.3</strong></td><td style="text-align:right"><strong>2</strong></td><td style="text-align:right"><strong>3</strong></td><td style="text-align:right"><strong>4</strong></td><td style="text-align:right"><strong>10</strong></td></tr></tbody></table>
+<p>全程 Curvine 后，p50 降到 OSS 的 1/5.5，QPS 提升约 4.8 倍。更关键的是，p90 从 26 ms 降到 3 ms（约 8.7 倍），p99 从 62 ms 降到 10 ms——平均值变好只是提升，尾延迟被压平才是能上线的信号。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="32-fts全文检索">3.2 FTS：全文检索<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#32-fts%E5%85%A8%E6%96%87%E6%A3%80%E7%B4%A2" class="hash-link" aria-label="3.2 FTS：全文检索的直接链接" title="3.2 FTS：全文检索的直接链接">​</a></h3>
+<table><thead><tr><th>存储路径</th><th style="text-align:right">QPS</th><th style="text-align:right">p50</th><th style="text-align:right">p90</th><th style="text-align:right">p95</th><th style="text-align:right">p99</th></tr></thead><tbody><tr><td><code>oss</code></td><td style="text-align:right">31.4</td><td style="text-align:right">26</td><td style="text-align:right">53</td><td style="text-align:right">61</td><td style="text-align:right">88</td></tr><tr><td><code>curvine-index</code></td><td style="text-align:right">71.4</td><td style="text-align:right">12</td><td style="text-align:right">20</td><td style="text-align:right">25</td><td style="text-align:right">37</td></tr><tr><td><code>curvine</code></td><td style="text-align:right"><strong>144.9</strong></td><td style="text-align:right"><strong>5</strong></td><td style="text-align:right"><strong>8</strong></td><td style="text-align:right"><strong>13</strong></td><td style="text-align:right"><strong>15</strong></td></tr></tbody></table>
+<p>全文检索是这次收益结构最有意思的一组：只把索引放进 Curvine，QPS 就翻了 2.3 倍，p50 直接砍半。原因不难理解，倒排索引的访问模式比向量索引更碎，对单次 I/O 延迟更敏感，所以“只加速索引”这一档就能吃到大部分收益。全程 Curvine 则进一步把 p50 打到 5 ms，p99 从 88 ms 降到 15 ms。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="33-hybrid向量--文本混合检索rrf-重排">3.3 Hybrid：向量 + 文本混合检索（RRF 重排）<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#33-hybrid%E5%90%91%E9%87%8F--%E6%96%87%E6%9C%AC%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2rrf-%E9%87%8D%E6%8E%92" class="hash-link" aria-label="3.3 Hybrid：向量 + 文本混合检索（RRF 重排）的直接链接" title="3.3 Hybrid：向量 + 文本混合检索（RRF 重排）的直接链接">​</a></h3>
+<table><thead><tr><th>存储路径</th><th style="text-align:right">QPS</th><th style="text-align:right">p50</th><th style="text-align:right">p90</th><th style="text-align:right">p95</th><th style="text-align:right">p99</th></tr></thead><tbody><tr><td><code>oss</code></td><td style="text-align:right">25.2</td><td style="text-align:right">36</td><td style="text-align:right">58</td><td style="text-align:right">66</td><td style="text-align:right">90</td></tr><tr><td><code>curvine-index</code></td><td style="text-align:right">37.9</td><td style="text-align:right">24</td><td style="text-align:right">35</td><td style="text-align:right">40</td><td style="text-align:right">52</td></tr><tr><td><code>curvine</code></td><td style="text-align:right"><strong>73.5</strong></td><td style="text-align:right"><strong>13</strong></td><td style="text-align:right"><strong>14</strong></td><td style="text-align:right"><strong>15</strong></td><td style="text-align:right"><strong>21</strong></td></tr></tbody></table>
+<p>混合检索是多模态场景里最贴近真实业务的一类查询——它同时承担向量和全文两条链路的 I/O 成本，所以在 OSS 上的基线最差（p50 36 ms）。Curvine 把 p50 压到 13 ms（约 2.8 倍），QPS 提升 2.9 倍。</p>
+<p>这里最漂亮的是延迟分布：p50 13 ms、p90 14 ms、p95 15 ms、p99 21 ms，几乎是一条平的曲线；而 OSS 上是 36 / 58 / 66 / 90 的持续上扬。对需要串在 RAG 链路里的检索服务来说，可预测的延迟比更低的均值更有价值。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="34-vector-with-filter带过滤的向量检索">3.4 Vector with Filter：带过滤的向量检索<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#34-vector-with-filter%E5%B8%A6%E8%BF%87%E6%BB%A4%E7%9A%84%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2" class="hash-link" aria-label="3.4 Vector with Filter：带过滤的向量检索的直接链接" title="3.4 Vector with Filter：带过滤的向量检索的直接链接">​</a></h3>
+<table><thead><tr><th>存储路径</th><th style="text-align:right">QPS</th><th style="text-align:right">p50</th><th style="text-align:right">p90</th><th style="text-align:right">p95</th><th style="text-align:right">p99</th></tr></thead><tbody><tr><td><code>oss</code></td><td style="text-align:right">2.6</td><td style="text-align:right">377</td><td style="text-align:right">401</td><td style="text-align:right">415</td><td style="text-align:right">456</td></tr><tr><td><code>curvine-index</code></td><td style="text-align:right">2.6</td><td style="text-align:right">378</td><td style="text-align:right">401</td><td style="text-align:right">412</td><td style="text-align:right">446</td></tr><tr><td><code>curvine</code></td><td style="text-align:right"><strong>3.9</strong></td><td style="text-align:right"><strong>249</strong></td><td style="text-align:right"><strong>257</strong></td><td style="text-align:right"><strong>265</strong></td><td style="text-align:right"><strong>450</strong></td></tr></tbody></table>
+<p>这组我们如实放出来：<code>curvine-index</code> 相比 OSS 几乎没有收益，全程 Curvine 也只有约 1.5 倍改善。</p>
+<p>原因是这类查询的耗时结构完全不同。<code>prefilter=True</code> 加 <code>text LIKE '%词%'</code> 意味着要先对文本列做全量扫描式匹配，再把结果喂给向量检索。整体 p50 在 250～380 ms 量级，瓶颈落在过滤与扫描的计算路径上，而不是索引 I/O——缓存能优化的部分只占总耗时的一小块，自然优化不出 5 倍。</p>
+<p>这个结果反而印证了前三组的可信度：Curvine 加速的是 I/O 延迟，凡是 I/O 主导的场景收益就大，凡是 CPU / 扫描主导的场景收益就有限。想解决这一类查询，方向应该是给过滤字段建标量索引，或者用倒排替代 <code>LIKE</code>，而不是继续加缓存。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="四汇总相对-oss-的提升">四、汇总：相对 OSS 的提升<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E5%9B%9B%E6%B1%87%E6%80%BB%E7%9B%B8%E5%AF%B9-oss-%E7%9A%84%E6%8F%90%E5%8D%87" class="hash-link" aria-label="四、汇总：相对 OSS 的提升的直接链接" title="四、汇总：相对 OSS 的提升的直接链接">​</a></h2>
+<table><thead><tr><th>查询类型</th><th><code>curvine-index</code> vs. <code>oss</code></th><th><code>curvine</code> vs. <code>oss</code></th></tr></thead><tbody><tr><td>Vector</td><td>p50：11 → 9 ms（约 1.1x）；QPS：69 → 77</td><td>p50：11 → 2 ms（约 5.5x）；QPS：69 → 333</td></tr><tr><td>FTS</td><td>p50：26 → 12 ms（约 2.2x）；QPS：31 → 71</td><td>p50：26 → 5 ms（约 5.2x）；QPS：31 → 145</td></tr><tr><td>Hybrid</td><td>p50：36 → 24 ms（约 1.5x）；QPS：25 → 38</td><td>p50：36 → 13 ms（约 2.8x）；QPS：25 → 74</td></tr><tr><td>Vector with filter</td><td>性能相当</td><td>p50：377 → 249 ms（约 1.5x）；QPS：2.6 → 3.9</td></tr></tbody></table>
+<p>四条结论：</p>
+<ol>
+<li><strong>全程 Curvine 在所有查询类型上整体最优。</strong> Vector 与 FTS 收益最明显，p50 约降至 OSS 的 1/5，QPS 提升 4～5 倍；</li>
+<li><strong>只把索引放进 Curvine 就有中等收益。</strong> FTS、Hybrid 尤为明显（1.5～2.2 倍），Vector 有小幅改善；</li>
+<li><strong>Vector with filter 是唯一的例外。</strong> 瓶颈在过滤 / 扫描路径而非索引 I/O，需要用索引设计而非缓存来解决；</li>
+<li><strong>延迟稳定性的改善比平均值更显著。</strong> Curvine 路径下 p90 / p99 全面走低，混合检索几乎打平成一条直线。</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="五怎么落地两档接入策略">五、怎么落地：两档接入策略<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E4%BA%94%E6%80%8E%E4%B9%88%E8%90%BD%E5%9C%B0%E4%B8%A4%E6%A1%A3%E6%8E%A5%E5%85%A5%E7%AD%96%E7%95%A5" class="hash-link" aria-label="五、怎么落地：两档接入策略的直接链接" title="五、怎么落地：两档接入策略的直接链接">​</a></h2>
+<p>从上面的数据可以推出一条很实用的路径。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="第一档只缓存索引低成本试水">第一档：只缓存索引（低成本试水）<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E7%AC%AC%E4%B8%80%E6%A1%A3%E5%8F%AA%E7%BC%93%E5%AD%98%E7%B4%A2%E5%BC%95%E4%BD%8E%E6%88%90%E6%9C%AC%E8%AF%95%E6%B0%B4" class="hash-link" aria-label="第一档：只缓存索引（低成本试水）的直接链接" title="第一档：只缓存索引（低成本试水）的直接链接">​</a></h3>
+<p>保持数据湖的 OSS 布局不动，只把 Lance 的 <code>_indices</code> 目录指向 Curvine。改动量极小，不需要迁移数据，也不影响原有的写入和归档流程，就能在全文与混合检索上拿到 1.5～2.2 倍收益。缓存容量只需覆盖索引体积，成本很低。</p>
+<p>这种方式适合先验证效果，或者索引热数据远小于全量数据的场景。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="第二档全程-curvine收益最大化">第二档：全程 Curvine（收益最大化）<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E7%AC%AC%E4%BA%8C%E6%A1%A3%E5%85%A8%E7%A8%8B-curvine%E6%94%B6%E7%9B%8A%E6%9C%80%E5%A4%A7%E5%8C%96" class="hash-link" aria-label="第二档：全程 Curvine（收益最大化）的直接链接" title="第二档：全程 Curvine（收益最大化）的直接链接">​</a></h3>
+<p>把数据集整体挂到 <code>curvine://</code> 下，读路径完全走缓存。这一档能拿到 5 倍量级的延迟收益和平坦的尾延迟，代价是缓存容量要能装下工作集。</p>
+<p>对在线检索服务、RAG 召回这类延迟敏感的链路，这是我们推荐的形态。</p>
+<p>Curvine 本身提供多种接入方式，不需要改应用代码就能落地。例如通过 FUSE 挂载，应用侧当本地目录使用：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">bin/curvine-fuse.sh start</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token function" style="color:#d73a49">ls</span><span class="token plain"> /curvine-fuse</span><br></span></code></pre></div></div>
+<p>Curvine 也支持 Rust 原生 API 和 Hadoop 兼容接口（<code>cv://</code>），可以按现有技术栈选择：</p>
+<div class="language-java codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-java codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Configuration conf = new Configuration();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">conf.set("fs.cv.impl", "io.curvine.CurvineFileSystem");</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">FileSystem fs = FileSystem.get(URI.create("cv://master:8995"), conf);</span><br></span></code></pre></div></div>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="六写在最后">六、写在最后<a href="https://curvineio.github.io/zh-cn/blog/2026/07/31/curvine-lancedb-vector-search#%E5%85%AD%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E" class="hash-link" aria-label="六、写在最后的直接链接" title="六、写在最后的直接链接">​</a></h2>
+<p>多模态数据湖解决了“数据放哪”的问题，但没有解决“读得多快”的问题。对象存储的经济性来自于把数据放远，而在线检索的体验来自于把数据放近——这两件事之间需要一层缓存来调和。</p>
+<p>这次测试想说明的其实是一个很朴素的判断：在存算分离架构下，把随机小 I/O 的延迟降下来，往往比换更强的检索引擎、加更多的查询节点更有性价比。同样的 LanceDB、同样的数据、同样的查询节点规格，只换存储路径就能拿到 5 倍延迟收益，而且用的还是只有一个 Worker 的最小集群。</p>
+<p>另一个值得记住的细节是那组“没提升”的数据。缓存不是万能药，它精确地作用在 I/O 延迟上；当瓶颈换成扫描和计算，就该换工具了。知道一项技术在哪里不起作用，和知道它在哪里起作用同样重要。</p>
+<p>Curvine 已在 GitHub 开源（Apache License 2.0）。除了向量检索加速，它也用于训练数据加速、模型分发、热表加速、大数据 Shuffle 加速与多云缓存等场景。欢迎试用、提 Issue、贡献代码：</p>
+<ul>
+<li><strong>项目地址：</strong> <a href="https://github.com/CurvineIO/curvine" target="_blank" rel="noopener noreferrer">github.com/CurvineIO/curvine</a></li>
+<li><strong>官方文档：</strong> <a href="https://curvineio.github.io/docs/Overview/instroduction" target="_blank" rel="noopener noreferrer">curvineio.github.io</a></li>
+<li><strong>快速入门：</strong> <a href="https://curvineio.github.io/docs/Deploy/quick-start" target="_blank" rel="noopener noreferrer">部署 Curvine</a></li>
+</ul>
+<blockquote>
+<p><strong>测试说明：</strong> 本文数据来自阿里云环境实测，LanceDB 0.34.0，<code>dbpedia-entities-openai-1M</code> 数据集，每组 10000 次查询，单进程。测试为单 Master + 单 Worker 最小集群。不同硬件规格、数据规模与并发条件下结果会有差异，建议以自身业务负载复测为准。</p>
+</blockquote>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[AI Agent 存储选型：Curvine 如何在 EKS 上支撑万级Agent运行]]></title>
             <link>https://curvineio.github.io/zh-cn/blog/2026/07/07/ai-agent-storage-curvine-eks</link>
