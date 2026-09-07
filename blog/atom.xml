@@ -2,11 +2,94 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://curvineio.github.io/blog</id>
     <title>Curvine Blog</title>
-    <updated>2026-08-13T00:00:00.000Z</updated>
+    <updated>2026-09-07T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://curvineio.github.io/blog"/>
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/img/curvine_logo.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[mlperf-storage-curvine-vs-alluxio]]></title>
+        <id>https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio</id>
+        <link href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio"/>
+        <updated>2026-09-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Cover]]></summary>
+        <content type="html"><![CDATA[<p><img decoding="async" loading="lazy" alt="Cover" src="https://curvineio.github.io/assets/images/cover-886efed2291f7ef1e58f4e1ebbed6ea1.png" width="1920" height="1080" class="img_ev3q"></p>
+<p>When GPUs wait on data, the cluster is idling. For training storage, the industry now uses the same ruler: MLPerf Storage.</p>
+<p>Alluxio submitted official numbers for commercial Alluxio Enterprise AI in the MLCommons Closed division. Curvine is an Apache-2.0 open-source project. We ran an internal comparison with the same MLPerf Storage v2.0 method and the same class of AWS machines. The baseline is not open-source Alluxio. It is the commercial edition they submitted.</p>
+<p>Numbers first, then the reading.</p>
+<p>Across eight runs, <strong>open-source Curvine leads accelerator utilization (AU) in 6 groups, and aggregate read bandwidth in 6 groups with 1 tie</strong>. It is ahead on all three U-Net3D lines. CosmoFlow bandwidth is higher on both scales, and the 5-accelerator AU also moves in front. The only bandwidth loss is ResNet-50 at 128 emulated H100s: 23.83 vs 24.14 GiB/s, about 1.3%.</p>
+<p>Not every decimal wins. On the same ruler, the open-source implementation is already ahead of the commercial Closed submission on most points. Below we lay out the background, the setup, and the tables.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="what-mlperf-storage-measures">What MLPerf Storage measures<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#what-mlperf-storage-measures" class="hash-link" aria-label="Direct link to What MLPerf Storage measures" title="Direct link to What MLPerf Storage measures">​</a></h2>
+<p>MLPerf is an AI benchmark suite maintained by MLCommons. The training and inference tracks ask how fast a model computes. <strong>The Storage track does not score FLOPS. It asks whether storage can keep accelerators fed.</strong></p>
+<p>During training, accelerators pull random samples by batch. If storage is a half-step late, GPUs sit idle. MLPerf Storage answers: how many cards can this storage keep busy enough.</p>
+<p>You do not need a rack of real H100s. The harness (DLIO) reads through PyTorch or TensorFlow at the real batch size, replaces "compute one batch" with a sleep() timed from real H100 measurements, and uses an MPI barrier to emulate gradient sync. The data path is real: POSIX, FUSE, into client memory. Only then does a delivery count.</p>
+<p>The headline metric is <strong>Accelerator Utilization (AU)</strong>:</p>
+<blockquote>
+<p>AU = emulated compute time / wall-clock time</p>
+</blockquote>
+<p>Higher AU means less time GPUs wait on data. The v2.0 pass lines are:</p>
+<table><thead><tr><th>Workload</th><th>Typical sample</th><th>I/O shape</th><th>AU bar</th></tr></thead><tbody><tr><td>ResNet-50</td><td>~115 KB</td><td>Small files, high-concurrency opens; metadata and FUSE heavy</td><td>≥ 90%</td></tr><tr><td>U-Net3D</td><td>~140 MB</td><td>Large sequential reads; ~2.9 GiB/s per accelerator</td><td>≥ 90%</td></tr><tr><td>CosmoFlow</td><td>~2.8 MB</td><td>Random reads, denser sync; tail latency shows up</td><td>≥ 70%</td></tr></tbody></table>
+<p>After the pass line, look at aggregate bandwidth and whether per-accelerator bandwidth drops. These are three different exams. Passing ResNet does not mean you pass U-Net. Passing U-Net does not mean CosmoFlow AU will hold.</p>
+<p><img decoding="async" loading="lazy" alt="Figure 1: What MLPerf Storage measures" src="https://curvineio.github.io/assets/images/figure-1-59774780d9f2b8aa34b71ffa9061e54f.png" width="1920" height="1152" class="img_ev3q"></p>
+<p><em>Figure 1: The benchmark is not compute. It is whether storage can keep accelerators busy. The headline metric is AU.</em></p>
+<p>Alluxio's official results live in <a href="https://github.com/mlcommons/storage_results_v2.0/tree/main/closed/Alluxio/results" target="_blank" rel="noopener noreferrer">MLCommons storage_results_v2.0 / closed/Alluxio</a>. Their docs list 24.14 GiB/s for ResNet-50 at 128 accelerators. Curvine has not filed a Closed submission. What follows is an internal comparison, not an official leaderboard. That should be clear up front.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-we-measured-same-skus-same-posix-path">How we measured: same SKUs, same POSIX path<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#how-we-measured-same-skus-same-posix-path" class="hash-link" aria-label="Direct link to How we measured: same SKUs, same POSIX path" title="Direct link to How we measured: same SKUs, same POSIX path">​</a></h2>
+<p>A comparison only holds if the topology matches.</p>
+<p>Alluxio's official environment is AWS instances in one AZ: Workers on <code>i3en.12xlarge</code> (48 vCPU / 384 GiB, local NVMe), FUSE clients on <code>c5n.9xlarge</code> (36 vCPU / 96 GiB), POSIX FUSE, dataset fully warmed into cache. Curvine used the same class of machines:</p>
+<table><thead><tr><th>Role</th><th>AWS-equivalent SKU</th><th>Count</th><th>Hard limits</th></tr></thead><tbody><tr><td>FUSE client (load gen)</td><td>c5n.9xlarge</td><td>1–8</td><td>≥ 36 cores, 96 GiB isolated</td></tr><tr><td>Worker (cache tier)</td><td>i3en.12xlarge</td><td>2–8</td><td>≥ 48 cores / 384 GiB, enterprise NVMe</td></tr><tr><td>Master (metadata)</td><td>Shared with a worker</td><td>1</td><td>Separate metadata process</td></tr></tbody></table>
+<p>Accelerators are emulated H100s. Dataset size scales with the run: 500 GB → 1.0 TB → 4.0 TB. Fuse<!-- -->:Worker<!-- --> ratios for ResNet and U-Net match Alluxio's official table (1:2, 2:2, 8:8). CosmoFlow at 8 accelerators differs: Curvine used 2 FUSE + 8 Workers; Alluxio's table is 8 FUSE + 8 Workers. Keep that in mind on that one row.</p>
+<p><img decoding="async" loading="lazy" alt="Figure 2: Comparison topology" src="https://curvineio.github.io/assets/images/figure-2-8c06860f0f21c4dc4b6d510d6765c0c9.png" width="1920" height="1088" class="img_ev3q"></p>
+<p><em>Figure 2: Hardware, interface, and warmup aligned to Alluxio's official submission.</em></p>
+<p><img decoding="async" loading="lazy" alt="Figure 3: I/O profiles of the three training workloads" src="https://curvineio.github.io/assets/images/figure-3-8325eda41ba107edbbfcae81e4070f79.png" width="1920" height="896" class="img_ev3q"></p>
+<p><em>Figure 3: Small-file concurrency, large sequential reads, and medium-file random reads each test a different capability.</em></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="the-scorecard">The scorecard<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#the-scorecard" class="hash-link" aria-label="Direct link to The scorecard" title="Direct link to The scorecard">​</a></h2>
+<p>AU first.</p>
+<p><img decoding="async" loading="lazy" alt="Figure 4: AU comparison" src="https://curvineio.github.io/assets/images/figure-4-f3d3983fe89c2b043274731dd7c5becc.png" width="1920" height="1120" class="img_ev3q"></p>
+<p><em>Figure 4: Open source leads 6 of 8. The losses are ResNet 128-acc and CosmoFlow 8-acc.</em></p>
+<p>Then aggregate read bandwidth.</p>
+<p><img decoding="async" loading="lazy" alt="Figure 5: Aggregate read bandwidth" src="https://curvineio.github.io/assets/images/figure-5-644bf87a0f2e745ccc7c12712d85ed31.png" width="1920" height="1120" class="img_ev3q"></p>
+<p><em>Figure 5: Open source leads 6 of 8, with one tie. The only loss is ResNet-50 at 128 accelerators, about 1.3%.</em></p>
+<p>Full tables below. Alluxio numbers are the per-scale detail from the official submission. Their public materials often flatten AU into one headline per model (for example ResNet as 99.57%). Those headlines are rounded; this article uses the per-scale values. Some Curvine raw fields were labeled GB/s. The absolute values line up with Alluxio's GiB/s, so we report GiB/s throughout, which is the MLPerf convention.</p>
+<p><strong>ResNet-50 (AU bar 90%)</strong></p>
+<table><thead><tr><th>Scale</th><th>Dataset</th><th>Fuse / Worker</th><th>Curvine AU</th><th>Alluxio AU</th><th>Curvine B/W</th><th>Alluxio B/W</th><th>Per acc (OSS / commercial)</th></tr></thead><tbody><tr><td>16 × H100</td><td>500 GB</td><td>1 / 2</td><td><strong>99.63%</strong></td><td>99.58%</td><td>3.03</td><td>3.03</td><td>0.1894 / 0.1894</td></tr><tr><td>32 × H100</td><td>1.0 TB</td><td>2 / 2</td><td><strong>99.52%</strong></td><td>99.43%</td><td><strong>6.05</strong></td><td>6.05</td><td><strong>0.1892</strong> / 0.1891</td></tr><tr><td>128 × H100</td><td>4.0 TB</td><td>8 / 8</td><td>99.03%</td><td><strong>99.27%</strong></td><td>23.83</td><td><strong>24.14</strong></td><td>0.1861 / <strong>0.1886</strong></td></tr></tbody></table>
+<p><strong>U-Net3D (AU bar 90%)</strong></p>
+<table><thead><tr><th>Scale</th><th>Dataset</th><th>Fuse / Worker</th><th>Curvine AU</th><th>Alluxio AU</th><th>Curvine B/W</th><th>Alluxio B/W</th><th>Per acc (OSS / commercial)</th></tr></thead><tbody><tr><td>1 × H100</td><td>500 GB</td><td>1 / 2</td><td><strong>99.18%</strong></td><td>99.05%</td><td><strong>2.92</strong></td><td>2.92</td><td><strong>2.925</strong> / 2.923</td></tr><tr><td>2 × H100</td><td>1.0 TB</td><td>2 / 2</td><td><strong>99.00%</strong></td><td>98.74%</td><td><strong>5.83</strong></td><td>5.80</td><td><strong>2.917</strong> / 2.895</td></tr><tr><td>8 × H100</td><td>4.0 TB</td><td>8 / 8</td><td><strong>98.43%</strong></td><td>98.22%</td><td><strong>23.20</strong></td><td>23.16</td><td><strong>2.900</strong> / 2.895</td></tr></tbody></table>
+<p><strong>CosmoFlow (AU bar 70%)</strong></p>
+<table><thead><tr><th>Scale</th><th>Dataset</th><th>Fuse / Worker</th><th>Curvine AU</th><th>Alluxio AU</th><th>Curvine B/W</th><th>Alluxio B/W</th><th>Per acc (OSS / commercial)</th></tr></thead><tbody><tr><td>5 × H100</td><td>500 GB</td><td>1 / 2</td><td><strong>75.45%</strong></td><td>75.39%</td><td><strong>2.77</strong></td><td>2.69</td><td><strong>0.554</strong> / 0.539</td></tr><tr><td>8 × H100</td><td>1.0 TB</td><td>2 / 8 vs 8 / 8</td><td>75.09%</td><td><strong>75.90%</strong></td><td><strong>4.41</strong></td><td>4.31</td><td><strong>0.551</strong> / 0.539</td></tr></tbody></table>
+<p>Across the eight groups: open source is higher on most points. Commercial Alluxio is still slightly better on ResNet 128-acc bandwidth and on two AU rows. This is not a sweep. It is also no longer "open source trailing commercial."</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-read-the-numbers">How to read the numbers<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#how-to-read-the-numbers" class="hash-link" aria-label="Direct link to How to read the numbers" title="Direct link to How to read the numbers">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="u-net3d-ahead-on-all-three-lines">U-Net3D: ahead on all three lines<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#u-net3d-ahead-on-all-three-lines" class="hash-link" aria-label="Direct link to U-Net3D: ahead on all three lines" title="Direct link to U-Net3D: ahead on all three lines">​</a></h3>
+<p>U-Net3D is a large sequential-read exam. One accelerator wants about 2.9 GiB/s; eight aggregate to about 23 GiB/s. AU, bandwidth, and per-accelerator bandwidth are all higher on Curvine. At 8 accelerators: AU 98.43% vs 98.22%, bandwidth 23.20 vs 23.16.</p>
+<p>That matches the implementation. Rust, user-space FUSE, sequential reads on NVMe — this path likes large blocks. Medical images, checkpoints, and long-sequence features look more like this exam. Open source does not have to flinch here.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="resnet-50-ahead-at-16--32-acc-13-behind-at-128">ResNet-50: ahead at 16 / 32 acc, 1.3% behind at 128<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#resnet-50-ahead-at-16--32-acc-13-behind-at-128" class="hash-link" aria-label="Direct link to ResNet-50: ahead at 16 / 32 acc, 1.3% behind at 128" title="Direct link to ResNet-50: ahead at 16 / 32 acc, 1.3% behind at 128">​</a></h3>
+<p>ResNet is a small-file exam. Samples are a little over 100 KB, opens are dense, and FUSE plus metadata get amplified.</p>
+<p>At 16 and 32 accelerators, open-source AU is higher (99.63% / 99.52%) and bandwidth is tied or slightly ahead. At 128 accelerators with 8 FUSE + 8 Workers, bandwidth is 23.83 vs 24.14, about 1.3%; AU is 99.03% vs 99.27%, commercial slightly higher. Both are well above the 90% bar.</p>
+<p><img decoding="async" loading="lazy" alt="Figure 6: ResNet-50 per-accelerator bandwidth vs scale" src="https://curvineio.github.io/assets/images/figure-6-962e6f110e4f2ad53f0f2c920f76a37a.png" width="1920" height="1024" class="img_ev3q"></p>
+<p><em>Figure 6: 16 → 32 acc almost overlap. At 128 acc, open source is 0.1861 per GPU, commercial 0.1886, about 1.3% apart.</em></p>
+<p>From 16 to 128 accelerators, Alluxio's per-accelerator bandwidth drops 0.4%; Curvine drops 1.7%. In the previous comparison this gap was about 5%. This round it is 1.3%. On small-file, high-concurrency scale-out, the commercial stack is still a bit flatter. Open source has moved from "a visible drop" to "a point and a bit."</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="cosmoflow-both-bandwidth-rows-ahead-5-acc-au-also-ahead">CosmoFlow: both bandwidth rows ahead, 5-acc AU also ahead<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#cosmoflow-both-bandwidth-rows-ahead-5-acc-au-also-ahead" class="hash-link" aria-label="Direct link to CosmoFlow: both bandwidth rows ahead, 5-acc AU also ahead" title="Direct link to CosmoFlow: both bandwidth rows ahead, 5-acc AU also ahead">​</a></h3>
+<p>CosmoFlow's bar is only 70%, but tail latency shows up easily. At 5 accelerators: AU 75.45% vs 75.39%, bandwidth 2.77 vs 2.69 — open source higher on both. At 8 accelerators: bandwidth 4.41 vs 4.31, still open source; AU 75.09% vs 75.90%, commercial higher by less than one point.</p>
+<p>Both pass 70%. The 8-accelerator client mix is not the same, so the bandwidth lead should not be read as a full win on that row. What we can say: on random reads, open source already feeds GPUs past the bar, and at 5 accelerators it also puts AU in front of the commercial number.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="closing">Closing<a href="https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio#closing" class="hash-link" aria-label="Direct link to Closing" title="Direct link to Closing">​</a></h2>
+<p>MLPerf compresses "is storage fast" into two questions: are the GPUs waiting, and does per-accelerator bandwidth fall as you scale. Commercial Alluxio used a Closed submission to show a DistCache can keep 128 emulated H100s above 99% AU. Open-source Curvine measured itself with the same ruler. It is ahead on most points, and a point-and-a-bit behind on a few.</p>
+<p>The numbers are above. For an open-source project, putting the scorecard on the table is more useful than another "we lead everywhere" line.</p>
+<p>Curvine repository: <a href="https://github.com/CurvineIO/curvine" target="_blank" rel="noopener noreferrer">https://github.com/CurvineIO/curvine</a></p>
+<hr>
+<p><strong>Notes and sources</strong></p>
+<ul>
+<li>Curvine: internal comparison, method aligned to MLPerf Storage v2.0, hardware aligned to Alluxio's official AWS topology. <strong>Not an official MLCommons Closed or Open submission.</strong></li>
+<li>Alluxio: Enterprise AI, MLCommons <code>storage_results_v2.0</code> Closed division. Per-scale bandwidth matches the <a href="https://documentation.alluxio.io/ee-ai-en/benchmark/benchmarking-ml-training-performance-with-mlperf" target="_blank" rel="noopener noreferrer">Alluxio MLPerf documentation</a>. Public materials often flatten ResNet AU to 99.57%, U-Net to 99.02%, CosmoFlow to 74.97%. This article uses the per-scale values.</li>
+<li>Units: bandwidth is reported as GiB/s.</li>
+<li>CosmoFlow 8-accelerator client counts are not identical on both sides.</li>
+<li>MLPerf® is a trademark of MLCommons Association. This article does not imply MLCommons endorsement of any product.</li>
+</ul>]]></content>
+        <author>
+            <name>David</name>
+            <uri>https://curvine.io</uri>
+        </author>
+        <category label="Hello" term="Hello"/>
+        <category label="benchmark" term="benchmark"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[tiered-kv-cache-sagemaker-hyperpod-curvine]]></title>
         <id>https://curvineio.github.io/blog/2026/08/13/tiered-kv-cache-sagemaker-hyperpod-curvine</id>
