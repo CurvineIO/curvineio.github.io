@@ -4,10 +4,132 @@
         <title>Curvine Blog</title>
         <link>https://curvineio.github.io/blog</link>
         <description>Curvine Blog</description>
-        <lastBuildDate>Mon, 07 Sep 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 08 Sep 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Curvine Architecture Deep Dive: System Design, Containers, and Data Flow]]></title>
+            <link>https://curvineio.github.io/blog/curvine-architecture-overview</link>
+            <guid>https://curvineio.github.io/blog/curvine-architecture-overview</guid>
+            <pubDate>Tue, 08 Sep 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Curvine is an AI-Native and Cloud-Native distributed cache file system, written entirely in Rust. Born at OPPO and now a CNCF Landscape project, it layers full POSIX semantics over cloud object storage — delivering local-disk speed for AI training, inference, and big data workloads while keeping S3, OSS, GCS, Azure Blob, and HDFS as the durable backbone.]]></description>
+            <content:encoded><![CDATA[<p>Curvine is an AI-Native and Cloud-Native distributed cache file system, written entirely in Rust. Born at OPPO and now a CNCF Landscape project, it layers full POSIX semantics over cloud object storage — delivering local-disk speed for AI training, inference, and big data workloads while keeping S3, OSS, GCS, Azure Blob, and HDFS as the durable backbone.</p>
+<p>This post walks through Curvine's architecture at three levels: the overall system context, the container-level service breakdown, and the end-to-end data flow for read and write operations.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-system-context-who-uses-curvine-and-what-it-depends-on">1. System Context: Who Uses Curvine and What It Depends On<a href="https://curvineio.github.io/blog/curvine-architecture-overview#1-system-context-who-uses-curvine-and-what-it-depends-on" class="hash-link" aria-label="Direct link to 1. System Context: Who Uses Curvine and What It Depends On" title="Direct link to 1. System Context: Who Uses Curvine and What It Depends On">​</a></h2>
+<p>At the highest level, Curvine sits between compute workloads and durable storage. It exposes multiple access protocols upward and fans out to object storage backends downward.</p>
+<p><img decoding="async" loading="lazy" alt="Curvine System Context" src="https://curvineio.github.io/assets/images/curvine-system-context-b876a2b24173e5900ec8292529e9e145.png" width="2408" height="1109" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="upstream-consumers">Upstream Consumers<a href="https://curvineio.github.io/blog/curvine-architecture-overview#upstream-consumers" class="hash-link" aria-label="Direct link to Upstream Consumers" title="Direct link to Upstream Consumers">​</a></h3>
+<table><thead><tr><th>Consumer</th><th>Access Method</th></tr></thead><tbody><tr><td><strong>AI Training Jobs</strong> (PyTorch, TensorFlow)</td><td>POSIX I/O via FUSE mount or S3-compatible gateway</td></tr><tr><td><strong>Big Data Engines</strong> (Spark, Flink, Presto)</td><td>HDFS protocol adapter or POSIX mount</td></tr><tr><td><strong>AI Agents</strong> (RAG, Inference)</td><td>Python/Java SDK, LanceDB vector store integration</td></tr><tr><td><strong>DevOps / SRE</strong></td><td>CLI tool (<code>cv</code>), Kubernetes kubectl, Web Dashboard</td></tr><tr><td><strong>Kubernetes</strong></td><td>CSI Driver for dynamic PV/PVC provisioning</td></tr></tbody></table>
+<p>Curvine integrates with big data engines transparently — no custom connectors are needed. Spark, Flink, and Presto access Curvine through standard POSIX or HDFS interfaces, so existing pipelines work without modification.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="downstream-storage-backends">Downstream Storage Backends<a href="https://curvineio.github.io/blog/curvine-architecture-overview#downstream-storage-backends" class="hash-link" aria-label="Direct link to Downstream Storage Backends" title="Direct link to Downstream Storage Backends">​</a></h3>
+<p>All persistent storage is abstracted behind the <strong>UFS (Underlying File System)</strong> layer:</p>
+<ul>
+<li><strong>AWS S3</strong>, <strong>Alibaba OSS</strong>, <strong>Google GCS</strong>, <strong>Azure Blob</strong>, <strong>Tencent COS</strong> — via Apache OpenDAL adapters</li>
+<li><strong>HDFS</strong> / <strong>WebHDFS</strong> — via JNI bridge or OpenDAL native</li>
+<li><strong>Alibaba OSS-HDFS (JindoFS)</strong> — via native FFI adapter</li>
+<li><strong>MinIO</strong> and any S3-compatible store</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="observability">Observability<a href="https://curvineio.github.io/blog/curvine-architecture-overview#observability" class="hash-link" aria-label="Direct link to Observability" title="Direct link to Observability">​</a></h3>
+<p>Curvine exports Prometheus metrics from all services and ships pre-built Grafana dashboard templates for cluster health, cache hit rates, worker utilization, and I/O throughput monitoring.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-container-view-services-protocols-and-internal-boundaries">2. Container View: Services, Protocols, and Internal Boundaries<a href="https://curvineio.github.io/blog/curvine-architecture-overview#2-container-view-services-protocols-and-internal-boundaries" class="hash-link" aria-label="Direct link to 2. Container View: Services, Protocols, and Internal Boundaries" title="Direct link to 2. Container View: Services, Protocols, and Internal Boundaries">​</a></h2>
+<p>Zooming into the Curvine cluster, the architecture separates cleanly into three planes: control, data, and access protocols.</p>
+<p><img decoding="async" loading="lazy" alt="Curvine Container View" src="https://curvineio.github.io/assets/images/curvine-containers-d9c368da60170873dd871d39236d4ce2.png" width="2435" height="2616" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="control-plane">Control Plane<a href="https://curvineio.github.io/blog/curvine-architecture-overview#control-plane" class="hash-link" aria-label="Direct link to Control Plane" title="Direct link to Control Plane">​</a></h3>
+<p>The control plane manages metadata, scheduling, and cluster coordination.</p>
+<p><strong>Master</strong> is the brain of the cluster. It runs as a Raft-replicated leader node responsible for:</p>
+<ul>
+<li><strong>Namespace &amp; Inode Tree</strong> — the complete file and directory hierarchy</li>
+<li><strong>Block Map &amp; Scheduling</strong> — mapping file blocks to worker nodes, with five scheduling policies (local, round-robin, random, load-based, weighted)</li>
+<li><strong>Worker Heartbeat</strong> — health monitoring and capacity tracking</li>
+<li><strong>Mount Table &amp; Quota</strong> — UFS mount point management and per-directory quotas</li>
+<li><strong>TTL &amp; Eviction</strong> — time-to-live management and LFU-based cache eviction</li>
+<li><strong>Job Orchestration</strong> — coordinating bulk data load and export jobs</li>
+<li><strong>Persistence</strong> — RocksDB for inode storage, Raft journal for replication and HA</li>
+</ul>
+<p><strong>MDS (Metadata Service)</strong> is an optional, stateless metadata path backed by FoundationDB (production) or in-memory store (development). It provides a high-throughput metadata alternative for workloads that need to bypass the Raft journal.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="data-plane">Data Plane<a href="https://curvineio.github.io/blog/curvine-architecture-overview#data-plane" class="hash-link" aria-label="Direct link to Data Plane" title="Direct link to Data Plane">​</a></h3>
+<p><strong>Workers</strong> are the data nodes that store and serve file blocks. Each worker implements a <strong>multi-tier cache hierarchy</strong>:</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">MEM → SSD → HDD → SPDK (NVMe-oF/RDMA)</span><br></span></code></pre></div></div>
+<p>Hot data automatically promotes to faster tiers; cold data demotes or evicts. Each worker maintains:</p>
+<ul>
+<li><strong>Block Store</strong> — backed by RocksDB for block metadata, local filesystems for block data</li>
+<li><strong>Read/Write Handlers</strong> — direct RPC handlers for client I/O</li>
+<li><strong>Replication</strong> — block-level replication managed by the Master</li>
+<li><strong>Heartbeat</strong> — periodic status reports to the Master</li>
+</ul>
+<p>Workers can optionally use <strong>SPDK</strong> (Storage Performance Development Kit) for direct NVMe access via RDMA, bypassing the kernel for ultra-low latency.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="access-protocols">Access Protocols<a href="https://curvineio.github.io/blog/curvine-architecture-overview#access-protocols" class="hash-link" aria-label="Direct link to Access Protocols" title="Direct link to Access Protocols">​</a></h3>
+<p>Curvine exposes five access paths, all converging on the same internal RPC layer:</p>
+<table><thead><tr><th>Protocol</th><th>Implementation</th><th>Use Case</th></tr></thead><tbody><tr><td><strong>FUSE</strong></td><td><code>curvine-fuse</code> (fuse2/fuse3)</td><td>POSIX filesystem mount for any Linux application</td></tr><tr><td><strong>Java SDK</strong></td><td>JNI bindings via <code>curvine-libsdk-java</code></td><td>JVM-based big data applications</td></tr><tr><td><strong>Python SDK</strong></td><td>PyO3 bindings via <code>curvine-libsdk-python</code></td><td>AI/ML training scripts, data pipelines</td></tr><tr><td><strong>Rust SDK</strong></td><td><code>curvine-sdk-core</code></td><td>Native Rust applications</td></tr><tr><td><strong>CLI</strong></td><td><code>cv</code> command</td><td>File operations, benchmarking, mount management</td></tr><tr><td><strong>Web Dashboard</strong></td><td>axum REST API</td><td>Cluster monitoring and administration</td></tr></tbody></table>
+<p><strong>Unified FS</strong> (<code>curvine-unified-fs</code>) is the internal abstraction that transparently falls back to UFS (object storage) on cache miss, so applications never need to know whether data is cached locally or fetched remotely.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="kubernetes-integration">Kubernetes Integration<a href="https://curvineio.github.io/blog/curvine-architecture-overview#kubernetes-integration" class="hash-link" aria-label="Direct link to Kubernetes Integration" title="Direct link to Kubernetes Integration">​</a></h3>
+<p>The <strong>CSI Driver</strong> (<code>curvine-csi</code>) is a Go binary implementing the Container Storage Interface spec:</p>
+<ul>
+<li><strong>Controller</strong> — dynamic PV provisioning (CreateVolume/DeleteVolume)</li>
+<li><strong>Node Plugin</strong> — FUSE mount lifecycle management per node</li>
+<li><strong>Two modes</strong>: Standalone (FUSE in independent MountPod, recommended) or Embedded (FUSE inside CSI container)</li>
+<li><strong>StorageClass</strong> — <code>volumeBindingMode: Immediate</code>, <code>allowVolumeExpansion: true</code></li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="transfer-service">Transfer Service<a href="https://curvineio.github.io/blog/curvine-architecture-overview#transfer-service" class="hash-link" aria-label="Direct link to Transfer Service" title="Direct link to Transfer Service">​</a></h3>
+<p>The <strong>Transfer Service</strong> handles bulk data movement — loading data from UFS into Curvine cache or exporting Curvine data to external systems. It maintains its own job store (SQLite by default, with MySQL and PostgreSQL options) and can run standalone or embedded in the Master.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="lancedb-integration">LanceDB Integration<a href="https://curvineio.github.io/blog/curvine-architecture-overview#lancedb-integration" class="hash-link" aria-label="Direct link to LanceDB Integration" title="Direct link to LanceDB Integration">​</a></h3>
+<p>Curvine integrates with <strong>LanceDB</strong> to provide a vector database layer on top of Curvine's object storage. Built on the Lance columnar format and Apache Arrow, it enables AI applications to store and query vector embeddings directly through Curvine's storage backend.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-data-flow-how-read-and-write-operations-traverse-the-system">3. Data Flow: How Read and Write Operations Traverse the System<a href="https://curvineio.github.io/blog/curvine-architecture-overview#3-data-flow-how-read-and-write-operations-traverse-the-system" class="hash-link" aria-label="Direct link to 3. Data Flow: How Read and Write Operations Traverse the System" title="Direct link to 3. Data Flow: How Read and Write Operations Traverse the System">​</a></h2>
+<p>Understanding the data flow reveals why Curvine achieves local-disk performance for hot data while maintaining object-storage durability.</p>
+<p><img decoding="async" loading="lazy" alt="Curvine Data Flow" src="https://curvineio.github.io/assets/images/curvine-data-flow-4e6f1bb26a81e50efcf0f52eb07ca1b1.png" width="2475" height="1379" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="read-path-6-steps">Read Path (6 Steps)<a href="https://curvineio.github.io/blog/curvine-architecture-overview#read-path-6-steps" class="hash-link" aria-label="Direct link to Read Path (6 Steps)" title="Direct link to Read Path (6 Steps)">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Protocol Layer → Unified FS → Master (metadata) → Worker (data) → [UFS on miss]</span><br></span></code></pre></div></div>
+<ol>
+<li>
+<p><strong>Metadata Lookup</strong> — The client sends an RPC to the Master to resolve the file path to inode metadata and block locations.</p>
+</li>
+<li>
+<p><strong>Block Location Response</strong> — The Master returns the list of block IDs and the worker nodes that hold them (or can fetch them).</p>
+</li>
+<li>
+<p><strong>Scheduled Read</strong> — The client connects directly to the assigned Worker via RPC to read the requested blocks. This avoids routing data through the Master.</p>
+</li>
+<li>
+<p><strong>Cache Hit (Fast Path)</strong> — The Worker serves the block from its multi-tier cache (MEM → SSD → HDD → SPDK). This is the hot path — latency is comparable to local disk.</p>
+</li>
+<li>
+<p><strong>Cache Miss (UFS Fetch)</strong> — If the block is not cached, the Worker fetches it from the underlying object storage (S3, OSS, HDFS, etc.) via the OpenDAL adapter or native FFI bridge.</p>
+</li>
+<li>
+<p><strong>Cache Promotion</strong> — The fetched block is written into the Worker's cache, promoting it to the appropriate tier based on access frequency. Subsequent reads hit the cache directly.</p>
+</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="write-path">Write Path<a href="https://curvineio.github.io/blog/curvine-architecture-overview#write-path" class="hash-link" aria-label="Direct link to Write Path" title="Direct link to Write Path">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Protocol Layer → Unified FS → Worker (write) → UFS (write-through)</span><br></span></code></pre></div></div>
+<ul>
+<li>The client writes blocks directly to the assigned Worker via RPC.</li>
+<li>The Worker writes to its local cache tier and performs <strong>write-through</strong> to the underlying object storage for durability.</li>
+<li>The Master is updated with new block metadata via the Raft-replicated journal.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="key-design-properties">Key Design Properties<a href="https://curvineio.github.io/blog/curvine-architecture-overview#key-design-properties" class="hash-link" aria-label="Direct link to Key Design Properties" title="Direct link to Key Design Properties">​</a></h3>
+<ul>
+<li><strong>Metadata and data paths are separated</strong> — metadata goes through the Master (or MDS), data goes directly to Workers. This prevents the Master from becoming a throughput bottleneck.</li>
+<li><strong>Client-to-Worker direct I/O</strong> — once the Master provides block locations, clients talk to Workers directly. This scales data throughput linearly with the number of Workers.</li>
+<li><strong>Transparent UFS fallback</strong> — the Unified FS layer handles cache misses transparently. Applications see a single POSIX namespace regardless of where data physically lives.</li>
+<li><strong>Multi-tier automatic promotion</strong> — frequently accessed data migrates to faster tiers (MEM/SSD), while cold data demotes to HDD or evicts entirely.</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-technology-stack-summary">4. Technology Stack Summary<a href="https://curvineio.github.io/blog/curvine-architecture-overview#4-technology-stack-summary" class="hash-link" aria-label="Direct link to 4. Technology Stack Summary" title="Direct link to 4. Technology Stack Summary">​</a></h2>
+<table><thead><tr><th>Layer</th><th>Technology</th></tr></thead><tbody><tr><td><strong>Language</strong></td><td>Rust (core), Go (CSI driver)</td></tr><tr><td><strong>Async Runtime</strong></td><td>Tokio</td></tr><tr><td><strong>RPC</strong></td><td>Custom protobuf-based (prost) over TCP</td></tr><tr><td><strong>Metadata Store</strong></td><td>RocksDB + Raft journal (Master), FoundationDB (MDS)</td></tr><tr><td><strong>Object Storage</strong></td><td>Apache OpenDAL (S3/OSS/GCS/Azure/COS/HDFS/WebHDFS)</td></tr><tr><td><strong>Hardware Acceleration</strong></td><td>SPDK (NVMe-oF/RDMA), mimalloc/jemalloc</td></tr><tr><td><strong>Vector DB</strong></td><td>LanceDB + Lance + Apache Arrow</td></tr><tr><td><strong>Kubernetes</strong></td><td>CSI Driver (Go), FUSE MountPod</td></tr><tr><td><strong>Observability</strong></td><td>Prometheus metrics + Grafana dashboards</td></tr><tr><td><strong>Build</strong></td><td>Makefile + Cargo workspace, Docker (CentOS/Rocky/Ubuntu/Amazon)</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-summary">5. Summary<a href="https://curvineio.github.io/blog/curvine-architecture-overview#5-summary" class="hash-link" aria-label="Direct link to 5. Summary" title="Direct link to 5. Summary">​</a></h2>
+<p>Curvine's architecture is designed around three principles:</p>
+<ol>
+<li><strong>Separation of concerns</strong> — Control plane (Master/MDS) handles metadata; data plane (Workers) handles I/O; protocol layer handles access diversity.</li>
+<li><strong>Performance through caching</strong> — Multi-tier cache (MEM → SSD → HDD → SPDK) with automatic promotion delivers local-disk latency for hot data.</li>
+<li><strong>Durability through abstraction</strong> — The UFS layer decouples Curvine from any single storage backend, allowing S3, OSS, GCS, Azure, or HDFS to serve as the persistent layer without application changes.</li>
+</ol>
+<p>The result is a system that gives AI training jobs, big data engines, and Kubernetes workloads a unified POSIX interface with the speed of local storage and the durability of cloud object storage — all in a single Rust-based binary.</p>]]></content:encoded>
+            <category>architecture</category>
+        </item>
         <item>
             <title><![CDATA[mlperf-storage-curvine-vs-alluxio]]></title>
             <link>https://curvineio.github.io/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio</link>
