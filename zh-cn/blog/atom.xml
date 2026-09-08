@@ -8,130 +8,125 @@
     <subtitle>Curvine Blog</subtitle>
     <icon>https://curvineio.github.io/zh-cn/img/curvine_logo.ico</icon>
     <entry>
-        <title type="html"><![CDATA[Curvine Architecture Deep Dive: System Design, Containers, and Data Flow]]></title>
-        <id>https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview</id>
-        <link href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview"/>
+        <title type="html"><![CDATA[Curvine 架构深度解析：系统设计、容器架构与数据流]]></title>
+        <id>https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview</id>
+        <link href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview"/>
         <updated>2026-09-08T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Curvine is an AI-Native and Cloud-Native distributed cache file system, written entirely in Rust. Born at OPPO and now a CNCF Landscape project, it layers full POSIX semantics over cloud object storage — delivering local-disk speed for AI training, inference, and big data workloads while keeping S3, OSS, GCS, Azure Blob, and HDFS as the durable backbone.]]></summary>
-        <content type="html"><![CDATA[<p>Curvine is an AI-Native and Cloud-Native distributed cache file system, written entirely in Rust. Born at OPPO and now a CNCF Landscape project, it layers full POSIX semantics over cloud object storage — delivering local-disk speed for AI training, inference, and big data workloads while keeping S3, OSS, GCS, Azure Blob, and HDFS as the durable backbone.</p>
-<p>This post walks through Curvine's architecture at three levels: the overall system context, the container-level service breakdown, and the end-to-end data flow for read and write operations.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-system-context-who-uses-curvine-and-what-it-depends-on">1. System Context: Who Uses Curvine and What It Depends On<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#1-system-context-who-uses-curvine-and-what-it-depends-on" class="hash-link" aria-label="1. System Context: Who Uses Curvine and What It Depends On的直接链接" title="1. System Context: Who Uses Curvine and What It Depends On的直接链接">​</a></h2>
-<p>At the highest level, Curvine sits between compute workloads and durable storage. It exposes multiple access protocols upward and fans out to object storage backends downward.</p>
-<p><img decoding="async" loading="lazy" alt="Curvine System Context" src="https://curvineio.github.io/zh-cn/assets/images/curvine-system-context-b876a2b24173e5900ec8292529e9e145.png" width="2408" height="1109" class="img_ev3q"></p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="upstream-consumers">Upstream Consumers<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#upstream-consumers" class="hash-link" aria-label="Upstream Consumers的直接链接" title="Upstream Consumers的直接链接">​</a></h3>
-<table><thead><tr><th>Consumer</th><th>Access Method</th></tr></thead><tbody><tr><td><strong>AI Training Jobs</strong> (PyTorch, TensorFlow)</td><td>POSIX I/O via FUSE mount or S3-compatible gateway</td></tr><tr><td><strong>Big Data Engines</strong> (Spark, Flink, Presto)</td><td>HDFS protocol adapter or POSIX mount</td></tr><tr><td><strong>AI Agents</strong> (RAG, Inference)</td><td>Python/Java SDK, LanceDB vector store integration</td></tr><tr><td><strong>DevOps / SRE</strong></td><td>CLI tool (<code>cv</code>), Kubernetes kubectl, Web Dashboard</td></tr><tr><td><strong>Kubernetes</strong></td><td>CSI Driver for dynamic PV/PVC provisioning</td></tr></tbody></table>
-<p>Curvine integrates with big data engines transparently — no custom connectors are needed. Spark, Flink, and Presto access Curvine through standard POSIX or HDFS interfaces, so existing pipelines work without modification.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="downstream-storage-backends">Downstream Storage Backends<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#downstream-storage-backends" class="hash-link" aria-label="Downstream Storage Backends的直接链接" title="Downstream Storage Backends的直接链接">​</a></h3>
-<p>All persistent storage is abstracted behind the <strong>UFS (Underlying File System)</strong> layer:</p>
+        <summary type="html"><![CDATA[Curvine 是一个 AI-Native 和 Cloud-Native 的分布式缓存文件系统，完全使用 Rust 编写。它诞生于 OPPO，目前是 CNCF Landscape 项目，在云对象存储之上提供完整的 POSIX 语义，为 AI 训练、推理和大数据负载提供本地磁盘级的性能，同时以 S3、OSS、GCS、Azure Blob 和 HDFS 作为持久化存储后端。]]></summary>
+        <content type="html"><![CDATA[<p>Curvine 是一个 AI-Native 和 Cloud-Native 的分布式缓存文件系统，完全使用 Rust 编写。它诞生于 OPPO，目前是 CNCF Landscape 项目，在云对象存储之上提供完整的 POSIX 语义，为 AI 训练、推理和大数据负载提供本地磁盘级的性能，同时以 S3、OSS、GCS、Azure Blob 和 HDFS 作为持久化存储后端。</p>
+<p>本文将从三个维度剖析 Curvine 的架构：整体系统上下文、容器级服务拆分，以及端到端的读写数据流。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="一系统上下文谁在使用-curvine它依赖什么">一、系统上下文：谁在使用 Curvine，它依赖什么<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E4%B8%80%E7%B3%BB%E7%BB%9F%E4%B8%8A%E4%B8%8B%E6%96%87%E8%B0%81%E5%9C%A8%E4%BD%BF%E7%94%A8-curvine%E5%AE%83%E4%BE%9D%E8%B5%96%E4%BB%80%E4%B9%88" class="hash-link" aria-label="一、系统上下文：谁在使用 Curvine，它依赖什么的直接链接" title="一、系统上下文：谁在使用 Curvine，它依赖什么的直接链接">​</a></h2>
+<p>从最高层视角来看，Curvine 位于计算负载和持久化存储之间。它向上暴露多种访问协议，向下扇出到各类对象存储后端。</p>
+<p><img decoding="async" loading="lazy" alt="Curvine 系统上下文" src="https://curvineio.github.io/zh-cn/assets/images/curvine-system-context-b876a2b24173e5900ec8292529e9e145.png" width="2408" height="1109" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="上游消费者">上游消费者<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E4%B8%8A%E6%B8%B8%E6%B6%88%E8%B4%B9%E8%80%85" class="hash-link" aria-label="上游消费者的直接链接" title="上游消费者的直接链接">​</a></h3>
+<table><thead><tr><th>消费者</th><th>访问方式</th></tr></thead><tbody><tr><td><strong>AI 训练任务</strong>（PyTorch、TensorFlow）</td><td>通过 FUSE 挂载的 POSIX I/O 或 S3 兼容网关</td></tr><tr><td><strong>大数据引擎</strong>（Spark、Flink、Presto）</td><td>HDFS 协议适配器或 POSIX 挂载</td></tr><tr><td><strong>AI Agent</strong>（RAG、推理）</td><td>Python/Java SDK，LanceDB 向量存储集成</td></tr><tr><td><strong>DevOps / SRE</strong></td><td>CLI 工具（<code>cv</code>）、Kubernetes kubectl、Web 控制台</td></tr><tr><td><strong>Kubernetes</strong></td><td>CSI Driver 动态 PV/PVC 供给</td></tr></tbody></table>
+<p>Curvine 与大数据引擎的集成是透明的——无需自定义连接器。Spark、Flink 和 Presto 通过标准 POSIX 或 HDFS 接口访问 Curvine，现有管道无需任何修改即可使用。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="下游存储后端">下游存储后端<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E4%B8%8B%E6%B8%B8%E5%AD%98%E5%82%A8%E5%90%8E%E7%AB%AF" class="hash-link" aria-label="下游存储后端的直接链接" title="下游存储后端的直接链接">​</a></h3>
+<p>所有持久化存储都通过 <strong>UFS（Underlying File System，底层文件系统）</strong> 层进行抽象：</p>
 <ul>
-<li><strong>AWS S3</strong>, <strong>Alibaba OSS</strong>, <strong>Google GCS</strong>, <strong>Azure Blob</strong>, <strong>Tencent COS</strong> — via Apache OpenDAL adapters</li>
-<li><strong>HDFS</strong> / <strong>WebHDFS</strong> — via JNI bridge or OpenDAL native</li>
-<li><strong>Alibaba OSS-HDFS (JindoFS)</strong> — via native FFI adapter</li>
-<li><strong>MinIO</strong> and any S3-compatible store</li>
+<li><strong>AWS S3</strong>、<strong>阿里云 OSS</strong>、<strong>Google GCS</strong>、<strong>Azure Blob</strong>、<strong>腾讯云 COS</strong> — 通过 Apache OpenDAL 适配器</li>
+<li><strong>HDFS</strong> / <strong>WebHDFS</strong> — 通过 JNI 桥接或 OpenDAL 原生支持</li>
+<li><strong>阿里云 OSS-HDFS（JindoFS）</strong> — 通过原生 FFI 适配器</li>
+<li><strong>MinIO</strong> 及任何 S3 兼容存储</li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="observability">Observability<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#observability" class="hash-link" aria-label="Observability的直接链接" title="Observability的直接链接">​</a></h3>
-<p>Curvine exports Prometheus metrics from all services and ships pre-built Grafana dashboard templates for cluster health, cache hit rates, worker utilization, and I/O throughput monitoring.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="可观测性">可观测性<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7" class="hash-link" aria-label="可观测性的直接链接" title="可观测性的直接链接">​</a></h3>
+<p>Curvine 从所有服务导出 Prometheus 指标，并内置 Grafana 仪表盘模板，用于集群健康、缓存命中率、Worker 利用率和 I/O 吞吐量的监控。</p>
 <hr>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-container-view-services-protocols-and-internal-boundaries">2. Container View: Services, Protocols, and Internal Boundaries<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#2-container-view-services-protocols-and-internal-boundaries" class="hash-link" aria-label="2. Container View: Services, Protocols, and Internal Boundaries的直接链接" title="2. Container View: Services, Protocols, and Internal Boundaries的直接链接">​</a></h2>
-<p>Zooming into the Curvine cluster, the architecture separates cleanly into three planes: control, data, and access protocols.</p>
-<p><img decoding="async" loading="lazy" alt="Curvine Container View" src="https://curvineio.github.io/zh-cn/assets/images/curvine-containers-d9c368da60170873dd871d39236d4ce2.png" width="2435" height="2616" class="img_ev3q"></p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="control-plane">Control Plane<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#control-plane" class="hash-link" aria-label="Control Plane的直接链接" title="Control Plane的直接链接">​</a></h3>
-<p>The control plane manages metadata, scheduling, and cluster coordination.</p>
-<p><strong>Master</strong> is the brain of the cluster. It runs as a Raft-replicated leader node responsible for:</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="二容器视图服务协议与内部边界">二、容器视图：服务、协议与内部边界<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E4%BA%8C%E5%AE%B9%E5%99%A8%E8%A7%86%E5%9B%BE%E6%9C%8D%E5%8A%A1%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%86%85%E9%83%A8%E8%BE%B9%E7%95%8C" class="hash-link" aria-label="二、容器视图：服务、协议与内部边界的直接链接" title="二、容器视图：服务、协议与内部边界的直接链接">​</a></h2>
+<p>深入 Curvine 集群内部，架构清晰地分为三个平面：控制面、数据面和访问协议层。</p>
+<p><img decoding="async" loading="lazy" alt="Curvine 容器视图" src="https://curvineio.github.io/zh-cn/assets/images/curvine-containers-d9c368da60170873dd871d39236d4ce2.png" width="2435" height="2616" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="控制面">控制面<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E6%8E%A7%E5%88%B6%E9%9D%A2" class="hash-link" aria-label="控制面的直接链接" title="控制面的直接链接">​</a></h3>
+<p>控制面负责元数据管理、调度和集群协调。</p>
+<p><strong>Master</strong> 是集群的大脑。它以 Raft 复制的 Leader 节点运行，负责：</p>
 <ul>
-<li><strong>Namespace &amp; Inode Tree</strong> — the complete file and directory hierarchy</li>
-<li><strong>Block Map &amp; Scheduling</strong> — mapping file blocks to worker nodes, with five scheduling policies (local, round-robin, random, load-based, weighted)</li>
-<li><strong>Worker Heartbeat</strong> — health monitoring and capacity tracking</li>
-<li><strong>Mount Table &amp; Quota</strong> — UFS mount point management and per-directory quotas</li>
-<li><strong>TTL &amp; Eviction</strong> — time-to-live management and LFU-based cache eviction</li>
-<li><strong>Job Orchestration</strong> — coordinating bulk data load and export jobs</li>
-<li><strong>Persistence</strong> — RocksDB for inode storage, Raft journal for replication and HA</li>
+<li><strong>命名空间与 Inode 树</strong> — 完整的文件和目录层级结构</li>
+<li><strong>Block Map 与调度</strong> — 将文件块映射到 Worker 节点，支持五种调度策略（本地优先、轮询、随机、负载均衡、加权）</li>
+<li><strong>Worker 心跳</strong> — 健康监测和容量追踪</li>
+<li><strong>挂载表与配额</strong> — UFS 挂载点管理和目录级配额</li>
+<li><strong>TTL 与淘汰</strong> — 生存期管理和基于 LFU 的缓存淘汰</li>
+<li><strong>任务编排</strong> — 协调批量数据加载和导出任务</li>
+<li><strong>持久化</strong> — RocksDB 存储 inode 数据，Raft 日志用于复制和高可用</li>
 </ul>
-<p><strong>MDS (Metadata Service)</strong> is an optional, stateless metadata path backed by FoundationDB (production) or in-memory store (development). It provides a high-throughput metadata alternative for workloads that need to bypass the Raft journal.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="data-plane">Data Plane<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#data-plane" class="hash-link" aria-label="Data Plane的直接链接" title="Data Plane的直接链接">​</a></h3>
-<p><strong>Workers</strong> are the data nodes that store and serve file blocks. Each worker implements a <strong>multi-tier cache hierarchy</strong>:</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">MEM → SSD → HDD → SPDK (NVMe-oF/RDMA)</span><br></span></code></pre></div></div>
-<p>Hot data automatically promotes to faster tiers; cold data demotes or evicts. Each worker maintains:</p>
+<p><strong>MDS（元数据服务）</strong> 是一个可选的无状态元数据路径，后端为 FoundationDB（生产环境）或内存存储（开发环境）。它为需要绕过 Raft 日志的高吞吐量工作负载提供替代的元数据通道。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="数据面">数据面<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E6%95%B0%E6%8D%AE%E9%9D%A2" class="hash-link" aria-label="数据面的直接链接" title="数据面的直接链接">​</a></h3>
+<p><strong>Worker</strong> 是存储和服务文件块的数据节点。每个 Worker 实现了<strong>多级缓存层级</strong>：</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">MEM → SSD → HDD → SPDK（NVMe-oF/RDMA）</span><br></span></code></pre></div></div>
+<p>热数据自动提升到更快的层级；冷数据降级或淘汰。每个 Worker 维护：</p>
 <ul>
-<li><strong>Block Store</strong> — backed by RocksDB for block metadata, local filesystems for block data</li>
-<li><strong>Read/Write Handlers</strong> — direct RPC handlers for client I/O</li>
-<li><strong>Replication</strong> — block-level replication managed by the Master</li>
-<li><strong>Heartbeat</strong> — periodic status reports to the Master</li>
+<li><strong>Block Store</strong> — 以 RocksDB 存储块元数据，本地文件系统存储块数据</li>
+<li><strong>读写处理器</strong> — 直接响应客户端 I/O 的 RPC 处理器</li>
+<li><strong>复制</strong> — 由 Master 管理的块级复制</li>
+<li><strong>心跳</strong> — 定期向 Master 上报状态</li>
 </ul>
-<p>Workers can optionally use <strong>SPDK</strong> (Storage Performance Development Kit) for direct NVMe access via RDMA, bypassing the kernel for ultra-low latency.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="access-protocols">Access Protocols<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#access-protocols" class="hash-link" aria-label="Access Protocols的直接链接" title="Access Protocols的直接链接">​</a></h3>
-<p>Curvine exposes five access paths, all converging on the same internal RPC layer:</p>
-<table><thead><tr><th>Protocol</th><th>Implementation</th><th>Use Case</th></tr></thead><tbody><tr><td><strong>FUSE</strong></td><td><code>curvine-fuse</code> (fuse2/fuse3)</td><td>POSIX filesystem mount for any Linux application</td></tr><tr><td><strong>Java SDK</strong></td><td>JNI bindings via <code>curvine-libsdk-java</code></td><td>JVM-based big data applications</td></tr><tr><td><strong>Python SDK</strong></td><td>PyO3 bindings via <code>curvine-libsdk-python</code></td><td>AI/ML training scripts, data pipelines</td></tr><tr><td><strong>Rust SDK</strong></td><td><code>curvine-sdk-core</code></td><td>Native Rust applications</td></tr><tr><td><strong>CLI</strong></td><td><code>cv</code> command</td><td>File operations, benchmarking, mount management</td></tr><tr><td><strong>Web Dashboard</strong></td><td>axum REST API</td><td>Cluster monitoring and administration</td></tr></tbody></table>
-<p><strong>Unified FS</strong> (<code>curvine-unified-fs</code>) is the internal abstraction that transparently falls back to UFS (object storage) on cache miss, so applications never need to know whether data is cached locally or fetched remotely.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="kubernetes-integration">Kubernetes Integration<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#kubernetes-integration" class="hash-link" aria-label="Kubernetes Integration的直接链接" title="Kubernetes Integration的直接链接">​</a></h3>
-<p>The <strong>CSI Driver</strong> (<code>curvine-csi</code>) is a Go binary implementing the Container Storage Interface spec:</p>
+<p>Worker 可选使用 <strong>SPDK</strong>（Storage Performance Development Kit）通过 RDMA 直接访问 NVMe 设备，绕过内核以获得超低延迟。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="访问协议">访问协议<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E8%AE%BF%E9%97%AE%E5%8D%8F%E8%AE%AE" class="hash-link" aria-label="访问协议的直接链接" title="访问协议的直接链接">​</a></h3>
+<p>Curvine 暴露五种访问路径，全部汇聚到同一内部 RPC 层：</p>
+<table><thead><tr><th>协议</th><th>实现</th><th>适用场景</th></tr></thead><tbody><tr><td><strong>FUSE</strong></td><td><code>curvine-fuse</code>（fuse2/fuse3）</td><td>任何 Linux 应用的 POSIX 文件系统挂载</td></tr><tr><td><strong>Java SDK</strong></td><td>通过 <code>curvine-libsdk-java</code> 的 JNI 绑定</td><td>JVM 大数据应用</td></tr><tr><td><strong>Python SDK</strong></td><td>通过 <code>curvine-libsdk-python</code> 的 PyO3 绑定</td><td>AI/ML 训练脚本、数据管道</td></tr><tr><td><strong>Rust SDK</strong></td><td><code>curvine-sdk-core</code></td><td>原生 Rust 应用</td></tr><tr><td><strong>CLI</strong></td><td><code>cv</code> 命令</td><td>文件操作、性能测试、挂载管理</td></tr><tr><td><strong>Web 控制台</strong></td><td>axum REST API</td><td>集群监控和管理</td></tr></tbody></table>
+<p><strong>Unified FS</strong>（<code>curvine-unified-fs</code>）是内部抽象层，在缓存未命中时透明地回退到 UFS（对象存储），应用无需关心数据是本地缓存还是远端获取。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="kubernetes-集成">Kubernetes 集成<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#kubernetes-%E9%9B%86%E6%88%90" class="hash-link" aria-label="Kubernetes 集成的直接链接" title="Kubernetes 集成的直接链接">​</a></h3>
+<p><strong>CSI Driver</strong>（<code>curvine-csi</code>）是一个 Go 编写的容器存储接口实现：</p>
 <ul>
-<li><strong>Controller</strong> — dynamic PV provisioning (CreateVolume/DeleteVolume)</li>
-<li><strong>Node Plugin</strong> — FUSE mount lifecycle management per node</li>
-<li><strong>Two modes</strong>: Standalone (FUSE in independent MountPod, recommended) or Embedded (FUSE inside CSI container)</li>
-<li><strong>StorageClass</strong> — <code>volumeBindingMode: Immediate</code>, <code>allowVolumeExpansion: true</code></li>
+<li><strong>Controller</strong> — 动态 PV 供给（CreateVolume/DeleteVolume）</li>
+<li><strong>Node Plugin</strong> — 每个节点的 FUSE 挂载生命周期管理</li>
+<li><strong>两种模式</strong>：Standalone（FUSE 在独立 MountPod 中，推荐）或 Embedded（FUSE 在 CSI 容器内）</li>
+<li><strong>StorageClass</strong> — <code>volumeBindingMode: Immediate</code>，<code>allowVolumeExpansion: true</code></li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="transfer-service">Transfer Service<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#transfer-service" class="hash-link" aria-label="Transfer Service的直接链接" title="Transfer Service的直接链接">​</a></h3>
-<p>The <strong>Transfer Service</strong> handles bulk data movement — loading data from UFS into Curvine cache or exporting Curvine data to external systems. It maintains its own job store (SQLite by default, with MySQL and PostgreSQL options) and can run standalone or embedded in the Master.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="lancedb-integration">LanceDB Integration<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#lancedb-integration" class="hash-link" aria-label="LanceDB Integration的直接链接" title="LanceDB Integration的直接链接">​</a></h3>
-<p>Curvine integrates with <strong>LanceDB</strong> to provide a vector database layer on top of Curvine's object storage. Built on the Lance columnar format and Apache Arrow, it enables AI applications to store and query vector embeddings directly through Curvine's storage backend.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="transfer-service数据传输服务">Transfer Service（数据传输服务）<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#transfer-service%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E6%9C%8D%E5%8A%A1" class="hash-link" aria-label="Transfer Service（数据传输服务）的直接链接" title="Transfer Service（数据传输服务）的直接链接">​</a></h3>
+<p>Transfer Service 处理批量数据搬运——将数据从 UFS 加载到 Curvine 缓存，或将 Curvine 数据导出到外部系统。它维护自己的任务存储（默认 SQLite，可选 MySQL 和 PostgreSQL），可以独立运行或嵌入在 Master 中。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="lancedb-集成">LanceDB 集成<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#lancedb-%E9%9B%86%E6%88%90" class="hash-link" aria-label="LanceDB 集成的直接链接" title="LanceDB 集成的直接链接">​</a></h3>
+<p>Curvine 集成了 <strong>LanceDB</strong>，在 Curvine 的对象存储之上提供向量数据库层。基于 Lance 列式格式和 Apache Arrow 构建，使 AI 应用能够直接通过 Curvine 的存储后端存储和查询向量嵌入。</p>
 <hr>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-data-flow-how-read-and-write-operations-traverse-the-system">3. Data Flow: How Read and Write Operations Traverse the System<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#3-data-flow-how-read-and-write-operations-traverse-the-system" class="hash-link" aria-label="3. Data Flow: How Read and Write Operations Traverse the System的直接链接" title="3. Data Flow: How Read and Write Operations Traverse the System的直接链接">​</a></h2>
-<p>Understanding the data flow reveals why Curvine achieves local-disk performance for hot data while maintaining object-storage durability.</p>
-<p><img decoding="async" loading="lazy" alt="Curvine Data Flow" src="https://curvineio.github.io/zh-cn/assets/images/curvine-data-flow-4e6f1bb26a81e50efcf0f52eb07ca1b1.png" width="2475" height="1379" class="img_ev3q"></p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="read-path-6-steps">Read Path (6 Steps)<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#read-path-6-steps" class="hash-link" aria-label="Read Path (6 Steps)的直接链接" title="Read Path (6 Steps)的直接链接">​</a></h3>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Protocol Layer → Unified FS → Master (metadata) → Worker (data) → [UFS on miss]</span><br></span></code></pre></div></div>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="三数据流读写操作如何穿越系统">三、数据流：读写操作如何穿越系统<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E4%B8%89%E6%95%B0%E6%8D%AE%E6%B5%81%E8%AF%BB%E5%86%99%E6%93%8D%E4%BD%9C%E5%A6%82%E4%BD%95%E7%A9%BF%E8%B6%8A%E7%B3%BB%E7%BB%9F" class="hash-link" aria-label="三、数据流：读写操作如何穿越系统的直接链接" title="三、数据流：读写操作如何穿越系统的直接链接">​</a></h2>
+<p>理解数据流可以揭示 Curvine 为何能在热数据上实现本地磁盘级性能，同时保持对象存储的持久性。</p>
+<p><img decoding="async" loading="lazy" alt="Curvine 数据流" src="https://curvineio.github.io/zh-cn/assets/images/curvine-data-flow-4e6f1bb26a81e50efcf0f52eb07ca1b1.png" width="2475" height="1379" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="读路径6-步">读路径（6 步）<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E8%AF%BB%E8%B7%AF%E5%BE%846-%E6%AD%A5" class="hash-link" aria-label="读路径（6 步）的直接链接" title="读路径（6 步）的直接链接">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">应用 → 协议层 → Unified FS → Master（元数据）→ Worker（数据）→ [缓存未命中时访问 UFS]</span><br></span></code></pre></div></div>
 <ol>
 <li>
-<p><strong>Metadata Lookup</strong> — The client sends an RPC to the Master to resolve the file path to inode metadata and block locations.</p>
+<p><strong>元数据查询</strong> — 客户端向 Master 发送 RPC，将文件路径解析为 inode 元数据和块位置。</p>
 </li>
 <li>
-<p><strong>Block Location Response</strong> — The Master returns the list of block IDs and the worker nodes that hold them (or can fetch them).</p>
+<p><strong>块位置响应</strong> — Master 返回块 ID 列表以及持有（或可获取）这些块的 Worker 节点。</p>
 </li>
 <li>
-<p><strong>Scheduled Read</strong> — The client connects directly to the assigned Worker via RPC to read the requested blocks. This avoids routing data through the Master.</p>
+<p><strong>调度读取</strong> — 客户端通过 RPC 直接连接到分配的 Worker 读取请求的块。这避免了数据经过 Master 中转。</p>
 </li>
 <li>
-<p><strong>Cache Hit (Fast Path)</strong> — The Worker serves the block from its multi-tier cache (MEM → SSD → HDD → SPDK). This is the hot path — latency is comparable to local disk.</p>
+<p><strong>缓存命中（快速路径）</strong> — Worker 从其多级缓存（MEM → SSD → HDD → SPDK）中提供数据块。这是热路径——延迟与本地磁盘相当。</p>
 </li>
 <li>
-<p><strong>Cache Miss (UFS Fetch)</strong> — If the block is not cached, the Worker fetches it from the underlying object storage (S3, OSS, HDFS, etc.) via the OpenDAL adapter or native FFI bridge.</p>
+<p><strong>缓存未命中（UFS 获取）</strong> — 如果块未缓存，Worker 通过 OpenDAL 适配器或原生 FFI 桥接从底层对象存储（S3、OSS、HDFS 等）获取数据。</p>
 </li>
 <li>
-<p><strong>Cache Promotion</strong> — The fetched block is written into the Worker's cache, promoting it to the appropriate tier based on access frequency. Subsequent reads hit the cache directly.</p>
+<p><strong>缓存提升</strong> — 获取的块被写入 Worker 的缓存，根据访问频率提升到相应的层级。后续读取直接命中缓存。</p>
 </li>
 </ol>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="write-path">Write Path<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#write-path" class="hash-link" aria-label="Write Path的直接链接" title="Write Path的直接链接">​</a></h3>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Protocol Layer → Unified FS → Worker (write) → UFS (write-through)</span><br></span></code></pre></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="写路径">写路径<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E5%86%99%E8%B7%AF%E5%BE%84" class="hash-link" aria-label="写路径的直接链接" title="写路径的直接链接">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">应用 → 协议层 → Unified FS → Worker（写入）→ UFS（write-through）</span><br></span></code></pre></div></div>
 <ul>
-<li>The client writes blocks directly to the assigned Worker via RPC.</li>
-<li>The Worker writes to its local cache tier and performs <strong>write-through</strong> to the underlying object storage for durability.</li>
-<li>The Master is updated with new block metadata via the Raft-replicated journal.</li>
+<li>客户端通过 RPC 将数据块直接写入分配的 Worker。</li>
+<li>Worker 写入本地缓存层，并执行 <strong>write-through</strong> 将数据持久化到底层对象存储。</li>
+<li>Master 通过 Raft 复制的日志更新新的块元数据。</li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="key-design-properties">Key Design Properties<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#key-design-properties" class="hash-link" aria-label="Key Design Properties的直接链接" title="Key Design Properties的直接链接">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="关键设计特性">关键设计特性<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E5%85%B3%E9%94%AE%E8%AE%BE%E8%AE%A1%E7%89%B9%E6%80%A7" class="hash-link" aria-label="关键设计特性的直接链接" title="关键设计特性的直接链接">​</a></h3>
 <ul>
-<li><strong>Metadata and data paths are separated</strong> — metadata goes through the Master (or MDS), data goes directly to Workers. This prevents the Master from becoming a throughput bottleneck.</li>
-<li><strong>Client-to-Worker direct I/O</strong> — once the Master provides block locations, clients talk to Workers directly. This scales data throughput linearly with the number of Workers.</li>
-<li><strong>Transparent UFS fallback</strong> — the Unified FS layer handles cache misses transparently. Applications see a single POSIX namespace regardless of where data physically lives.</li>
-<li><strong>Multi-tier automatic promotion</strong> — frequently accessed data migrates to faster tiers (MEM/SSD), while cold data demotes to HDD or evicts entirely.</li>
+<li><strong>元数据与数据路径分离</strong> — 元数据通过 Master（或 MDS）处理，数据直接走 Worker。这防止 Master 成为吞吐量瓶颈。</li>
+<li><strong>客户端到 Worker 的直接 I/O</strong> — 一旦 Master 提供了块位置，客户端直接与 Worker 通信。数据吞吐量随 Worker 数量线性扩展。</li>
+<li><strong>透明的 UFS 回退</strong> — Unified FS 层透明地处理缓存未命中。应用看到的是统一的 POSIX 命名空间，无论数据物理上存储在哪里。</li>
+<li><strong>多级自动提升</strong> — 频繁访问的数据迁移到更快的层级（MEM/SSD），冷数据降级到 HDD 或完全淘汰。</li>
 </ul>
 <hr>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-technology-stack-summary">4. Technology Stack Summary<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#4-technology-stack-summary" class="hash-link" aria-label="4. Technology Stack Summary的直接链接" title="4. Technology Stack Summary的直接链接">​</a></h2>
-<table><thead><tr><th>Layer</th><th>Technology</th></tr></thead><tbody><tr><td><strong>Language</strong></td><td>Rust (core), Go (CSI driver)</td></tr><tr><td><strong>Async Runtime</strong></td><td>Tokio</td></tr><tr><td><strong>RPC</strong></td><td>Custom protobuf-based (prost) over TCP</td></tr><tr><td><strong>Metadata Store</strong></td><td>RocksDB + Raft journal (Master), FoundationDB (MDS)</td></tr><tr><td><strong>Object Storage</strong></td><td>Apache OpenDAL (S3/OSS/GCS/Azure/COS/HDFS/WebHDFS)</td></tr><tr><td><strong>Hardware Acceleration</strong></td><td>SPDK (NVMe-oF/RDMA), mimalloc/jemalloc</td></tr><tr><td><strong>Vector DB</strong></td><td>LanceDB + Lance + Apache Arrow</td></tr><tr><td><strong>Kubernetes</strong></td><td>CSI Driver (Go), FUSE MountPod</td></tr><tr><td><strong>Observability</strong></td><td>Prometheus metrics + Grafana dashboards</td></tr><tr><td><strong>Build</strong></td><td>Makefile + Cargo workspace, Docker (CentOS/Rocky/Ubuntu/Amazon)</td></tr></tbody></table>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="四技术栈总结">四、技术栈总结<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E5%9B%9B%E6%8A%80%E6%9C%AF%E6%A0%88%E6%80%BB%E7%BB%93" class="hash-link" aria-label="四、技术栈总结的直接链接" title="四、技术栈总结的直接链接">​</a></h2>
+<table><thead><tr><th>层级</th><th>技术</th></tr></thead><tbody><tr><td><strong>编程语言</strong></td><td>Rust（核心）、Go（CSI Driver）</td></tr><tr><td><strong>异步运行时</strong></td><td>Tokio</td></tr><tr><td><strong>RPC</strong></td><td>基于 protobuf（prost）的自定义 RPC，TCP 传输</td></tr><tr><td><strong>元数据存储</strong></td><td>RocksDB + Raft 日志（Master），FoundationDB（MDS）</td></tr><tr><td><strong>对象存储</strong></td><td>Apache OpenDAL（S3/OSS/GCS/Azure/COS/HDFS/WebHDFS）</td></tr><tr><td><strong>硬件加速</strong></td><td>SPDK（NVMe-oF/RDMA），mimalloc/jemalloc</td></tr><tr><td><strong>向量数据库</strong></td><td>LanceDB + Lance + Apache Arrow</td></tr><tr><td><strong>Kubernetes</strong></td><td>CSI Driver（Go），FUSE MountPod</td></tr><tr><td><strong>可观测性</strong></td><td>Prometheus 指标 + Grafana 仪表盘</td></tr><tr><td><strong>构建系统</strong></td><td>Makefile + Cargo workspace，Docker（CentOS/Rocky/Ubuntu/Amazon）</td></tr></tbody></table>
 <hr>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-summary">5. Summary<a href="https://curvineio.github.io/zh-cn/blog/curvine-architecture-overview#5-summary" class="hash-link" aria-label="5. Summary的直接链接" title="5. Summary的直接链接">​</a></h2>
-<p>Curvine's architecture is designed around three principles:</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="五总结">五、总结<a href="https://curvineio.github.io/zh-cn/blog/2026/09/08/curvine-architecture-overview#%E4%BA%94%E6%80%BB%E7%BB%93" class="hash-link" aria-label="五、总结的直接链接" title="五、总结的直接链接">​</a></h2>
+<p>Curvine 的架构围绕三个核心原则设计：</p>
 <ol>
-<li><strong>Separation of concerns</strong> — Control plane (Master/MDS) handles metadata; data plane (Workers) handles I/O; protocol layer handles access diversity.</li>
-<li><strong>Performance through caching</strong> — Multi-tier cache (MEM → SSD → HDD → SPDK) with automatic promotion delivers local-disk latency for hot data.</li>
-<li><strong>Durability through abstraction</strong> — The UFS layer decouples Curvine from any single storage backend, allowing S3, OSS, GCS, Azure, or HDFS to serve as the persistent layer without application changes.</li>
+<li><strong>关注点分离</strong> — 控制面（Master/MDS）处理元数据；数据面（Worker）处理 I/O；协议层处理访问多样性。</li>
+<li><strong>通过缓存实现性能</strong> — 多级缓存（MEM → SSD → HDD → SPDK）配合自动提升，为热数据提供本地磁盘级延迟。</li>
+<li><strong>通过抽象实现持久性</strong> — UFS 层将 Curvine 与任何单一存储后端解耦，允许 S3、OSS、GCS、Azure 或 HDFS 作为持久层，无需修改应用。</li>
 </ol>
-<p>The result is a system that gives AI training jobs, big data engines, and Kubernetes workloads a unified POSIX interface with the speed of local storage and the durability of cloud object storage — all in a single Rust-based binary.</p>]]></content>
-        <author>
-            <name>David</name>
-            <uri>https://curvine.io</uri>
-        </author>
-        <category label="architecture" term="architecture"/>
+<p>最终结果是：一个为 AI 训练任务、大数据引擎和 Kubernetes 工作负载提供统一 POSIX 接口的系统——兼具本地存储的速度和云对象存储的持久性——全部封装在一个基于 Rust 的统一二进制文件中。</p>]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[mlperf-storage-curvine-vs-alluxio]]></title>
