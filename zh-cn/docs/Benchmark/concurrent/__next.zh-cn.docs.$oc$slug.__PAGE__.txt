@@ -1,0 +1,80 @@
+4:"$Sreact.fragment"
+5:"/_next/static/chunks/1kutd4b2bcej4.js"
+6:"/_next/static/chunks/1lemtyxul8nva.js"
+7:"/_next/static/chunks/2y1n692v3ifuy.js"
+8:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+9:I[936064,["$5","$6","$7","$8"],"default"]
+a:I[481497,["$5","$6","$7","$8"],"default"]
+f:"/_next/static/chunks/1voszl6qhskc7.js"
+10:"/_next/static/chunks/3d90fvkdmglbr.js"
+11:"/_next/static/chunks/00l9-azdv0m-2.js"
+12:"/_next/static/chunks/3-syrruqirf8l.js"
+13:"/_next/static/chunks/0-pfzp884bdc6.js"
+14:"/_next/static/chunks/0ufvzxofspe6j.js"
+15:"/_next/static/chunks/14ffz9qo64khn.js"
+16:I[190776,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"DocsPage"]
+17:I[390156,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"Heading"]
+18:I[378000,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"CodeBlock"]
+19:I[378000,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"Pre"]
+3f:"ViewportBoundary"
+40:I[675049,["$5","$6","$7","$8"],"$3f"]
+41:"MetadataBoundary"
+42:I[675049,["$5","$6","$7","$8"],"$41"]
+43:"$Sreact.suspense"
+44:I[934035,["$5","$6","$7","$8"],"IconMark"]
+c:X
+c:C
+d:X
+e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$","$L16",null,{"toc":[{"depth":2,"url":"#支持的模式","title":"支持的模式"},{"depth":2,"url":"#当前脚本里的默认负载","title":"当前脚本里的默认负载"},{"depth":2,"url":"#rust-基准程序当前的执行方式","title":"Rust 基准程序当前的执行方式"},{"depth":2,"url":"#运行方式","title":"运行方式"},{"depth":2,"url":"#结果说明","title":"结果说明"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"并发读写基准测试"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":["本页以 ",["$","code",null,{"children":"build/tests/curvine-bench.sh"}],"、",["$","code",null,{"children":"build/tests/java-bench.sh"}]," 以及 ",["$","code",null,{"children":"curvine-tests/src"}]," 下的 Rust 实现为准。"]}],"\n",["$","$L17",null,{"as":"h2","id":"支持的模式","children":"支持的模式"}],"\n",["$","p",null,{"children":"两个脚本都支持以下四种动作："}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":["$","code",null,{"children":"fs.write"}]}],"\n",["$","li",null,{"children":["$","code",null,{"children":"fs.read"}]}],"\n",["$","li",null,{"children":["$","code",null,{"children":"fuse.write"}]}],"\n",["$","li",null,{"children":["$","code",null,{"children":"fuse.read"}]}],"\n"]}],"\n",["$","p",null,{"children":["Rust 包装脚本调用 ",["$","code",null,{"children":"$${CURVINE_HOME}/lib/curvine-bench"}],"，Java 包装脚本调用 ",["$","code",null,{"children":"io.curvine.bench.CurvineBenchV2"}],"。"]}],"\n",["$","p",null,{"children":"当前脚本中的默认目标目录是："}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","code",null,{"children":"fs.*"}]," 默认写到 ",["$","code",null,{"children":"/fs-bench"}]]}],"\n",["$","li",null,{"children":[["$","code",null,{"children":"fuse.*"}]," 默认写到 ",["$","code",null,{"children":"/curvine-fuse/fs-bench"}]]}],"\n"]}],"\n",["$","p",null,{"children":["顶层 ",["$","code",null,{"children":"README.md"}]," 和 ",["$","code",null,{"children":"README_zh.md"}]," 都把 ",["$","code",null,{"children":"/curvine-fuse"}]," 说明为 Curvine FUSE 的默认挂载点。"]}],"\n",["$","$L17",null,{"as":"h2","id":"当前脚本里的默认负载","children":"当前脚本里的默认负载"}],"\n",["$","p",null,{"children":"两个脚本当前生效的默认参数都是："}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":["客户端线程数：",["$","code",null,{"children":"10"}]]}],"\n",["$","li",null,{"children":["文件数：",["$","code",null,{"children":"10"}]]}],"\n",["$","li",null,{"children":["单文件大小：",["$","code",null,{"children":"100MB"}]]}],"\n",["$","li",null,{"children":["Buffer 大小：",["$","code",null,{"children":"128KB"}]]}],"\n",["$","li",null,{"children":["校验和：",["$","code",null,{"children":"true"}]]}],"\n"]}],"\n",["$","p",null,{"children":"Rust 脚本："}],"\n",["$","$L18",null,{"className":"shiki shiki-themes github-light github-dark","style":{"--shiki-light":"#24292e","--shiki-dark":"#e1e4e8","--shiki-light-bg":"#fff","--shiki-dark-bg":"#24292e"},"tabIndex":"0","icon":"<svg viewBox=\"0 0 24 24\"><path d=\"m 4,4 a 1,1 0 0 0 -0.7070312,0.2929687 1,1 0 0 0 0,1.4140625 L 8.5859375,11 3.2929688,16.292969 a 1,1 0 0 0 0,1.414062 1,1 0 0 0 1.4140624,0 l 5.9999998,-6 a 1.0001,1.0001 0 0 0 0,-1.414062 L 4.7070312,4.2929687 A 1,1 0 0 0 4,4 Z m 8,14 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 8 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z\" fill=\"currentColor\" /></svg>","children":["$","$L19",null,{"children":["$","code",null,{"children":["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#24292E","--shiki-dark":"#E1E4E8"},"children":"$${CURVINE_HOME}/lib/curvine-bench --action ${ACTION} --dir $DIR --conf $CURVINE_HOME/conf/curvine-cluster.toml --checksum true --client-threads 10 --buf-size 128KB --file-size 100MB --file-num 10"}]}]}]}]}],"\n",["$","p",null,{"children":"Java 脚本："}],"\n",["$","$L18",null,{"className":"shiki shiki-themes github-light github-dark","style":{"--shiki-light":"#24292e","--shiki-dark":"#e1e4e8","--shiki-light-bg":"#fff","--shiki-dark-bg":"#24292e"},"tabIndex":"0","icon":"<svg viewBox=\"0 0 24 24\"><path d=\"m 4,4 a 1,1 0 0 0 -0.7070312,0.2929687 1,1 0 0 0 0,1.4140625 L 8.5859375,11 3.2929688,16.292969 a 1,1 0 0 0 0,1.414062 1,1 0 0 0 1.4140624,0 l 5.9999998,-6 a 1.0001,1.0001 0 0 0 0,-1.414062 L 4.7070312,4.2929687 A 1,1 0 0 0 4,4 Z m 8,14 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 8 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z\" fill=\"currentColor\" /></svg>","children":["$","$L19",null,{"children":["$","code",null,{"children":["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"java"}],"$L1a","$L1b","$L1c","$L1d","$L1e","$L1f","$L20","$L21","$L22","$L23","$L24","$L25","$L26","$L27","$L28","$L29","$L2a","$L2b","$L2c","$L2d","$L2e","$L2f"]}]}]}]}],"\n","$L30","\n","$L31","\n","$L32","\n","$L33","\n","$L34","\n","$L35","\n","$L36","\n","$L37","\n","$L38","\n","$L39"],null]}]]}],["$L3a","$L3b","$L3c"],"$L3d"]}],"p":"$@3e","v":null,"s":"$d"}}]]
+3:[["children",{"s":{"n":"slug","t":"oc","k":"Benchmark/concurrent","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
+2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
+1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L40",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L42",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$43",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"并发读写基准测试 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L44","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@45","v":null,"s":"$d"}},"a":"$@46","u":"$@47","b":"m0nUsKPpWGb0O-byP1GAi"}
+4b:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
+1a:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -Xms256m"}]
+1b:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -Xmx1g"}]
+1c:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -Dcurvine.conf.dir=${"}]
+1d:["$","span",null,{"style":{"--shiki-light":"#24292E","--shiki-dark":"#E1E4E8"},"children":"CURVINE_HOME"}]
+1e:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":"}/conf"}]
+1f:["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" io.curvine.bench.CurvineBenchV2"}]
+20:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -action"}]
+21:["$","span",null,{"style":{"--shiki-light":"#24292E","--shiki-dark":"#E1E4E8"},"children":" $ACTION "}]
+22:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":"-dataDir"}]
+23:["$","span",null,{"style":{"--shiki-light":"#24292E","--shiki-dark":"#E1E4E8"},"children":" $DIR "}]
+24:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":"-threads"}]
+25:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" 10"}]
+26:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -bufferSize"}]
+27:["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" 128kb"}]
+28:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -fileSize"}]
+29:["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" 100mb"}]
+2a:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -fileNum"}]
+2b:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" 10"}]
+2c:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -checksum"}]
+2d:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" true"}]
+2e:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" -clearDir"}]
+2f:["$","span",null,{"style":{"--shiki-light":"#005CC5","--shiki-dark":"#79B8FF"},"children":" false"}]
+30:["$","p",null,{"children":"两个脚本里确实还保留了更重的注释示例，但那些只是注释里的性能压测配置，不是当前脚本真正启用的默认值。"}]
+31:["$","$L17",null,{"as":"h2","id":"rust-基准程序当前的执行方式","children":"Rust 基准程序当前的执行方式"}]
+32:["$","p",null,{"children":"当前 Rust 实现只支持上面的四个动作，并且会："}]
+33:["$","ul",null,{"children":["\n",["$","li",null,{"children":"按需创建目标目录"}],"\n",["$","li",null,{"children":"每个文件启动一个任务"}],"\n",["$","li",null,{"children":["以 ",["$","code",null,{"children":"128KB"}]," 为块大小循环读写，直到单文件达到 ",["$","code",null,{"children":"100MB"}]]}],"\n",["$","li",null,{"children":"结束时输出总字节数、校验和以及解析后的参数"}],"\n"]}]
+34:["$","$L17",null,{"as":"h2","id":"运行方式","children":"运行方式"}]
+35:["$","p",null,{"children":"在源码树中可直接执行："}]
+36:["$","$L18",null,{"className":"shiki shiki-themes github-light github-dark","style":{"--shiki-light":"#24292e","--shiki-dark":"#e1e4e8","--shiki-light-bg":"#fff","--shiki-dark-bg":"#24292e"},"tabIndex":"0","icon":"<svg viewBox=\"0 0 24 24\"><path d=\"m 4,4 a 1,1 0 0 0 -0.7070312,0.2929687 1,1 0 0 0 0,1.4140625 L 8.5859375,11 3.2929688,16.292969 a 1,1 0 0 0 0,1.414062 1,1 0 0 0 1.4140624,0 l 5.9999998,-6 a 1.0001,1.0001 0 0 0 0,-1.414062 L 4.7070312,4.2929687 A 1,1 0 0 0 4,4 Z m 8,14 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 8 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z\" fill=\"currentColor\" /></svg>","children":["$","$L19",null,{"children":["$","code",null,{"children":[["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# Rust 客户端走 Curvine RPC"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/curvine-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fs.write"}]]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/curvine-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fs.read"}]]}],"\n",["$","span",null,{"className":"line"}],"\n",["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# Rust 客户端走 FUSE 挂载路径"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/curvine-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fuse.write"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" /curvine-fuse/fs-bench"}]]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/curvine-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fuse.read"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" /curvine-fuse/fs-bench"}]]}],"\n",["$","span",null,{"className":"line"}],"\n",["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# Java 客户端走 Curvine RPC"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/java-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fs.write"}]]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/java-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fs.read"}]]}],"\n",["$","span",null,{"className":"line"}],"\n",["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# Java 客户端走 FUSE 挂载路径"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/java-bench.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fuse.write"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" /curvine-fuse/fs-bench"}]]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bash"}],"$L48","$L49","$L4a"]}]]}]}]}]
+37:["$","p",null,{"children":["执行 ",["$","code",null,{"children":"fuse.*"}]," 之前，请先确认 ",["$","code",null,{"children":"/curvine-fuse"}]," 已挂载完成。"]}]
+38:["$","$L17",null,{"as":"h2","id":"结果说明","children":"结果说明"}]
+39:["$","p",null,{"children":"当前参考代码树没有发布这两个脚本的官方吞吐结果表。吞吐数字应当来自实际测试环境，不能把旧文档中的结果表当作当前默认表现。"}]
+3a:["$","script","script-0",{"src":"/_next/static/chunks/0-pfzp884bdc6.js","async":true}]
+3b:["$","script","script-1",{"src":"/_next/static/chunks/0ufvzxofspe6j.js","async":true}]
+3c:["$","script","script-2",{"src":"/_next/static/chunks/14ffz9qo64khn.js","async":true}]
+3d:["$","$L4b",null,{"children":["$","$43",null,{"name":"Next.MetadataOutlet","children":"$@4c"}]}]
+47:true
+d:300
+48:["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" build/tests/java-bench.sh"}]
+49:["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" fuse.read"}]
+4a:["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" /curvine-fuse/fs-bench"}]
+4c:null
+d:C
+46:0
+b:"$undefined"
+45:"$undefined"
+3e:"$undefined"

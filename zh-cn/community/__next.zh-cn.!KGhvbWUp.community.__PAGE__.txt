@@ -1,0 +1,33 @@
+4:"$Sreact.fragment"
+5:"/_next/static/chunks/1kutd4b2bcej4.js"
+6:"/_next/static/chunks/1lemtyxul8nva.js"
+7:"/_next/static/chunks/2y1n692v3ifuy.js"
+8:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+9:I[936064,["$5","$6","$7","$8"],"default"]
+a:I[481497,["$5","$6","$7","$8"],"default"]
+f:"/_next/static/chunks/2ht-jloxd4qx0.js"
+10:"/_next/static/chunks/00l9-azdv0m-2.js"
+11:I[769197,["$5","$6","$7","$8","$f","$10"],""]
+12:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
+13:"$Sreact.suspense"
+16:"ViewportBoundary"
+17:I[675049,["$5","$6","$7","$8"],"$16"]
+18:"MetadataBoundary"
+19:I[675049,["$5","$6","$7","$8"],"$18"]
+1a:I[934035,["$5","$6","$7","$8"],"IconMark"]
+c:X
+c:C
+d:X
+e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$","main",null,{"className":"mx-auto w-full max-w-4xl flex-1 px-4 py-20","children":[["$","h1",null,{"className":"text-3xl font-semibold tracking-tight sm:text-4xl","children":"社区活动"}],["$","p",null,{"className":"mt-4 max-w-2xl text-fd-muted-foreground","children":"Curvine 是基于 Apache 2.0 协议的开源项目，欢迎加入社区提问、反馈问题或参与贡献。"}],["$","div",null,{"className":"mt-10 grid gap-3 sm:grid-cols-2","children":[["$","$L11","Discord",{"href":"https://discord.com/invite/xfxMQKv3","className":"rounded-xl border bg-fd-card p-5 transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground","children":[["$","h2",null,{"className":"font-medium","children":"Discord"}],["$","p",null,{"className":"mt-1.5 text-sm text-fd-muted-foreground","children":"与 Curvine 维护者和其他用户交流。"}]]}],["$","$L11","Slack",{"href":"https://join.slack.com/t/curvineio/shared_invite/zt-4673r43cn-prajma_q5ZI3BUxuaY5kiQ","className":"rounded-xl border bg-fd-card p-5 transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground","children":[["$","h2",null,{"className":"font-medium","children":"Slack"}],["$","p",null,{"className":"mt-1.5 text-sm text-fd-muted-foreground","children":"加入 Curvine 工作区参与更深入的讨论。"}]]}],["$","$L11","X",{"href":"https://x.com/szbr8896","className":"rounded-xl border bg-fd-card p-5 transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground","children":[["$","h2",null,{"className":"font-medium","children":"X"}],["$","p",null,{"className":"mt-1.5 text-sm text-fd-muted-foreground","children":"在 X 上关注项目公告。"}]]}],["$","$L11","GitHub",{"href":"https://github.com/curvineio/curvine","className":"rounded-xl border bg-fd-card p-5 transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground","children":[["$","h2",null,{"className":"font-medium","children":"GitHub"}],["$","p",null,{"className":"mt-1.5 text-sm text-fd-muted-foreground","children":"源代码、Issue 与讨论。"}]]}],["$","$L11","博客",{"href":"/zh-cn/blog","className":"rounded-xl border bg-fd-card p-5 transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground","children":[["$","h2",null,{"className":"font-medium","children":"博客"}],["$","p",null,{"className":"mt-1.5 text-sm text-fd-muted-foreground","children":"性能测试、架构解读与版本说明。"}]]}]]}]]}],null,["$","$L12",null,{"children":["$","$13",null,{"name":"Next.MetadataOutlet","children":"$@14"}]}]]}],"p":"$@15","v":null,"s":"$d"}}]]
+3:[["children",{"s":"community","h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
+2:[["children",{"s":"(home)","h":32,"c":"$Q3"}]]
+1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L17",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L19",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$13",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"社区 - Curvine"}],["$","meta","1",{"name":"description","content":"High performance distributed caching system"}],["$","link","2",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L1a","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@1b","v":null,"s":"$d"}},"a":"$@1c","u":"$@1d","b":"m0nUsKPpWGb0O-byP1GAi"}
+14:null
+1d:true
+d:300
+d:C
+1c:0
+b:"$undefined"
+1b:"$undefined"
+15:"$undefined"

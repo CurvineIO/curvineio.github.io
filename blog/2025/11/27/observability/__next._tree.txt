@@ -1,0 +1,10 @@
+:HL["/_next/static/chunks/0x647jejsqy0h.css","style"]
+:HL["/_next/static/chunks/1s6o39f220384.css","style"]
+:HL["/_next/static/chunks/30ag2-n61y0kf.css","style"]
+:HL["/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+4:[["children",{"s":"__PAGE__","h":160}]]
+3:[["children",{"s":{"n":"slug","t":"c","k":"2025/11/27/observability","s":["tags"]},"h":96,"c":"$Q4"}]]
+2:[["children",{"s":"blog","h":64,"c":"$Q3"}]]
+1:[["children",{"s":"(home)","h":32,"c":"$Q2"}]]
+0:{"b":"m0nUsKPpWGb0O-byP1GAi","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

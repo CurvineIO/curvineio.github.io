@@ -1,0 +1,45 @@
+4:"$Sreact.fragment"
+5:"/_next/static/chunks/1kutd4b2bcej4.js"
+6:"/_next/static/chunks/1lemtyxul8nva.js"
+7:"/_next/static/chunks/2y1n692v3ifuy.js"
+8:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+9:I[936064,["$5","$6","$7","$8"],"default"]
+a:I[481497,["$5","$6","$7","$8"],"default"]
+f:"/_next/static/chunks/1voszl6qhskc7.js"
+10:"/_next/static/chunks/3d90fvkdmglbr.js"
+11:"/_next/static/chunks/00l9-azdv0m-2.js"
+12:"/_next/static/chunks/3-syrruqirf8l.js"
+13:"/_next/static/chunks/0-pfzp884bdc6.js"
+14:"/_next/static/chunks/0ufvzxofspe6j.js"
+15:"/_next/static/chunks/14ffz9qo64khn.js"
+16:I[190776,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"DocsPage"]
+17:I[390156,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"Heading"]
+18:I[951315,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14","$15"],"default"]
+1f:"ViewportBoundary"
+20:I[675049,["$5","$6","$7","$8"],"$1f"]
+21:"MetadataBoundary"
+22:I[675049,["$5","$6","$7","$8"],"$21"]
+23:"$Sreact.suspense"
+24:I[934035,["$5","$6","$7","$8"],"IconMark"]
+c:X
+c:C
+d:X
+e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$","$L16",null,{"toc":[{"depth":2,"url":"#概览","title":"概览"},{"depth":2,"url":"#rust-sdk","title":"Rust SDK"},{"depth":2,"url":"#java-sdk","title":"Java SDK"},{"depth":2,"url":"#python-sdk","title":"Python SDK"},{"depth":2,"url":"#通用配置","title":"通用配置"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"SDK 访问"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":"Curvine 提供多语言 SDK，使应用可通过 RPC 访问 Curvine 文件系统（元数据访问 Master，块数据访问 Worker），而无需使用 FUSE 或 S3 网关。"}],"\n",["$","$L17",null,{"as":"h2","id":"概览","children":"概览"}],"\n",["$","div",null,{"className":"relative overflow-auto prose-no-margin my-6","tabIndex":0,"children":["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"SDK"}],["$","th",null,{"children":"包 / 模块"}],["$","th",null,{"children":"适用场景"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":["$","strong",null,{"children":"Rust"}]}],["$","td",null,{"children":[["$","code",null,{"children":"curvine-client"}]," / ",["$","code",null,{"children":"curvine-libsdk"}]]}],["$","td",null,{"children":"原生 Rust 应用、高性能场景"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":["$","strong",null,{"children":"Java"}]}],["$","td",null,{"children":["Hadoop 兼容 FileSystem（",["$","code",null,{"children":"fs.cv://"}],"）、curvine-libsdk 的 Java SDK"]}],["$","td",null,{"children":"Hadoop/Spark/Flink 等 JVM 应用"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":["$","strong",null,{"children":"Python"}]}],["$","td",null,{"children":"curvine-libsdk 的 Python 绑定"}],["$","td",null,{"children":"机器学习、数据流水线、脚本"}]]}]]}]]}]}],"\n",["$","p",null,{"children":["所有 SDK 均需在 Curvine 集群（Master 与 Worker）已启动、且客户端配置正确（如 ",["$","code",null,{"children":"curvine-cluster.toml"}]," 中的 ",["$","code",null,{"children":"master_addrs"}],"）的前提下使用。"]}],"\n",["$","$L17",null,{"as":"h2","id":"rust-sdk","children":"Rust SDK"}],"\n",["$","p",null,{"children":["通过 ",["$","code",null,{"children":"curvine-client"}],"（或 ",["$","code",null,{"children":"curvine-libsdk"}]," 暴露的 Rust API）编程式创建文件、读写数据、列举目录。配置通常从 ",["$","code",null,{"children":"curvine-cluster.toml"}]," 或环境变量加载。"]}],"\n",["$","p",null,{"children":["构建与用法参见 ",["$","$L18",null,{"href":"/docs/Contribute/development-guide","children":"开发指南"}]," 及 Curvine 源码仓库（如 ",["$","code",null,{"children":"curvine-client"}],"、",["$","code",null,{"children":"curvine-libsdk"}]," 及 ",["$","code",null,{"children":"curvine-tests"}]," 下的集成测试）。"]}],"\n",["$","$L17",null,{"as":"h2","id":"java-sdk","children":"Java SDK"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"Hadoop FileSystem"}],"：在 ",["$","code",null,{"children":"core-site.xml"}]," 或 ",["$","code",null,{"children":"curvine-site.xml"}]," 中配置 ",["$","code",null,{"children":"fs.cv.impl"}]," 与 ",["$","code",null,{"children":"fs.cv.master_addrs"}],"，使 ",["$","code",null,{"children":"FileSystem.get(URI.create(\"curvine:///path\"), conf)"}]," 使用 Curvine。",["$","code",null,{"children":"fs.cv.master_addrs"}]," 配置见 ",["$","$L18",null,{"href":"/docs/Deploy/Deploy-Curvine-Cluster/Preparation/deployment-setup#%E7%8E%AF%E5%A2%83%E8%84%9A%E6%9C%AC%E4%B8%8E%E4%B8%BB%E9%85%8D%E7%BD%AE","children":"部署准备"}],"。"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"Java API"}],"：在不使用 Hadoop FileSystem 时，可使用 curvine-libsdk 的 Java SDK 直接通过 RPC 访问。"]}],"\n"]}],"\n",["$","p",null,{"children":"兼容 Hadoop、Spark、Flink 等支持自定义 FileSystem 的 JVM 框架。"}],"\n",["$","$L17",null,{"as":"h2","id":"python-sdk","children":"Python SDK"}],"\n",["$","p",null,{"children":"Python SDK（来自 curvine-libsdk）提供读写文件、列举目录等原生 API，适用于 ML 训练、数据预处理和自动化脚本。"}],"\n",["$","p",null,{"children":["安装与示例见 Curvine 源码仓库及 ",["$","$L18",null,{"href":"/docs/Contribute/development-guide","children":"开发指南"}],"。"]}],"\n",["$","$L17",null,{"as":"h2","id":"通用配置","children":"通用配置"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"Master 地址"}],"：在集群配置（如 ",["$","code",null,{"children":"curvine-cluster.toml"}],"）中设置 ",["$","code",null,{"children":"client.master_addrs"}],"，或在各 SDK 中传入等价配置（如 Java 的 ",["$","code",null,{"children":"fs.cv.master_addrs"}],"）。格式：",["$","code",null,{"children":"host1:8995,host2:8995"}],"。"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"配置文件"}],"：多数 SDK 支持传入配置文件路径（如 ",["$","code",null,{"children":"conf/curvine-cluster.toml"}],"），与 CLI（",["$","code",null,{"children":"cv"}],"）、FUSE、S3 网关共用同一配置。"]}],"\n"]}],"\n","$L19"],null]}]]}],["$L1a","$L1b","$L1c"],"$L1d"]}],"p":"$@1e","v":null,"s":"$d"}}]]
+3:[["children",{"s":{"n":"slug","t":"oc","k":"User-Manuals/Access/sdk","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
+2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
+1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L20",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L22",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$23",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"SDK 访问 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L24","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@25","v":null,"s":"$d"}},"a":"$@26","u":"$@27","b":"m0nUsKPpWGb0O-byP1GAi"}
+28:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
+19:["$","p",null,{"children":["若需 UFS（统一文件系统）访问，请先用 ",["$","code",null,{"children":"cv mount"}]," 挂载 UFS 路径；随后在对应 Curvine 路径上的 SDK 操作语义与 ",["$","$L18",null,{"href":"/docs/User-Manuals/Key-Features/ufs","children":"数据编排"}]," 一致。"]}]
+1a:["$","script","script-0",{"src":"/_next/static/chunks/0-pfzp884bdc6.js","async":true}]
+1b:["$","script","script-1",{"src":"/_next/static/chunks/0ufvzxofspe6j.js","async":true}]
+1c:["$","script","script-2",{"src":"/_next/static/chunks/14ffz9qo64khn.js","async":true}]
+1d:["$","$L28",null,{"children":["$","$23",null,{"name":"Next.MetadataOutlet","children":"$@29"}]}]
+27:true
+d:300
+29:null
+d:C
+26:0
+b:"$undefined"
+25:"$undefined"
+1e:"$undefined"

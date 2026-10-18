@@ -1,0 +1,43 @@
+3:"$Sreact.fragment"
+4:"/_next/static/chunks/1kutd4b2bcej4.js"
+5:"/_next/static/chunks/1lemtyxul8nva.js"
+6:"/_next/static/chunks/2y1n692v3ifuy.js"
+7:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+8:I[936064,["$4","$5","$6","$7"],"default"]
+9:I[481497,["$4","$5","$6","$7"],"default"]
+e:"/_next/static/chunks/1voszl6qhskc7.js"
+f:"/_next/static/chunks/3d90fvkdmglbr.js"
+10:"/_next/static/chunks/00l9-azdv0m-2.js"
+11:"/_next/static/chunks/3-syrruqirf8l.js"
+12:"/_next/static/chunks/0-pfzp884bdc6.js"
+13:"/_next/static/chunks/0ufvzxofspe6j.js"
+14:"/_next/static/chunks/14ffz9qo64khn.js"
+15:I[190776,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"DocsPage"]
+16:I[390156,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"Heading"]
+1d:"ViewportBoundary"
+1e:I[675049,["$4","$5","$6","$7"],"$1d"]
+1f:"MetadataBoundary"
+20:I[675049,["$4","$5","$6","$7"],"$1f"]
+21:"$Sreact.suspense"
+22:I[934035,["$4","$5","$6","$7"],"IconMark"]
+b:X
+b:C
+c:X
+d:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$3","c",{"children":[["$","$L15",null,{"toc":[{"depth":2,"url":"#where-to-follow-planning","title":"Where to Follow Planning"},{"depth":2,"url":"#contribution-areas-visible-in-the-repository-today","title":"Contribution Areas Visible in the Repository Today"},{"depth":2,"url":"#planning-guidance-for-contributors","title":"Planning Guidance for Contributors"},{"depth":2,"url":"#getting-involved","title":"Getting Involved"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"Curvine Roadmap"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":"This page intentionally tracks only roadmap information that is visible in the reference repository."}],"\n",["$","p",null,{"children":["The old in-tree 2025 milestone table is not aligned with the current reference state. In the current repository, the top-level ",["$","code",null,{"children":"README.md"}]," points readers to a GitHub discussion labeled ",["$","code",null,{"children":"Roadmap 2026"}]," instead of maintaining a dated release plan inside the repo."]}],"\n",["$","$L16",null,{"as":"h2","id":"where-to-follow-planning","children":"Where to Follow Planning"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","code",null,{"children":"README.md"}]," for the current roadmap link"]}],"\n",["$","li",null,{"children":"GitHub Issues for scoped implementation tasks"}],"\n",["$","li",null,{"children":"GitHub Discussions for roadmap and design discussion"}],"\n"]}],"\n",["$","$L16",null,{"as":"h2","id":"contribution-areas-visible-in-the-repository-today","children":"Contribution Areas Visible in the Repository Today"}],"\n",["$","div",null,{"className":"relative overflow-auto prose-no-margin my-6","tabIndex":0,"children":["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"Area"}],["$","th",null,{"children":"Current repo surface"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"Core runtime and RPC"}],["$","td",null,{"children":[["$","code",null,{"children":"orpc/"}],", ",["$","code",null,{"children":"curvine-common/"}],", ",["$","code",null,{"children":"curvine-server/"}],", ",["$","code",null,{"children":"curvine-client/"}]]}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"FUSE and CLI"}],["$","td",null,{"children":[["$","code",null,{"children":"curvine-fuse/"}],", ",["$","code",null,{"children":"curvine-cli/"}]]}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Storage backends and data access"}],["$","td",null,{"children":[["$","code",null,{"children":"curvine-ufs/"}],", ",["$","code",null,{"children":"curvine-s3-gateway/"}],", ",["$","code",null,{"children":"curvine-libsdk/"}]]}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Web and management surfaces"}],["$","td",null,{"children":["$","code",null,{"children":"curvine-web/"}]}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Tests, benchmarks, and regression tooling"}],["$","td",null,{"children":[["$","code",null,{"children":"curvine-tests/"}],", ",["$","code",null,{"children":"build/tests/"}],", ",["$","code",null,{"children":"curvine-tests/benchmark/"}]]}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Kubernetes and packaging assets"}],["$","td",null,{"children":[["$","code",null,{"children":"curvine-csi/"}],", ",["$","code",null,{"children":"curvine-docker/"}]]}]]}]]}]]}]}],"\n",["$","$L16",null,{"as":"h2","id":"planning-guidance-for-contributors","children":"Planning Guidance for Contributors"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"Prefer the current repository tree, build scripts, and tests over old milestone tables."}],"\n",["$","li",null,{"children":"Treat top-level directories as evidence of active work areas, not as guarantees of release timing."}],"\n",["$","li",null,{"children":"Avoid repeating unpublished storage or protocol promises that are not backed by the reference repository state."}],"\n"]}],"\n",["$","$L16",null,{"as":"h2","id":"getting-involved","children":"Getting Involved"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"Comment on relevant GitHub Issues if a task already exists."}],"\n",["$","li",null,{"children":"Use GitHub Discussions for broader proposals or roadmap suggestions."}],"\n","$L17","\n"]}]],null]}]]}],["$L18","$L19","$L1a"],"$L1b"]}],"p":"$@1c","v":null,"s":"$c"}}]]
+2:[["children",{"s":{"n":"slug","t":"oc","k":"Contribute/roadmap","s":[]},"h":64,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@a","v":"$b","s":"$c"},"c":"$Qd"}]]
+1:[["children",{"s":"docs","h":32,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L1e",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L20",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$21",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Curvine Roadmap - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L22","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@23","v":null,"s":"$c"}},"a":"$@24","u":"$@25","b":"m0nUsKPpWGb0O-byP1GAi"}
+26:I[675049,["$4","$5","$6","$7"],"OutletBoundary"]
+17:["$","li",null,{"children":"When sending doc updates, keep commands and feature descriptions tied to what the reference repo actually builds, ships, and tests."}]
+18:["$","script","script-0",{"src":"/_next/static/chunks/0-pfzp884bdc6.js","async":true}]
+19:["$","script","script-1",{"src":"/_next/static/chunks/0ufvzxofspe6j.js","async":true}]
+1a:["$","script","script-2",{"src":"/_next/static/chunks/14ffz9qo64khn.js","async":true}]
+1b:["$","$L26",null,{"children":["$","$21",null,{"name":"Next.MetadataOutlet","children":"$@27"}]}]
+25:true
+c:300
+27:null
+c:C
+24:0
+a:"$undefined"
+23:"$undefined"
+1c:"$undefined"

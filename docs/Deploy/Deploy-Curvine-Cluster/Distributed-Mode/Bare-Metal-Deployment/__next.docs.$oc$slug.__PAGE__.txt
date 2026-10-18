@@ -1,0 +1,86 @@
+3:"$Sreact.fragment"
+4:"/_next/static/chunks/1kutd4b2bcej4.js"
+5:"/_next/static/chunks/1lemtyxul8nva.js"
+6:"/_next/static/chunks/2y1n692v3ifuy.js"
+7:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+8:I[936064,["$4","$5","$6","$7"],"default"]
+9:I[481497,["$4","$5","$6","$7"],"default"]
+e:"/_next/static/chunks/1voszl6qhskc7.js"
+f:"/_next/static/chunks/3d90fvkdmglbr.js"
+10:"/_next/static/chunks/00l9-azdv0m-2.js"
+11:"/_next/static/chunks/3-syrruqirf8l.js"
+12:"/_next/static/chunks/0-pfzp884bdc6.js"
+13:"/_next/static/chunks/0ufvzxofspe6j.js"
+14:"/_next/static/chunks/14ffz9qo64khn.js"
+15:I[190776,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"DocsPage"]
+16:I[951315,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"default"]
+17:I[390156,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"Heading"]
+18:I[286720,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"Mermaid"]
+26:"ViewportBoundary"
+27:I[675049,["$4","$5","$6","$7"],"$26"]
+28:"MetadataBoundary"
+29:I[675049,["$4","$5","$6","$7"],"$28"]
+2a:"$Sreact.suspense"
+2b:I[934035,["$4","$5","$6","$7"],"IconMark"]
+b:X
+b:C
+c:X
+19:T58f,%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#4a9eff', 'primaryTextColor': '#1a202c', 'primaryBorderColor': '#3182ce', 'lineColor': '#4a5568', 'secondaryColor': '#805ad5', 'tertiaryColor': '#38a169', 'mainBkg': '#ffffff', 'nodeBorder': '#4a5568', 'clusterBkg': '#f8f9fa', 'clusterBorder': '#dee2e6', 'titleColor': '#1a202c'}}}%%
+flowchart TB
+    subgraph Optional["Optional access (not required for cluster)"]
+        FUSE[curvine-fuse<br/>POSIX mount]
+        CLI[CLI / SDK]
+    end
+
+    subgraph Core["Curvine cluster core (required for startup)"]
+        subgraph Master_Group["Master"]
+            M1[curvine-master<br/>Metadata · Raft]
+        end
+        subgraph Worker_Group["Workers"]
+            W1[curvine-worker<br/>Block storage]
+            W2[curvine-worker<br/>Block storage]
+            WN[curvine-worker<br/>...]
+        end
+        M1 --> W1
+        M1 --> W2
+        M1 --> WN
+    end
+
+    FUSE -.->|RPC / data| M1
+    FUSE -.->|data| W1
+    CLI -.->|RPC| M1
+
+    %% Styles - align with CSI / deployment-architecture
+    classDef masterStyle fill:#4a9eff,stroke:#2b6cb0,color:#fff,stroke-width:2px
+    classDef workerStyle fill:#805ad5,stroke:#553c9a,color:#fff,stroke-width:2px
+    classDef optionalStyle fill:#ecc94b,stroke:#b7791f,color:#1a202c,stroke-width:2px
+    
+    class M1 masterStyle
+    class W1,W2,WN workerStyle
+    class FUSE,CLI optionalStyled:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$3","c",{"children":[["$","$L15",null,{"toc":[{"depth":2,"url":"#logical-deployment-architecture","title":"Logical Deployment Architecture"},{"depth":2,"url":"#startup-commands","title":"Startup Commands"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"Bare Metal Deployment"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":["Before deployment, you need to ",["$","$L16",null,{"href":"/docs/Deploy/Deploy-Curvine-Cluster/Preparation/deployment-setup#create-installation-package","children":"create installation packages and modify configuration files"}],"."]}],"\n",["$","$L17",null,{"as":"h2","id":"logical-deployment-architecture","children":"Logical Deployment Architecture"}],"\n",["$","p",null,{"children":["The following diagram shows the logical architecture of a Curvine bare metal deployment. The ",["$","strong",null,{"children":"cluster core"}]," consists only of Master and Worker processes; they must be started for the cluster to operate. FUSE is an ",["$","strong",null,{"children":"optional"}]," access method and is ",["$","strong",null,{"children":"not"}]," part of the cluster startup—you only need it when applications require a POSIX mount point."]}],"\n",["$","$L18",null,{"chart":"$19"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"Cluster core (required):"}]," Start ",["$","code",null,{"children":"curvine-master"}]," and ",["$","code",null,{"children":"curvine-worker"}]," on the intended hosts. The cluster is operational once Master and Workers are running; you can use the CLI (",["$","code",null,{"children":"cv"}],") or SDK without FUSE."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"FUSE (optional):"}]," Start ",["$","code",null,{"children":"curvine-fuse"}]," only when you need a POSIX filesystem mount (e.g. for legacy tools or scripts). FUSE is not a core service—the cluster does not depend on it to start or run."]}],"\n"]}],"\n",["$","p",null,{"children":["When Load and Export jobs need independent scheduling, deploy Transfer as a\nseparate optional service after the cluster is healthy. It does not join the\nMaster Raft group and does not require a Master or Worker configuration change.\nSee ","$L1a","."]}],"\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20"],null]}]]}],["$L21","$L22","$L23"],"$L24"]}],"p":"$@25","v":null,"s":"$c"}}]]
+2:[["children",{"s":{"n":"slug","t":"oc","k":"Deploy/Deploy-Curvine-Cluster/Distributed-Mode/Bare-Metal-Deployment","s":[]},"h":64,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@a","v":"$b","s":"$c"},"c":"$Qd"}]]
+1:[["children",{"s":"docs","h":32,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L27",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L29",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2a",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Bare Metal Deployment - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L2b","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@2c","v":null,"s":"$c"}},"a":"$@2d","u":"$@2e","b":"m0nUsKPpWGb0O-byP1GAi"}
+2f:I[164341,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"default"]
+30:I[378000,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"CodeBlock"]
+31:I[378000,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13","$14"],"Pre"]
+32:I[675049,["$4","$5","$6","$7"],"OutletBoundary"]
+1a:["$","$L16",null,{"href":"/docs/Deploy/Transfer-Service/Bare-Metal","children":"Deploy Transfer on Bare Metal"}]
+1b:["$","div",null,{"className":"flex gap-2 my-4 rounded-xl border bg-fd-card p-3 ps-1 text-sm text-fd-card-foreground","style":{"--callout-color":"var(--color-fd-info, var(--color-fd-muted))"},"children":[["$","div",null,{"role":"none","className":"w-0.5 bg-(--callout-color)/50 rounded-sm"}],["$","$L2f",null,{"icon":{"name":"info","size":24,"node":[["circle",{"cx":"12","cy":"12","r":"10","key":"1mglay"}],["path",{"d":"M12 16v-4","key":"1dtifu"}],["path",{"d":"M12 8h.01","key":"e9boi3"}]]},"className":"size-5 -me-0.5 fill-(--callout-color) text-fd-card"}],["$","div",null,{"className":"flex flex-col gap-2 min-w-0 flex-1","children":["$","div",null,{"className":"text-fd-muted-foreground prose-no-margin empty:hidden","children":["$","p",null,{"children":[["$","strong",null,{"children":"FUSE is not part of cluster startup."}]," The Curvine cluster is formed by Master and Worker nodes. FUSE is one of several access methods (along with CLI, SDK, S3 gateway) and is only needed when applications require a local mount point."]}]}]}]]}]
+1c:["$","hr",null,{}]
+1d:["$","div",null,{"className":"flex gap-2 my-4 rounded-xl border bg-fd-card p-3 ps-1 text-sm text-fd-card-foreground","style":{"--callout-color":"var(--color-fd-warning, var(--color-fd-muted))"},"children":[["$","div",null,{"role":"none","className":"w-0.5 bg-(--callout-color)/50 rounded-sm"}],["$","$L2f",null,{"icon":{"name":"triangle-alert","size":24,"node":[["path",{"d":"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3","key":"wmoenq"}],["path",{"d":"M12 9v4","key":"juzpu7"}],["path",{"d":"M12 17h.01","key":"p32p05"}]],"aliases":["alert-triangle"]},"className":"size-5 -me-0.5 fill-(--callout-color) text-fd-card"}],["$","div",null,{"className":"flex flex-col gap-2 min-w-0 flex-1","children":["$","div",null,{"className":"text-fd-muted-foreground prose-no-margin empty:hidden","children":["$","p",null,{"children":"Each worker needs to have its own determined IP. In multi-network interface environments, it is recommended to explicitly specify the IP through environment variables to avoid automatically reading unexpected network interface addresses."}]}]}]]}]
+1e:["$","$L17",null,{"as":"h2","id":"startup-commands","children":"Startup Commands"}]
+1f:["$","p",null,{"children":["Bare metal deployment requires manually starting the ",["$","strong",null,{"children":"cluster core"}]," (master and worker). Optionally start FUSE on nodes where you need a POSIX mount:"]}]
+20:["$","$L30",null,{"className":"shiki shiki-themes github-light github-dark","style":{"--shiki-light":"#24292e","--shiki-dark":"#e1e4e8","--shiki-light-bg":"#fff","--shiki-dark-bg":"#24292e"},"tabIndex":"0","icon":"<svg viewBox=\"0 0 24 24\"><path d=\"m 4,4 a 1,1 0 0 0 -0.7070312,0.2929687 1,1 0 0 0 0,1.4140625 L 8.5859375,11 3.2929688,16.292969 a 1,1 0 0 0 0,1.414062 1,1 0 0 0 1.4140624,0 l 5.9999998,-6 a 1.0001,1.0001 0 0 0 0,-1.414062 L 4.7070312,4.2929687 A 1,1 0 0 0 4,4 Z m 8,14 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 8 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z\" fill=\"currentColor\" /></svg>","children":["$","$L31",null,{"children":["$","code",null,{"children":[["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# Start cluster core (required)"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bin/curvine-master.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" start"}]]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bin/curvine-worker.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" start"}]]}],"\n",["$","span",null,{"className":"line"}],"\n",["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# Optional: start FUSE only when you need a POSIX mount point"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bin/curvine-fuse.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" start"}]]}]]}]}]}]
+21:["$","script","script-0",{"src":"/_next/static/chunks/0-pfzp884bdc6.js","async":true}]
+22:["$","script","script-1",{"src":"/_next/static/chunks/0ufvzxofspe6j.js","async":true}]
+23:["$","script","script-2",{"src":"/_next/static/chunks/14ffz9qo64khn.js","async":true}]
+24:["$","$L32",null,{"children":["$","$2a",null,{"name":"Next.MetadataOutlet","children":"$@33"}]}]
+2e:true
+c:300
+33:null
+c:C
+2d:0
+a:"$undefined"
+2c:"$undefined"
+25:"$undefined"
