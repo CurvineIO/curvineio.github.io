@@ -5,4 +5,4 @@
 3:[["children",{"s":"__PAGE__","h":160}]]
 2:[["children",{"s":{"n":"slug","t":"oc","k":"Architecture/opendal-integration","s":[]},"h":64,"c":"$Q3"}]]
 1:[["children",{"s":"docs","h":32,"c":"$Q2"}]]
-0:{"b":"m0nUsKPpWGb0O-byP1GAi","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"LOejshgJh7TgBdNYSmNRJ","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
