@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcurvine_doc=self.webpackChunkcurvine_doc||[]).push([[1903],{1912:e=>{e.exports=JSON.parse('{"blogBasePath":"/zh-cn/blog","blogTitle":"Blog","authorsListPath":"/zh-cn/blog/authors"}')}}]);
