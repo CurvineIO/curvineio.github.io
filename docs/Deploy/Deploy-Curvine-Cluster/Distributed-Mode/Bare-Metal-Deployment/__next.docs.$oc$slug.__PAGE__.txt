@@ -1,14 +1,14 @@
 3:"$Sreact.fragment"
 4:"/_next/static/chunks/22jpu0ioeg-6i.js"
 5:"/_next/static/chunks/1lemtyxul8nva.js"
-6:"/_next/static/chunks/2y1n692v3ifuy.js"
-7:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+6:"/_next/static/chunks/09gm2vy13m22h.js"
+7:"/_next/static/chunks/0k4qe-_hyavzd.js"
 8:I[936064,["$4","$5","$6","$7"],"default"]
 9:I[481497,["$4","$5","$6","$7"],"default"]
-e:"/_next/static/chunks/1voszl6qhskc7.js"
-f:"/_next/static/chunks/2_na_e-ww8hvl.js"
-10:"/_next/static/chunks/00l9-azdv0m-2.js"
-11:"/_next/static/chunks/3ce8htwldd10k.js"
+e:"/_next/static/chunks/1o2wh38n_dyqq.js"
+f:"/_next/static/chunks/2wf6dtda61gme.js"
+10:"/_next/static/chunks/0l7lk3wh304e4.js"
+11:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 12:"/_next/static/chunks/1adne8fdas0e0.js"
 13:"/_next/static/chunks/1i1ytqd5_xisb.js"
 14:I[190776,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"DocsPage"]
@@ -59,7 +59,7 @@ flowchart TB
     class FUSE,CLI optionalStyled:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$3","c",{"children":[["$","$L14",null,{"toc":[{"depth":2,"url":"#logical-deployment-architecture","title":"Logical Deployment Architecture"},{"depth":2,"url":"#startup-commands","title":"Startup Commands"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"Bare Metal Deployment"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":["Before deployment, you need to ",["$","$L15",null,{"href":"/docs/Deploy/Deploy-Curvine-Cluster/Preparation/deployment-setup#create-installation-package","children":"create installation packages and modify configuration files"}],"."]}],"\n",["$","$L16",null,{"as":"h2","id":"logical-deployment-architecture","children":"Logical Deployment Architecture"}],"\n",["$","p",null,{"children":["The following diagram shows the logical architecture of a Curvine bare metal deployment. The ",["$","strong",null,{"children":"cluster core"}]," consists only of Master and Worker processes; they must be started for the cluster to operate. FUSE is an ",["$","strong",null,{"children":"optional"}]," access method and is ",["$","strong",null,{"children":"not"}]," part of the cluster startup—you only need it when applications require a POSIX mount point."]}],"\n",["$","$L17",null,{"chart":"$18"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"Cluster core (required):"}]," Start ",["$","code",null,{"children":"curvine-master"}]," and ",["$","code",null,{"children":"curvine-worker"}]," on the intended hosts. The cluster is operational once Master and Workers are running; you can use the CLI (",["$","code",null,{"children":"cv"}],") or SDK without FUSE."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"FUSE (optional):"}]," Start ",["$","code",null,{"children":"curvine-fuse"}]," only when you need a POSIX filesystem mount (e.g. for legacy tools or scripts). FUSE is not a core service—the cluster does not depend on it to start or run."]}],"\n"]}],"\n",["$","p",null,{"children":["When Load and Export jobs need independent scheduling, deploy Transfer as a\nseparate optional service after the cluster is healthy. It does not join the\nMaster Raft group and does not require a Master or Worker configuration change.\nSee ","$L19","."]}],"\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f"],null]}]]}],["$L20","$L21"],"$L22"]}],"p":"$@23","v":null,"s":"$c"}}]]
 2:[["children",{"s":{"n":"slug","t":"oc","k":"Deploy/Deploy-Curvine-Cluster/Distributed-Mode/Bare-Metal-Deployment","s":[]},"h":64,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@a","v":"$b","s":"$c"},"c":"$Qd"}]]
 1:[["children",{"s":"docs","h":32,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L25",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L27",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$28",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Bare Metal Deployment - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L29","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@2a","v":null,"s":"$c"}},"a":"$@2b","u":"$@2c","b":"_rfyN7Qrw3gd9fkLJsuEC"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L25",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L27",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$28",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Bare Metal Deployment - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L29","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@2a","v":null,"s":"$c"}},"a":"$@2b","u":"$@2c","b":"do1BTqQlpv1LKtb4TwPoS"}
 2d:I[164341,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"default"]
 2e:I[378000,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"CodeBlock"]
 2f:I[378000,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"Pre"]

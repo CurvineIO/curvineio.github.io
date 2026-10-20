@@ -1,14 +1,14 @@
 4:"$Sreact.fragment"
 5:"/_next/static/chunks/22jpu0ioeg-6i.js"
 6:"/_next/static/chunks/1lemtyxul8nva.js"
-7:"/_next/static/chunks/2y1n692v3ifuy.js"
-8:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+7:"/_next/static/chunks/09gm2vy13m22h.js"
+8:"/_next/static/chunks/0k4qe-_hyavzd.js"
 9:I[936064,["$5","$6","$7","$8"],"default"]
 a:I[481497,["$5","$6","$7","$8"],"default"]
-f:"/_next/static/chunks/1voszl6qhskc7.js"
-10:"/_next/static/chunks/2_na_e-ww8hvl.js"
-11:"/_next/static/chunks/00l9-azdv0m-2.js"
-12:"/_next/static/chunks/3ce8htwldd10k.js"
+f:"/_next/static/chunks/1o2wh38n_dyqq.js"
+10:"/_next/static/chunks/2wf6dtda61gme.js"
+11:"/_next/static/chunks/0l7lk3wh304e4.js"
+12:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 13:"/_next/static/chunks/1adne8fdas0e0.js"
 14:"/_next/static/chunks/1i1ytqd5_xisb.js"
 15:I[190776,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"DocsPage"]
@@ -27,7 +27,7 @@ e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$",
 3:[["children",{"s":{"n":"slug","t":"oc","k":"User-Manuals","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L1c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L1e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$18",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"User Manuals - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L1f","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@20","v":null,"s":"$d"}},"a":"$@21","u":"$@22","b":"_rfyN7Qrw3gd9fkLJsuEC"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L1c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L1e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$18",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"User Manuals - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L1f","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@20","v":null,"s":"$d"}},"a":"$@21","u":"$@22","b":"do1BTqQlpv1LKtb4TwPoS"}
 19:null
 22:true
 d:300

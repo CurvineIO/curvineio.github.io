@@ -1,14 +1,14 @@
 3:"$Sreact.fragment"
 4:"/_next/static/chunks/22jpu0ioeg-6i.js"
 5:"/_next/static/chunks/1lemtyxul8nva.js"
-6:"/_next/static/chunks/2y1n692v3ifuy.js"
-7:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+6:"/_next/static/chunks/09gm2vy13m22h.js"
+7:"/_next/static/chunks/0k4qe-_hyavzd.js"
 8:I[936064,["$4","$5","$6","$7"],"default"]
 9:I[481497,["$4","$5","$6","$7"],"default"]
-e:"/_next/static/chunks/1voszl6qhskc7.js"
-f:"/_next/static/chunks/2_na_e-ww8hvl.js"
-10:"/_next/static/chunks/00l9-azdv0m-2.js"
-11:"/_next/static/chunks/3ce8htwldd10k.js"
+e:"/_next/static/chunks/1o2wh38n_dyqq.js"
+f:"/_next/static/chunks/2wf6dtda61gme.js"
+10:"/_next/static/chunks/0l7lk3wh304e4.js"
+11:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 12:"/_next/static/chunks/1adne8fdas0e0.js"
 13:"/_next/static/chunks/1i1ytqd5_xisb.js"
 14:I[190776,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"DocsPage"]
@@ -81,7 +81,7 @@ flowchart TD
     class CFS,FSC cacheStyled:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$3","c",{"children":[["$","$L14",null,{"toc":[{"depth":2,"url":"#1-ufs-mounting","title":"1. UFS Mounting"},{"depth":2,"url":"#mounting","title":"2. Mount Commands"},{"depth":3,"url":"#21-local-directory-mounting","title":"2.1 Local Directory Mounting"},{"depth":3,"url":"#22-external-storage-mounting","title":"2.2 External Storage Mounting"},{"depth":3,"url":"#23-complete-mount-parameter-table","title":"2.3 Complete Mount Parameter Table"},{"depth":2,"url":"#3-view-existing-mount-points","title":"3. View Existing Mount Points"},{"depth":2,"url":"#mount-modes","title":"4. Mount Modes"},{"depth":3,"url":"#41-cache_mode-high-performance-read-cache","title":"4.1 cache_mode: High-Performance Read Cache"},{"depth":3,"url":"#42-fs_mode-layered-file-system","title":"4.2 fs_mode: Layered File System"},{"depth":2,"url":"#5-unified-access","title":"5. Unified Access"},{"depth":2,"url":"#6-space-release","title":"6. Space Release"},{"depth":2,"url":"#7-disable-unified-access","title":"7. Disable Unified Access"},{"depth":2,"url":"#8-summary","title":"8. Summary"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"Unified Namespace"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":"Curvine provides a UFS (Unified File System) view to manage all supported distributed storage systems, including local filesystems, S3/MinIO, HDFS, and others. In simple terms, Curvine UFS mounting creates a path mapping that integrates external storage systems into Curvine's own filesystem. Users no longer need to remember different storage access methods and can access all storage through one unified interface."}],"\n",["$","$L15",null,{"chart":"$16"}],"\n","$L17","\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20","\n","$L21","\n","$L22","\n","$L23","\n","$L24","\n","$L25","\n","$L26","\n","$L27","\n","$L28","\n","$L29","\n","$L2a","\n","$L2b","\n","$L2c","\n","$L2d","\n","$L2e","\n","$L2f","\n","$L30","\n","$L31","\n","$L32","\n","$L33","\n","$L34","\n","$L35","\n","$L36","\n","$L37","\n","$L38","\n","$L39","\n","$L3a","\n","$L3b","\n","$L3c","\n","$L3d","\n","$L3e","\n","$L3f","\n","$L40","\n","$L41","\n","$L42","\n","$L43","\n","$L44","\n","$L45","\n","$L46","\n","$L47","\n","$L48","\n","$L49","\n","$L4a","\n","$L4b","\n","$L4c","\n","$L4d","\n","$L4e","\n","$L4f","\n","$L50","\n","$L51","\n","$L52","\n","$L53","\n","$L54","\n","$L55","\n","$L56","\n","$L57","\n","$L58","\n","$L59","\n","$L5a"],null]}]]}],["$L5b","$L5c"],"$L5d"]}],"p":"$@5e","v":null,"s":"$c"}}]]
 2:[["children",{"s":{"n":"slug","t":"oc","k":"User-Manuals/Key-Features/ufs","s":[]},"h":64,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@a","v":"$b","s":"$c"},"c":"$Qd"}]]
 1:[["children",{"s":"docs","h":32,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L60",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L62",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$63",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Unified Namespace - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L64","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@65","v":null,"s":"$c"}},"a":"$@66","u":"$@67","b":"_rfyN7Qrw3gd9fkLJsuEC"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L60",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L62",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$63",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Unified Namespace - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L64","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@65","v":null,"s":"$c"}},"a":"$@66","u":"$@67","b":"do1BTqQlpv1LKtb4TwPoS"}
 68:I[390156,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"Heading"]
 69:I[640788,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"Image"]
 6a:I[378000,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"CodeBlock"]
