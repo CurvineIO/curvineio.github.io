@@ -5,7 +5,7 @@
 8:"/_next/static/chunks/0k4qe-_hyavzd.js"
 9:I[936064,["$5","$6","$7","$8"],"default"]
 a:I[481497,["$5","$6","$7","$8"],"default"]
-11:"/_next/static/chunks/03zt9y6vwlkb0.js"
+11:"/_next/static/chunks/0rja8znhskf6-.js"
 12:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 13:"/_next/static/chunks/3z_7934nlxsf-.js"
 14:"/_next/static/chunks/0ytb2rp6yc_eo.js"
@@ -28,7 +28,7 @@ e:[["children",{"s":{"n":"slug","t":"c","k":"2025/02/11/starrocks-compute-storag
 3:[["children",{"s":"blog","h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"(home)","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L3e",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L40",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$41",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"实测！StarRocks存算分离性能大揭秘：Curvine缓存竟有这波神操作 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L42","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@43","v":null,"s":"$d"}},"a":"$@44","u":"$@45","b":"do1BTqQlpv1LKtb4TwPoS"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L3e",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L40",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$41",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"实测！StarRocks存算分离性能大揭秘：Curvine缓存竟有这波神操作 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L42","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@43","v":null,"s":"$d"}},"a":"$@44","u":"$@45","b":"oO5-zZNUsCsrxeNCJ102q"}
 46:I[378000,["$5","$6","$7","$8","$11","$12","$13","$14","$15"],"CodeBlock"]
 47:I[378000,["$5","$6","$7","$8","$11","$12","$13","$14","$15"],"Pre"]
 48:"CollapsibleAside"

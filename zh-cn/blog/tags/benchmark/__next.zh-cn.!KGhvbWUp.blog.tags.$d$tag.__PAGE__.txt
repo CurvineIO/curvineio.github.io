@@ -5,7 +5,7 @@
 8:"/_next/static/chunks/0k4qe-_hyavzd.js"
 9:I[936064,["$5","$6","$7","$8"],"default"]
 a:I[481497,["$5","$6","$7","$8"],"default"]
-13:"/_next/static/chunks/03zt9y6vwlkb0.js"
+13:"/_next/static/chunks/0rja8znhskf6-.js"
 14:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 15:"/_next/static/chunks/3z_7934nlxsf-.js"
 16:"/_next/static/chunks/0j776_k4f6res.js"
@@ -26,7 +26,7 @@ e:[["children",{"s":"tags","h":96,"d":{"r":["$","$4","c",{"children":[null,["$",
 3:[["children",{"s":"blog","h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"(home)","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L23",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L25",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$26",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Curvine"}],["$","meta","1",{"name":"description","content":"High performance distributed caching system"}],["$","link","2",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L27","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@28","v":null,"s":"$d"}},"a":"$@29","u":"$@2a","b":"do1BTqQlpv1LKtb4TwPoS"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L23",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L25",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$26",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Curvine"}],["$","meta","1",{"name":"description","content":"High performance distributed caching system"}],["$","link","2",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L27","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@28","v":null,"s":"$d"}},"a":"$@29","u":"$@2a","b":"oO5-zZNUsCsrxeNCJ102q"}
 2b:"CollapsibleAside"
 2c:I[623882,["$5","$6","$7","$8","$13","$14","$15","$16"],"$2b"]
 2d:I[164341,["$5","$6","$7","$8","$13","$14","$15","$16"],"default"]

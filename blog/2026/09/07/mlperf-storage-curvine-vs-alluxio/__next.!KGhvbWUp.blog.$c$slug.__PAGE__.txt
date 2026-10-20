@@ -5,7 +5,7 @@
 7:"/_next/static/chunks/0k4qe-_hyavzd.js"
 8:I[936064,["$4","$5","$6","$7"],"default"]
 9:I[481497,["$4","$5","$6","$7"],"default"]
-10:"/_next/static/chunks/03zt9y6vwlkb0.js"
+10:"/_next/static/chunks/0rja8znhskf6-.js"
 11:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 12:"/_next/static/chunks/3z_7934nlxsf-.js"
 13:"/_next/static/chunks/0ytb2rp6yc_eo.js"
@@ -27,7 +27,7 @@ f:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$3","c",{"children":[["$",
 d:[["children",{"s":{"n":"slug","t":"c","k":"2026/09/07/mlperf-storage-curvine-vs-alluxio","s":["tags"]},"h":96,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@e","v":"$b","s":"$c"},"c":"$Qf"}]]
 2:[["children",{"s":"blog","h":64,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@a","v":"$b","s":"$c"},"c":"$Qd"}]]
 1:[["children",{"s":"(home)","h":32,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L5c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L5e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$5f",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Open-source DistCache Beats Alluxio Commercial: Curvine's Latest MLPerf Results - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L60","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@61","v":null,"s":"$c"}},"a":"$@62","u":"$@63","b":"do1BTqQlpv1LKtb4TwPoS"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L5c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L5e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$5f",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Open-source DistCache Beats Alluxio Commercial: Curvine's Latest MLPerf Results - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L60","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@61","v":null,"s":"$c"}},"a":"$@62","u":"$@63","b":"oO5-zZNUsCsrxeNCJ102q"}
 64:I[390156,["$4","$5","$6","$7","$10","$11","$12","$13","$14"],"Heading"]
 65:"CollapsibleAside"
 66:I[623882,["$4","$5","$6","$7","$10","$11","$12","$13","$14"],"$65"]

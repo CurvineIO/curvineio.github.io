@@ -5,7 +5,7 @@
 8:"/_next/static/chunks/0k4qe-_hyavzd.js"
 9:I[936064,["$5","$6","$7","$8"],"default"]
 a:I[481497,["$5","$6","$7","$8"],"default"]
-f:"/_next/static/chunks/1o2wh38n_dyqq.js"
+f:"/_next/static/chunks/3e89i0670otcs.js"
 10:"/_next/static/chunks/2wf6dtda61gme.js"
 11:"/_next/static/chunks/0l7lk3wh304e4.js"
 12:"/_next/static/chunks/1_qtpx_7_ufgx.js"
@@ -27,7 +27,7 @@ e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$",
 3:[["children",{"s":{"n":"slug","t":"oc","k":"Overview/architecture","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2d",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2f",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$30",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"技术架构 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L31","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@32","v":null,"s":"$d"}},"a":"$@33","u":"$@34","b":"do1BTqQlpv1LKtb4TwPoS"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2d",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2f",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$30",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"技术架构 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L31","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@32","v":null,"s":"$d"}},"a":"$@33","u":"$@34","b":"oO5-zZNUsCsrxeNCJ102q"}
 35:I[951315,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"default"]
 36:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
 18:["$","li",null,{"children":[["$","strong",null,{"children":"IO Handlers"}],"：读/写管道，具有零拷贝"]}]

@@ -5,7 +5,7 @@
 8:"/_next/static/chunks/0k4qe-_hyavzd.js"
 9:I[936064,["$5","$6","$7","$8"],"default"]
 a:I[481497,["$5","$6","$7","$8"],"default"]
-13:"/_next/static/chunks/03zt9y6vwlkb0.js"
+13:"/_next/static/chunks/0rja8znhskf6-.js"
 14:"/_next/static/chunks/1_qtpx_7_ufgx.js"
 15:"/_next/static/chunks/3z_7934nlxsf-.js"
 16:"/_next/static/chunks/0j776_k4f6res.js"
@@ -29,7 +29,7 @@ e:[["children",{"s":"tags","h":96,"d":{"r":["$","$4","c",{"children":[null,["$",
 3:[["children",{"s":"blog","h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"(home)","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2a",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2c",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2d",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Curvine"}],["$","meta","1",{"name":"description","content":"High performance distributed caching system"}],["$","link","2",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L2e","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@2f","v":null,"s":"$d"}},"a":"$@30","u":"$@31","b":"do1BTqQlpv1LKtb4TwPoS"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2a",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2c",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2d",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Curvine"}],["$","meta","1",{"name":"description","content":"High performance distributed caching system"}],["$","link","2",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L2e","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@2f","v":null,"s":"$d"}},"a":"$@30","u":"$@31","b":"oO5-zZNUsCsrxeNCJ102q"}
 32:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
 1c:["$","li","/zh-cn/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio",{"children":["$","$L18",null,{"href":"/zh-cn/blog/2026/09/07/mlperf-storage-curvine-vs-alluxio","data-active":false,"className":"block truncate rounded-md px-2 py-1.5 transition-colors hover:overflow-visible hover:whitespace-normal hover:text-fd-primary data-[active=true]:font-semibold data-[active=true]:text-fd-primary text-fd-foreground","children":"开源 DistCache 跑过了 Alluxio 商业版：Curvine 最新 MLPerf 成绩"}]}]
 1d:["$","li","/zh-cn/blog/2026/08/13/tiered-kv-cache-sagemaker-hyperpod-curvine",{"children":["$","$L18",null,{"href":"/zh-cn/blog/2026/08/13/tiered-kv-cache-sagemaker-hyperpod-curvine","data-active":false,"className":"block truncate rounded-md px-2 py-1.5 transition-colors hover:overflow-visible hover:whitespace-normal hover:text-fd-primary data-[active=true]:font-semibold data-[active=true]:text-fd-primary text-fd-muted-foreground","children":"在 Amazon SageMaker HyperPod 上借助 Curvine 为大型 LLM 构建分层 KV 缓存"}]}]
