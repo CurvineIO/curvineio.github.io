@@ -1,0 +1,82 @@
+4:"$Sreact.fragment"
+5:"/_next/static/chunks/22jpu0ioeg-6i.js"
+6:"/_next/static/chunks/1lemtyxul8nva.js"
+7:"/_next/static/chunks/2y1n692v3ifuy.js"
+8:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+9:I[936064,["$5","$6","$7","$8"],"default"]
+a:I[481497,["$5","$6","$7","$8"],"default"]
+f:"/_next/static/chunks/1voszl6qhskc7.js"
+10:"/_next/static/chunks/2_na_e-ww8hvl.js"
+11:"/_next/static/chunks/00l9-azdv0m-2.js"
+12:"/_next/static/chunks/3ce8htwldd10k.js"
+13:"/_next/static/chunks/1adne8fdas0e0.js"
+14:"/_next/static/chunks/1i1ytqd5_xisb.js"
+15:I[190776,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"DocsPage"]
+16:I[951315,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"default"]
+17:I[390156,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"Heading"]
+18:I[286720,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"Mermaid"]
+1a:I[164341,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"default"]
+24:"ViewportBoundary"
+25:I[675049,["$5","$6","$7","$8"],"$24"]
+26:"MetadataBoundary"
+27:I[675049,["$5","$6","$7","$8"],"$26"]
+28:"$Sreact.suspense"
+29:I[934035,["$5","$6","$7","$8"],"IconMark"]
+c:X
+c:C
+d:X
+19:T54b,%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#4a9eff', 'primaryTextColor': '#1a202c', 'primaryBorderColor': '#3182ce', 'lineColor': '#4a5568', 'secondaryColor': '#805ad5', 'tertiaryColor': '#38a169', 'mainBkg': '#ffffff', 'nodeBorder': '#4a5568', 'clusterBkg': '#f8f9fa', 'clusterBorder': '#dee2e6', 'titleColor': '#1a202c'}}}%%
+flowchart TB
+    subgraph Optional["可选访问（非集群启动必需）"]
+        FUSE[curvine-fuse<br/>POSIX 挂载]
+        CLI[CLI / SDK]
+    end
+
+    subgraph Core["Curvine 集群核心（启动必需）"]
+        subgraph Master_Group["Master"]
+            M1[curvine-master<br/>元数据 · Raft]
+        end
+        subgraph Worker_Group["Worker"]
+            W1[curvine-worker<br/>块存储]
+            W2[curvine-worker<br/>块存储]
+            WN[curvine-worker<br/>...]
+        end
+        M1 --> W1
+        M1 --> W2
+        M1 --> WN
+    end
+
+    FUSE -.->|RPC / 数据| M1
+    FUSE -.->|数据| W1
+    CLI -.->|RPC| M1
+
+    classDef masterStyle fill:#4a9eff,stroke:#2b6cb0,color:#fff,stroke-width:2px
+    classDef workerStyle fill:#805ad5,stroke:#553c9a,color:#fff,stroke-width:2px
+    classDef optionalStyle fill:#ecc94b,stroke:#b7791f,color:#1a202c,stroke-width:2px
+    
+    class M1 masterStyle
+    class W1,W2,WN workerStyle
+    class FUSE,CLI optionalStylee:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$","$L15",null,{"toc":[{"depth":2,"url":"#逻辑部署架构","title":"逻辑部署架构"},{"depth":2,"url":"#启动命令","title":"启动命令"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"裸机部署"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":["部署前需要",["$","$L16",null,{"href":"/docs/Deploy/Deploy-Curvine-Cluster/Preparation/deployment-setup#%E5%88%9B%E5%BB%BA%E5%AE%89%E8%A3%85%E5%8C%85","children":"创建安装包与修改配置文件"}],"。"]}],"\n",["$","$L17",null,{"as":"h2","id":"逻辑部署架构","children":"逻辑部署架构"}],"\n",["$","p",null,{"children":["下图是 Curvine 裸机部署的逻辑架构。",["$","strong",null,{"children":"集群核心"}],"仅由 Master 与 Worker 进程组成，二者启动后集群即可对外服务。FUSE 是",["$","strong",null,{"children":"可选的"}],"访问方式，",["$","strong",null,{"children":"不参与"}],"集群启动——仅在应用需要 POSIX 挂载点时再启用。"]}],"\n",["$","$L18",null,{"chart":"$19"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"集群核心（必选）："}]," 在规划的主机上启动 ",["$","code",null,{"children":"curvine-master"}]," 与 ",["$","code",null,{"children":"curvine-worker"}],"。二者就绪后集群即可工作，可通过 CLI（",["$","code",null,{"children":"cv"}],"）或 SDK 访问，",["$","strong",null,{"children":"无需先启动 FUSE"}],"。"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"FUSE（可选）："}]," 仅当需要 POSIX 文件系统挂载（如兼容旧工具、脚本）时再启动 ",["$","code",null,{"children":"curvine-fuse"}],"。FUSE 不是核心服务，集群的启动与运行不依赖它。"]}],"\n"]}],"\n",["$","p",null,{"children":["如需让 Load 和 Export 使用独立调度，应在集群健康后部署独立的可选 Transfer 服务。\n它不加入 Master Raft 组，也不要求修改 Master 或 Worker 配置。参见\n",["$","$L16",null,{"href":"/docs/Deploy/Transfer-Service/Bare-Metal","children":"物理机部署 Transfer"}],"。"]}],"\n",["$","div",null,{"className":"flex gap-2 my-4 rounded-xl border bg-fd-card p-3 ps-1 text-sm text-fd-card-foreground","style":{"--callout-color":"var(--color-fd-info, var(--color-fd-muted))"},"children":[["$","div",null,{"role":"none","className":"w-0.5 bg-(--callout-color)/50 rounded-sm"}],["$","$L1a",null,{"icon":{"name":"info","size":24,"node":[["circle",{"cx":"12","cy":"12","r":"10","key":"1mglay"}],["path",{"d":"M12 16v-4","key":"1dtifu"}],["path",{"d":"M12 8h.01","key":"e9boi3"}]]},"className":"size-5 -me-0.5 fill-(--callout-color) text-fd-card"}],["$","div",null,{"className":"flex flex-col gap-2 min-w-0 flex-1","children":["$","div",null,{"className":"text-fd-muted-foreground prose-no-margin empty:hidden","children":["$","p",null,{"children":[["$","strong",null,{"children":"FUSE 不参与集群启动。"}]," Curvine 集群由 Master 与 Worker 组成。FUSE 与 CLI、SDK、S3 网关一样，只是多种访问方式之一，仅在应用需要本地挂载点时才有必要启用。"]}]}]}]]}],"\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f"],null]}]]}],["$L20","$L21"],"$L22"]}],"p":"$@23","v":null,"s":"$d"}}]]
+3:[["children",{"s":{"n":"slug","t":"oc","k":"Deploy/Deploy-Curvine-Cluster/Distributed-Mode/Bare-Metal-Deployment","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
+2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
+1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L25",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L27",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$28",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"裸机部署 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L29","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@2a","v":null,"s":"$d"}},"a":"$@2b","u":"$@2c","b":"g5hhCZYH2uwYijtXJ44v6"}
+2d:I[378000,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"CodeBlock"]
+2e:I[378000,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"Pre"]
+2f:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
+1b:["$","hr",null,{}]
+1c:["$","div",null,{"className":"flex gap-2 my-4 rounded-xl border bg-fd-card p-3 ps-1 text-sm text-fd-card-foreground","style":{"--callout-color":"var(--color-fd-warning, var(--color-fd-muted))"},"children":[["$","div",null,{"role":"none","className":"w-0.5 bg-(--callout-color)/50 rounded-sm"}],["$","$L1a",null,{"icon":{"name":"triangle-alert","size":24,"node":[["path",{"d":"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3","key":"wmoenq"}],["path",{"d":"M12 9v4","key":"juzpu7"}],["path",{"d":"M12 17h.01","key":"p32p05"}]],"aliases":["alert-triangle"]},"className":"size-5 -me-0.5 fill-(--callout-color) text-fd-card"}],["$","div",null,{"className":"flex flex-col gap-2 min-w-0 flex-1","children":["$","div",null,{"className":"text-fd-muted-foreground prose-no-margin empty:hidden","children":["$","p",null,{"children":"每台 Worker 需要有自己确定的 IP。多网卡环境下，建议通过环境变量显式指定 IP，避免自动取到预期外的网卡地址。"}]}]}]]}]
+1d:["$","$L17",null,{"as":"h2","id":"启动命令","children":"启动命令"}]
+1e:["$","p",null,{"children":["裸机部署需手动启动",["$","strong",null,{"children":"集群核心"}],"（master 与 worker）；仅在需要 POSIX 挂载的节点上",["$","strong",null,{"children":"按需"}],"启动 FUSE："]}]
+1f:["$","$L2d",null,{"className":"shiki shiki-themes github-light github-dark","style":{"--shiki-light":"#24292e","--shiki-dark":"#e1e4e8","--shiki-light-bg":"#fff","--shiki-dark-bg":"#24292e"},"tabIndex":"0","icon":"<svg viewBox=\"0 0 24 24\"><path d=\"m 4,4 a 1,1 0 0 0 -0.7070312,0.2929687 1,1 0 0 0 0,1.4140625 L 8.5859375,11 3.2929688,16.292969 a 1,1 0 0 0 0,1.414062 1,1 0 0 0 1.4140624,0 l 5.9999998,-6 a 1.0001,1.0001 0 0 0 0,-1.414062 L 4.7070312,4.2929687 A 1,1 0 0 0 4,4 Z m 8,14 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 h 8 a 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 z\" fill=\"currentColor\" /></svg>","children":["$","$L2e",null,{"children":["$","code",null,{"children":[["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# 启动集群核心（必需）"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bin/curvine-master.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" start"}]]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bin/curvine-worker.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" start"}]]}],"\n",["$","span",null,{"className":"line"}],"\n",["$","span",null,{"className":"line","children":["$","span",null,{"style":{"--shiki-light":"#6A737D","--shiki-dark":"#6A737D"},"children":"# 可选：仅当需要 POSIX 挂载点时再启动 FUSE"}]}],"\n",["$","span",null,{"className":"line","children":[["$","span",null,{"style":{"--shiki-light":"#6F42C1","--shiki-dark":"#B392F0"},"children":"bin/curvine-fuse.sh"}],["$","span",null,{"style":{"--shiki-light":"#032F62","--shiki-dark":"#9ECBFF"},"children":" start"}]]}]]}]}]}]
+20:["$","script","script-0",{"src":"/_next/static/chunks/1adne8fdas0e0.js","async":true}]
+21:["$","script","script-1",{"src":"/_next/static/chunks/1i1ytqd5_xisb.js","async":true}]
+22:["$","$L2f",null,{"children":["$","$28",null,{"name":"Next.MetadataOutlet","children":"$@30"}]}]
+2c:true
+d:300
+30:null
+d:C
+2b:0
+b:"$undefined"
+2a:"$undefined"
+23:"$undefined"

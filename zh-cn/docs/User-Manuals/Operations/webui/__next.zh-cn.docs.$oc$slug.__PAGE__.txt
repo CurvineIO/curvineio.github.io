@@ -1,0 +1,87 @@
+4:"$Sreact.fragment"
+5:"/_next/static/chunks/22jpu0ioeg-6i.js"
+6:"/_next/static/chunks/1lemtyxul8nva.js"
+7:"/_next/static/chunks/2y1n692v3ifuy.js"
+8:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+9:I[936064,["$5","$6","$7","$8"],"default"]
+a:I[481497,["$5","$6","$7","$8"],"default"]
+f:"/_next/static/chunks/1voszl6qhskc7.js"
+10:"/_next/static/chunks/2_na_e-ww8hvl.js"
+11:"/_next/static/chunks/00l9-azdv0m-2.js"
+12:"/_next/static/chunks/3ce8htwldd10k.js"
+13:"/_next/static/chunks/1adne8fdas0e0.js"
+14:"/_next/static/chunks/1i1ytqd5_xisb.js"
+15:I[190776,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"DocsPage"]
+16:I[390156,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"Heading"]
+17:I[640788,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"Image"]
+49:"ViewportBoundary"
+4a:I[675049,["$5","$6","$7","$8"],"$49"]
+4b:"MetadataBoundary"
+4c:I[675049,["$5","$6","$7","$8"],"$4b"]
+4d:"$Sreact.suspense"
+4e:I[934035,["$5","$6","$7","$8"],"IconMark"]
+c:X
+c:C
+d:X
+e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$","$L15",null,{"toc":[{"depth":2,"url":"#overview---集群概览","title":"Overview - 集群概览"},{"depth":3,"url":"#集群状态信息","title":"集群状态信息"},{"depth":3,"url":"#工作节点状态","title":"工作节点状态"},{"depth":3,"url":"#存储容量统计","title":"存储容量统计"},{"depth":3,"url":"#文件系统统计","title":"文件系统统计"},{"depth":2,"url":"#browse---文件系统浏览","title":"Browse - 文件系统浏览"},{"depth":3,"url":"#文件系统导航","title":"文件系统导航"},{"depth":3,"url":"#文件和目录管理","title":"文件和目录管理"},{"depth":3,"url":"#存储统计","title":"存储统计"},{"depth":3,"url":"#空目录提示","title":"空目录提示"},{"depth":2,"url":"#workers---工作节点管理","title":"Workers - 工作节点管理"},{"depth":3,"url":"#实时节点状态","title":"实时节点状态"},{"depth":3,"url":"#活跃工作节点列表","title":"活跃工作节点列表"},{"depth":3,"url":"#离线节点监控","title":"离线节点监控"},{"depth":3,"url":"#集群健康监控","title":"集群健康监控"},{"depth":2,"url":"#configuration---系统配置","title":"Configuration - 系统配置"},{"depth":3,"url":"#配置参数部分展示","title":"配置参数部分展示"},{"depth":4,"url":"#格式化配置","title":"格式化配置"},{"depth":4,"url":"#测试和调试配置","title":"测试和调试配置"},{"depth":4,"url":"#集群标识","title":"集群标识"},{"depth":4,"url":"#网络配置","title":"网络配置"},{"depth":4,"url":"#性能调优参数","title":"性能调优参数"},{"depth":4,"url":"#元数据管理","title":"元数据管理"},{"depth":3,"url":"#配置验证和诊断","title":"配置验证和诊断"},{"depth":3,"url":"#配置管理最佳实践","title":"配置管理最佳实践"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"Web管理界面"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":"Curvine 提供了直观易用的Web管理界面，用户可以通过浏览器实时监控集群状态、管理文件系统、查看工作节点信息以及配置系统参数。Web界面为集群运维和日常管理提供了可视化的操作平台，无需复杂的命令行操作即可完成大部分管理任务。"}],"\n",["$","$L16",null,{"as":"h2","id":"overview---集群概览","children":"Overview - 集群概览"}],"\n",["$","p",null,{"children":"Overview页面提供了Curvine集群的整体运行状态概览，是集群监控的核心仪表板。"}],"\n",["$","p",null,{"children":["$","$L17",null,{"sizes":"(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px","alt":"Overview页面","src":{"src":"/_next/static/media/overview.19menby01mjgd.png","width":1898,"height":654,"blurWidth":8,"blurHeight":3,"blurDataURL":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAADCAYAAACuyE5IAAAASElEQVR42h2MyQ3AQAwC3UgsXzi7/RdIUB4IIRgszmHO0LOYDVY3W3kAaWlPFXtfhoqS11+AuJcQbO7OrhGth9GDgIgkdtkafm6eIeBenSCJAAAAAElFTkSuQmCC"},"className":"rounded-lg"}]}],"\n",["$","$L16",null,{"as":"h3","id":"集群状态信息","children":"集群状态信息"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"集群状态"}],"：显示当前集群是否处于活跃状态，包含运行时长信息"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"主节点地址"}],"：显示Master节点的访问地址和端口"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"版本信息"}],"：显示当前运行的Curvine版本号"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"启动时间"}],"：显示集群的启动时间戳"]}],"\n"]}],"\n",["$","$L16",null,{"as":"h3","id":"工作节点状态","children":"工作节点状态"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"活跃工作节点数量"}],"：实时显示当前在线的Worker节点数量"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"离线工作节点数量"}],"：显示当前离线或故障的Worker节点数量"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"节点状态指示器"}],"：通过颜色编码直观显示节点健康状态"]}],"\n"]}],"\n",["$","$L16",null,{"as":"h3","id":"存储容量统计","children":"存储容量统计"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"总存储容量"}],"：显示集群的总存储容量"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"已用存储空间"}],"：显示当前已使用的存储空间"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"可用存储空间"}],"：显示剩余可用的存储空间"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"容量利用率"}],"：通过进度条和百分比显示存储使用率"]}],"\n"]}],"\n",["$","$L16",null,{"as":"h3","id":"文件系统统计","children":"文件系统统计"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"总文件数量"}],"：显示文件系统中的文件总数"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"目录数量"}],"：显示文件系统中的目录总数"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"数据块统计"}],"：显示唯一数据块和副本数据块的数量"]}],"\n"]}],"\n",["$","p",null,{"children":"通过Overview页面，管理员可以快速了解集群的整体健康状况，及时发现潜在问题并进行相应处理。"}],"\n",["$","$L16",null,{"as":"h2","id":"browse---文件系统浏览","children":"Browse - 文件系统浏览"}],"\n",["$","p",null,{"children":"Browse页面提供了类似文件管理器的界面，用户可以浏览和管理Curvine文件系统中的文件和目录。"}],"\n",["$","p",null,{"children":["$","$L17",null,{"sizes":"(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px","alt":"Browse页面","src":{"src":"/_next/static/media/browse.1two4v2fq580_.png","width":1895,"height":785,"blurWidth":8,"blurHeight":3,"blurDataURL":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAADCAYAAACuyE5IAAAAS0lEQVR42lXMMQ6AMAxD0Z4EkcRpSgksTNz/YCZiQGJ4gyXrN+udMjYuY1LgNEMxwkG5TzZRpdZB8yCAn/WabO7OiHhl7iW/7VV/AIwLIqc4aoDKAAAAAElFTkSuQmCC"},"className":"rounded-lg"}]}],"\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20","\n","$L21","\n","$L22","\n","$L23","\n","$L24","\n","$L25","\n","$L26","\n","$L27","\n","$L28","\n","$L29","\n","$L2a","\n","$L2b","\n","$L2c","\n","$L2d","\n","$L2e","\n","$L2f","\n","$L30","\n","$L31","\n","$L32","\n","$L33","\n","$L34","\n","$L35","\n","$L36","\n","$L37","\n","$L38","\n","$L39","\n","$L3a","\n","$L3b","\n","$L3c","\n","$L3d","\n","$L3e","\n","$L3f","\n","$L40","\n","$L41","\n","$L42","\n","$L43","\n","$L44"],null]}]]}],["$L45","$L46"],"$L47"]}],"p":"$@48","v":null,"s":"$d"}}]]
+3:[["children",{"s":{"n":"slug","t":"oc","k":"User-Manuals/Operations/webui","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
+2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
+1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L4a",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L4c",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$4d",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Web管理界面 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L4e","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@4f","v":null,"s":"$d"}},"a":"$@50","u":"$@51","b":"g5hhCZYH2uwYijtXJ44v6"}
+52:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
+18:["$","$L16",null,{"as":"h3","id":"文件系统导航","children":"文件系统导航"}]
+19:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"路径导航栏"}],"：显示当前所在的文件系统路径，支持快速跳转"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"导航按钮"}],"：提供\"Navigate\"按钮用于路径跳转"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"面包屑导航"}],"：显示完整的目录层级结构"]}],"\n"]}]
+1a:["$","$L16",null,{"as":"h3","id":"文件和目录管理","children":"文件和目录管理"}]
+1b:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"文件列表视图"}],"：以列表形式展示当前目录下的文件和子目录"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"文件详细信息"}],"：显示文件大小、修改时间、权限等属性信息"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"目录操作"}],"：支持创建新目录、删除目录等操作"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"文件操作"}],"：支持文件的查看、下载、删除等基本操作"]}],"\n"]}]
+1c:["$","$L16",null,{"as":"h3","id":"存储统计","children":"存储统计"}]
+1d:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"目录项统计"}],"：显示当前目录下的文件和子目录数量"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"Grid View按钮"}],"：提供网格视图切换选项，方便不同的浏览需求"]}],"\n"]}]
+1e:["$","$L16",null,{"as":"h3","id":"空目录提示","children":"空目录提示"}]
+1f:["$","p",null,{"children":"当目录为空时，界面会显示友好的提示信息：\"Directory is empty - No files or folders found in this location\"，帮助用户理解当前状态。"}]
+20:["$","p",null,{"children":"Browse页面使用户能够直观地管理分布式文件系统，就像操作本地文件系统一样简单便捷。"}]
+21:["$","$L16",null,{"as":"h2","id":"workers---工作节点管理","children":"Workers - 工作节点管理"}]
+22:["$","p",null,{"children":"Workers页面专门用于监控和管理集群中的工作节点，提供详细的节点状态信息和性能指标。"}]
+23:["$","p",null,{"children":["$","$L17",null,{"sizes":"(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px","alt":"Workers页面","src":{"src":"/_next/static/media/workers.3_v6kkefmr5wk.png","width":1894,"height":773,"blurWidth":8,"blurHeight":3,"blurDataURL":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAADCAYAAACuyE5IAAAAS0lEQVR42kXKQQqAIBQAUfcKolvzqz8w8/73m0oIFw9mMUbnoPROSokjC7kqIkKplXIq5po3fQy891hrN+cWo62h7x1jJISwfP17AP6SHrasbdmnAAAAAElFTkSuQmCC"},"className":"rounded-lg"}]}]
+24:["$","$L16",null,{"as":"h3","id":"实时节点状态","children":"实时节点状态"}]
+25:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"总容量显示"}],"：显示所有工作节点的总存储容量"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"可用容量显示"}],"：显示当前可用的存储容量"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"容量统计"}],"：实时更新的容量使用情况"]}],"\n"]}]
+26:["$","$L16",null,{"as":"h3","id":"活跃工作节点列表","children":"活跃工作节点列表"}]
+27:["$","p",null,{"children":"对于每个在线的工作节点，显示以下详细信息："}]
+28:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"节点ID"}],"：唯一标识工作节点的ID号"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"IP地址"}],"：工作节点的网络地址"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"最后心跳时间"}],"：显示节点最后一次与Master通信的时间"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"节点容量信息"}],"：","\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"总容量：节点的总存储容量"}],"\n",["$","li",null,{"children":"可用容量：节点当前可用的存储空间"}],"\n",["$","li",null,{"children":"已用容量：节点当前已使用的存储空间"}],"\n"]}],"\n"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"使用率指示器"}],"：通过进度条直观显示节点的存储使用率"]}],"\n"]}]
+29:["$","$L16",null,{"as":"h3","id":"离线节点监控","children":"离线节点监控"}]
+2a:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"离线节点列表"}],"：显示当前离线或无响应的工作节点"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"故障检测"}],"：帮助管理员快速识别有问题的节点"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"节点恢复状态"}],"：跟踪离线节点的恢复情况"]}],"\n"]}]
+2b:["$","$L16",null,{"as":"h3","id":"集群健康监控","children":"集群健康监控"}]
+2c:["$","p",null,{"children":"通过Workers页面，管理员可以："}]
+2d:["$","ul",null,{"children":["\n",["$","li",null,{"children":"监控各个节点的健康状态和性能表现"}],"\n",["$","li",null,{"children":"及时发现存储容量不足或节点故障问题"}],"\n",["$","li",null,{"children":"评估集群的负载分布和资源利用情况"}],"\n",["$","li",null,{"children":"为集群扩容或维护提供决策依据"}],"\n"]}]
+2e:["$","$L16",null,{"as":"h2","id":"configuration---系统配置","children":"Configuration - 系统配置"}]
+2f:["$","p",null,{"children":"Configuration页面提供了Curvine集群的详细配置信息查看功能，帮助管理员了解和验证系统配置。"}]
+30:["$","p",null,{"children":["$","$L17",null,{"sizes":"(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px","alt":"Configuration页面","src":{"src":"/_next/static/media/configuration.3npcs3ap2049-.png","width":1896,"height":822,"blurWidth":8,"blurHeight":3,"blurDataURL":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAADCAYAAACuyE5IAAAAQ0lEQVR42jWK2w2AMAwDs0feJYH9JzShFR8nn6yj1TfMHR6ByET2g7j6+ECrGjIBm++1OT8/GKiqoKoQkY1P9Dsz4wVBkiCs0uueAgAAAABJRU5ErkJggg=="},"className":"rounded-lg"}]}]
+31:["$","$L16",null,{"as":"h3","id":"配置参数部分展示","children":"配置参数部分展示"}]
+32:["$","p",null,{"children":"页面以表格形式展示所有重要的系统配置参数："}]
+33:["$","$L16",null,{"as":"h4","id":"格式化配置","children":"格式化配置"}]
+34:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"format_master"}],"：Master节点格式化状态"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"format_worker"}],"：Worker节点格式化状态"]}],"\n"]}]
+35:["$","$L16",null,{"as":"h4","id":"测试和调试配置","children":"测试和调试配置"}]
+36:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"testing"}],"：测试模式开关状态"]}],"\n"]}]
+37:["$","$L16",null,{"as":"h4","id":"集群标识","children":"集群标识"}]
+38:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"cluster_id"}],"：集群的唯一标识符"]}],"\n"]}]
+39:["$","$L16",null,{"as":"h4","id":"网络配置","children":"网络配置"}]
+3a:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_hostname"}],"：Master节点的主机名"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_rpc_port"}],"：Master节点RPC服务端口"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_web_port"}],"：Master节点Web服务端口"]}],"\n"]}]
+3b:["$","$L16",null,{"as":"h4","id":"性能调优参数","children":"性能调优参数"}]
+3c:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_io_threads"}],"：Master节点IO线程数"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_worker_threads"}],"：Master节点工作线程数"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_io_timeout"}],"：Master节点IO超时时间"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_io_close_idle"}],"：Master节点空闲连接关闭配置"]}],"\n"]}]
+3d:["$","$L16",null,{"as":"h4","id":"元数据管理","children":"元数据管理"}]
+3e:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_meta_dir"}],"：Master节点元数据存储目录"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_meta_disable_wal"}],"：元数据WAL日志开关"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"master_meta_compression_type"}],"：元数据压缩类型"]}],"\n"]}]
+3f:["$","$L16",null,{"as":"h3","id":"配置验证和诊断","children":"配置验证和诊断"}]
+40:["$","p",null,{"children":"通过Configuration页面，管理员可以："}]
+41:["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"验证配置正确性"}],"：确认各项配置参数是否符合预期"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"性能调优参考"}],"：根据当前配置评估性能优化空间"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"故障诊断支持"}],"：在出现问题时快速检查相关配置"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"集群对比"}],"：对比不同环境的配置差异"]}],"\n"]}]
+42:["$","$L16",null,{"as":"h3","id":"配置管理最佳实践","children":"配置管理最佳实践"}]
+43:["$","ul",null,{"children":["\n",["$","li",null,{"children":"定期检查关键配置参数，确保与业务需求匹配"}],"\n",["$","li",null,{"children":"在进行性能调优前，记录当前配置作为基线"}],"\n",["$","li",null,{"children":"配置变更后，通过此页面验证变更是否生效"}],"\n",["$","li",null,{"children":"结合性能监控数据，优化线程数、超时时间等参数"}],"\n"]}]
+44:["$","p",null,{"children":"通过Web管理界面，Curvine为用户提供了完整的集群管理和监控能力，大大简化了分布式缓存系统的运维工作，提高了管理效率和系统可观测性。"}]
+45:["$","script","script-0",{"src":"/_next/static/chunks/1adne8fdas0e0.js","async":true}]
+46:["$","script","script-1",{"src":"/_next/static/chunks/1i1ytqd5_xisb.js","async":true}]
+47:["$","$L52",null,{"children":["$","$4d",null,{"name":"Next.MetadataOutlet","children":"$@53"}]}]
+51:true
+d:300
+53:null
+d:C
+50:0
+b:"$undefined"
+4f:"$undefined"
+48:"$undefined"

@@ -1,0 +1,142 @@
+3:"$Sreact.fragment"
+4:"/_next/static/chunks/22jpu0ioeg-6i.js"
+5:"/_next/static/chunks/1lemtyxul8nva.js"
+6:"/_next/static/chunks/2y1n692v3ifuy.js"
+7:"/_next/static/chunks/3xzfm_hkeh0k8.js"
+8:I[936064,["$4","$5","$6","$7"],"default"]
+9:I[481497,["$4","$5","$6","$7"],"default"]
+e:"/_next/static/chunks/1voszl6qhskc7.js"
+f:"/_next/static/chunks/2_na_e-ww8hvl.js"
+10:"/_next/static/chunks/00l9-azdv0m-2.js"
+11:"/_next/static/chunks/3ce8htwldd10k.js"
+12:"/_next/static/chunks/1adne8fdas0e0.js"
+13:"/_next/static/chunks/1i1ytqd5_xisb.js"
+14:I[190776,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"DocsPage"]
+15:I[951315,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"default"]
+16:I[286720,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"Mermaid"]
+2a:"ViewportBoundary"
+2b:I[675049,["$4","$5","$6","$7"],"$2a"]
+2c:"MetadataBoundary"
+2d:I[675049,["$4","$5","$6","$7"],"$2c"]
+2e:"$Sreact.suspense"
+2f:I[934035,["$4","$5","$6","$7"],"IconMark"]
+b:X
+b:C
+c:X
+17:T938,%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#4a9eff', 'primaryTextColor': '#1a202c', 'primaryBorderColor': '#3182ce', 'lineColor': '#4a5568', 'secondaryColor': '#805ad5', 'tertiaryColor': '#38a169', 'mainBkg': '#ffffff', 'nodeBorder': '#4a5568', 'clusterBkg': '#f8f9fa', 'clusterBorder': '#dee2e6', 'titleColor': '#1a202c'}}}%%
+flowchart TD
+    subgraph Client_Applications
+        App1[Application 1<br/>FUSE mount]
+        App2[Application 2<br/>Hadoop HDFS API]
+        App3[Application 3<br/>S3 SDK]
+    end
+
+    subgraph Cluster_Layer
+        subgraph Master_Cluster
+            MasterLeader[Master Leader<br/>MasterHandler<br/>RocksDB]
+            MasterFollower1[Master Follower<br/>JournalLoader<br/>RocksDB]
+            MasterFollower2[Master Follower<br/>JournalLoader<br/>RocksDB]
+            MasterLeader -. Raft replication .-> MasterFollower1
+            MasterLeader -. Raft replication .-> MasterFollower2
+        end
+
+        subgraph Worker_Cluster
+            Worker1[Worker 1<br/>MEM: 64GB<br/>SSD: 1TB<br/>HDD: 10TB]
+            Worker2[Worker 2<br/>MEM: 64GB<br/>SSD: 1TB<br/>HDD: 10TB]
+            Worker3[Worker 3<br/>MEM: 64GB<br/>SSD: 1TB<br/>HDD: 10TB]
+            WorkerN[Worker N<br/>...]
+        end
+    end
+
+    subgraph Storage_Backend
+        S3Bucket[S3 Bucket]
+        HDFSCluster[HDFS Cluster]
+    end
+
+    App1 --> MasterLeader
+    App1 --> Worker1
+    App2 --> MasterLeader
+    App2 --> Worker2
+    App3 --> MasterLeader
+    App3 --> Worker3
+
+    MasterLeader --> Worker1
+    MasterLeader --> Worker2
+    MasterLeader --> Worker3
+    MasterLeader --> WorkerN
+
+    Worker1 -. Cache backend .-> S3Bucket
+    Worker2 -. Cache backend .-> HDFSCluster
+    Worker3 -. Cache backend .-> S3Bucket
+    WorkerN -. Cache backend .-> HDFSCluster
+
+    %% Styles
+    classDef appStyle fill:#ed8936,stroke:#c05621,color:#fff,stroke-width:2px
+    classDef masterStyle fill:#4a9eff,stroke:#2b6cb0,color:#fff,stroke-width:2px
+    classDef workerStyle fill:#805ad5,stroke:#553c9a,color:#fff,stroke-width:2px
+    classDef storageStyle fill:#fc8181,stroke:#c53030,color:#1a202c,stroke-width:2px
+    
+    class App1,App2,App3 appStyle
+    class MasterLeader,MasterFollower1,MasterFollower2 masterStyle
+    class Worker1,Worker2,Worker3,WorkerN workerStyle
+    class S3Bucket,HDFSCluster storageStyled:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$3","c",{"children":[["$","$L14",null,{"toc":[{"depth":2,"url":"#component-roles","title":"Component Roles"},{"depth":2,"url":"#relationship-between-curvine-master-curvine-worker-and-curvine-fuse","title":"Relationship between curvine master, curvine worker, and curvine fuse"},{"depth":2,"url":"#curvine-fuse-use-cases","title":"curvine fuse Use Cases"}],"children":[["$","h1",null,{"className":"text-[1.75em] font-semibold","children":"Deployment Architecture"}],null,["$","div",null,{"className":"prose flex-1 text-fd-foreground/90","children":[[["$","p",null,{"children":"Before deploying a cluster, you need to understand the roles of each Curvine component and their interaction patterns. The following diagram shows the typical deployment architecture of Curvine, divided into three layers from top to bottom:"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":"Application Layer"}],": Includes curvine-fuse, applications accessed via SDK, CLI management tools, etc. For details, refer to ",["$","$L15",null,{"href":"/docs/User-Manuals/Access/fuse","children":"Access Methods"}],"."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"Curvine Cluster Service Layer"}],": Consists of ",["$","strong",null,{"children":"curvine-master"}]," (can be multiple nodes for HA, forming a Raft group) and ",["$","strong",null,{"children":"curvine-worker"}]," nodes forming the Curvine cluster."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":"UFS Cluster"}],": As the underlying storage backend, connected to the Curvine cluster through ",["$","$L15",null,{"href":"/docs/User-Manuals/Key-Features/ufs#mounting","children":"mounting"}],", such as S3, HDFS, and other clusters."]}],"\n"]}],"\n",["$","$L16",null,{"chart":"$17"}],"\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20","\n","$L21","\n","$L22","\n","$L23","\n","$L24","\n","$L25"],null]}]]}],["$L26","$L27"],"$L28"]}],"p":"$@29","v":null,"s":"$c"}}]]
+2:[["children",{"s":{"n":"slug","t":"oc","k":"Deploy/Deployment-Overview/Deployment-Architecture","s":[]},"h":64,"d":{"r":["$","$3","c",{"children":[null,["$","$L8",null,{"parallelRouterKey":"children","template":["$","$L9",null,{}]}]]}],"p":"$@a","v":"$b","s":"$c"},"c":"$Qd"}]]
+1:[["children",{"s":"docs","h":32,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L2b",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2d",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2e",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Deployment Architecture - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L2f","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@30","v":null,"s":"$c"}},"a":"$@31","u":"$@32","b":"g5hhCZYH2uwYijtXJ44v6"}
+33:I[390156,["$4","$5","$6","$7","$e","$f","$10","$11","$12","$13"],"Heading"]
+35:I[675049,["$4","$5","$6","$7"],"OutletBoundary"]
+18:["$","$L33",null,{"as":"h2","id":"component-roles","children":"Component Roles"}]
+19:["$","p",null,{"children":[["$","strong",null,{"children":"Master nodes"}]," (can be multiple for high availability): Responsible for metadata management, worker node coordination, and load balancing"]}]
+1a:["$","ul",null,{"children":["\n",["$","li",null,{"children":"Deployed as a Raft group (one leader, multiple followers); clients talk to the current leader"}],"\n",["$","li",null,{"children":"Maintains file system metadata (directory structure, file locations, etc.)"}],"\n",["$","li",null,{"children":"Manages worker node registration and health checks"}],"\n",["$","li",null,{"children":"Handles client metadata requests"}],"\n",["$","li",null,{"children":"Uses Raft consensus algorithm to ensure metadata consistency"}],"\n"]}]
+1b:["$","p",null,{"children":[["$","strong",null,{"children":"Worker Node"}],": Responsible for data storage and processing"]}]
+1c:["$","ul",null,{"children":["\n",["$","li",null,{"children":"Stores actual data blocks (supports memory, SSD, HDD multi-level caching)"}],"\n",["$","li",null,{"children":"Handles data read/write requests"}],"\n",["$","li",null,{"children":"Periodically sends heartbeats to Master"}],"\n",["$","li",null,{"children":"Supports multi-replica data storage"}],"\n"]}]
+1d:["$","p",null,{"children":[["$","strong",null,{"children":"FUSE Interface"}],": Provides POSIX file system interface, mounting distributed cache as local file system"]}]
+1e:["$","p",null,{"children":[["$","strong",null,{"children":"S3 Gateway"}],": Provides S3-compatible object storage interface, supporting S3 API"]}]
+1f:["$","p",null,{"children":[["$","strong",null,{"children":"Client Library"}],": Provides multi-language APIs, communicating with Master and Worker nodes via RPC"]}]
+20:["$","$L33",null,{"as":"h2","id":"relationship-between-curvine-master-curvine-worker-and-curvine-fuse","children":"Relationship between curvine master, curvine worker, and curvine fuse"}]
+21:["$","p",null,{"children":["Master is deployed as ",["$","strong",null,{"children":"multiple nodes"}]," (Raft group). Clients and FUSE communicate with the current master leader; the diagram below shows the logical roles."]}]
+34:T55d,%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#4a9eff', 'primaryTextColor': '#1a202c', 'primaryBorderColor': '#3182ce', 'lineColor': '#4a5568', 'secondaryColor': '#805ad5', 'tertiaryColor': '#38a169', 'mainBkg': '#ffffff', 'nodeBorder': '#4a5568', 'clusterBkg': '#f8f9fa', 'clusterBorder': '#dee2e6', 'titleColor': '#1a202c'}}}%%
+flowchart LR
+    subgraph Client_Layer
+        App[Applications<br/>ls,cat,cp]
+        fuse[curvine-fuse<br/>FUSE Daemon]
+        App -- POSIX System Calls --> fuse
+    end
+
+    subgraph Server_Side["Server side (Master can be multiple nodes)"]
+        subgraph Master_Group["curvine-master (Raft group)"]
+            M1[Master 1]
+            M2[Master 2]
+            MN[Master N]
+        end
+        worker[curvine-worker<br/>Data Storage]
+        M1 -- Coordination --> worker
+    end
+
+    fuse -- RPC --> M1
+    fuse -- Data Read/Write  --> worker
+
+    %% Styles
+    classDef appStyle fill:#ed8936,stroke:#c05621,color:#fff,stroke-width:2px
+    classDef fuseStyle fill:#ecc94b,stroke:#b7791f,color:#1a202c,stroke-width:2px
+    classDef masterStyle fill:#4a9eff,stroke:#2b6cb0,color:#fff,stroke-width:2px
+    classDef workerStyle fill:#805ad5,stroke:#553c9a,color:#fff,stroke-width:2px
+    
+    class App appStyle
+    class fuse fuseStyle
+    class M1,M2,MN masterStyle
+    class worker workerStyle22:["$","$L16",null,{"chart":"$34"}]
+23:["$","$L33",null,{"as":"h2","id":"curvine-fuse-use-cases","children":"curvine fuse Use Cases"}]
+24:["$","p",null,{"children":"When you need to enable existing applications to access Curvine distributed cache without modification, FUSE can be used to mount Curvine as a local file system."}]
+25:["$","ul",null,{"children":["\n",["$","li",null,{"children":["Default mount points","\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"/curvine-fuse"}],"\n"]}],"\n"]}],"\n"]}]
+26:["$","script","script-0",{"src":"/_next/static/chunks/1adne8fdas0e0.js","async":true}]
+27:["$","script","script-1",{"src":"/_next/static/chunks/1i1ytqd5_xisb.js","async":true}]
+28:["$","$L35",null,{"children":["$","$2e",null,{"name":"Next.MetadataOutlet","children":"$@36"}]}]
+32:true
+c:300
+36:null
+c:C
+31:0
+a:"$undefined"
+30:"$undefined"
+29:"$undefined"
