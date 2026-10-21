@@ -26,10 +26,10 @@ e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$",
 3:[["children",{"s":{"n":"slug","t":"oc","k":"User-Manuals/Key-Features/fuse","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2f",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L31",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$32",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"FUSE - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L33","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@34","v":null,"s":"$d"}},"a":"$@35","u":"$@36","b":"oBfBECFuVupGuIW2fMiCt"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2f",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L31",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$32",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"FUSE - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L33","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@34","v":null,"s":"$d"}},"a":"$@35","u":"$@36","b":"__fZ0_Z0ccJa1F1Gv6rCw"}
 37:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
 17:["$","td",null,{"children":["$","code",null,{"children":"negative_timeout"}]}]
-18:["$","td",null,{"children":"1 秒"}]
+18:["$","td",null,{"children":"0 秒（禁用）"}]
 19:["$","td",null,{"children":"不存在文件的查询失败缓存时间，避免重复无效请求"}]
 1a:["$","p",null,{"children":"缓存意义："}]
 1b:["$","p",null,{"children":["访问路径如 ",["$","code",null,{"children":"/a/b/c.log"}],"，内核会依次查找 ",["$","code",null,{"children":"/"}],"、",["$","code",null,{"children":"/a"}],"、",["$","code",null,{"children":"/a/b"}],"、",["$","code",null,{"children":"/a/b/c.log"}],"，无缓存需发起 4 次以上远程 RPC 请求；有缓存后直接从内核取数据，大量小文件场景下，性能提升极其明显，文件数据变化不频繁时，可适当调大缓存时间。"]}]

@@ -23,12 +23,12 @@ f:"/_next/static/chunks/3e89i0670otcs.js"
 c:X
 c:C
 d:X
-18:T93c,%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#4a9eff', 'primaryTextColor': '#1a202c', 'primaryBorderColor': '#3182ce', 'lineColor': '#4a5568', 'secondaryColor': '#805ad5', 'tertiaryColor': '#38a169', 'mainBkg': '#ffffff', 'nodeBorder': '#4a5568', 'clusterBkg': '#f8f9fa', 'clusterBorder': '#dee2e6', 'titleColor': '#1a202c'}}}%%
+18:T93f,%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#4a9eff', 'primaryTextColor': '#1a202c', 'primaryBorderColor': '#3182ce', 'lineColor': '#4a5568', 'secondaryColor': '#805ad5', 'tertiaryColor': '#38a169', 'mainBkg': '#ffffff', 'nodeBorder': '#4a5568', 'clusterBkg': '#f8f9fa', 'clusterBorder': '#dee2e6', 'titleColor': '#1a202c'}}}%%
 flowchart TD
     subgraph 客户端应用
         App1[应用程序1<br/>FUSE挂载]
         App2[应用程序2<br/>Hadoop HDFS API]
-        App3[应用程序3<br/>S3 SDK]
+        App3[应用程序3<br/>CLI / SDK]
     end
 
     subgraph 集群层
@@ -81,7 +81,7 @@ flowchart TD
 3:[["children",{"s":{"n":"slug","t":"oc","k":"Deploy/Deployment-Overview/Deployment-Architecture","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2f",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"部署架构 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L30","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@31","v":null,"s":"$d"}},"a":"$@32","u":"$@33","b":"oBfBECFuVupGuIW2fMiCt"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L2c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2f",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"部署架构 - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L30","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@31","v":null,"s":"$d"}},"a":"$@32","u":"$@33","b":"__fZ0_Z0ccJa1F1Gv6rCw"}
 34:I[390156,["$5","$6","$7","$8","$f","$10","$11","$12","$13","$14"],"Heading"]
 36:I[675049,["$5","$6","$7","$8"],"OutletBoundary"]
 19:["$","$L34",null,{"as":"h2","id":"组件作用","children":"组件作用"}]
@@ -90,7 +90,7 @@ flowchart TD
 1c:["$","p",null,{"children":[["$","strong",null,{"children":"Worker节点"}],"：负责数据存储和处理"]}]
 1d:["$","ul",null,{"children":["\n",["$","li",null,{"children":"存储实际数据块（支持内存、SSD、HDD多级缓存）"}],"\n",["$","li",null,{"children":"处理数据读写请求"}],"\n",["$","li",null,{"children":"定期向Master发送心跳"}],"\n",["$","li",null,{"children":"支持多副本数据存储"}],"\n"]}]
 1e:["$","p",null,{"children":[["$","strong",null,{"children":"FUSE接口"}],"：提供POSIX文件系统接口，将分布式缓存挂载为本地文件系统"]}]
-1f:["$","p",null,{"children":[["$","strong",null,{"children":"S3 Gateway"}],"：提供S3兼容的对象存储接口，支持S3 API"]}]
+1f:["$","p",null,{"children":[["$","strong",null,{"children":"Transfer 服务（可选）"}],"：在 Master 进程之外运行 Load 与 Export 任务，参见 ",["$","$L16",null,{"href":"/docs/Deploy/Transfer-Service/Overview","children":"Transfer 服务"}],"。"]}]
 20:["$","p",null,{"children":[["$","strong",null,{"children":"客户端库"}],"：提供多语言API，通过RPC与Master节和Worker节点通信"]}]
 21:["$","$L34",null,{"as":"h2","id":"curvine-mastercurvine-worker-与-curvine-fuse-的关系","children":"curvine master、curvine worker 与 curvine fuse 的关系"}]
 22:["$","p",null,{"children":["Master 以",["$","strong",null,{"children":"多节点"}],"（Raft 组）形式部署；客户端与 FUSE 与当前 Master Leader 通信。下图表示逻辑角色关系。"]}]
