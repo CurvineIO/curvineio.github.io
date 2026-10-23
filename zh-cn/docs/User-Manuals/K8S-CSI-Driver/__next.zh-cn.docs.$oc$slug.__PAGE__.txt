@@ -27,7 +27,7 @@ e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$4","c",{"children":[["$",
 3:[["children",{"s":{"n":"slug","t":"oc","k":"User-Manuals/K8S-CSI-Driver","s":[]},"h":64,"d":{"r":["$","$4","c",{"children":[null,["$","$L9",null,{"parallelRouterKey":"children","template":["$","$La",null,{}]}]]}],"p":"$@b","v":"$c","s":"$d"},"c":"$Qe"}]]
 2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L1c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L1e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$18",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"K8S CSI Driver - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L1f","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@20","v":null,"s":"$d"}},"a":"$@21","u":"$@22","b":"__fZ0_Z0ccJa1F1Gv6rCw"}
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$4","h",{"children":[null,["$","$L1c",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L1e",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$18",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"K8S CSI Driver - Curvine"}],["$","link","1",{"rel":"icon","href":"/img/curvine_logo.ico"}],["$","$L1f","2",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@20","v":null,"s":"$d"}},"a":"$@21","u":"$@22","b":"scKdGSnidRtfwo4RX16cD"}
 19:null
 22:true
 d:300
