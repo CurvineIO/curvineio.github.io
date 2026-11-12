@@ -8,4 +8,4 @@
 3:[["children",{"s":{"n":"slug","t":"oc","k":"Deploy/Deploy-Curvine-Cluster/Standalone-Mode","s":[]},"h":64,"c":"$Q4"}]]
 2:[["children",{"s":"docs","h":32,"c":"$Q3"}]]
 1:[["children",{"s":"zh-cn","h":96,"c":"$Q2"}]]
-0:{"b":"QwC9li1hAz19O4jkasd1e","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"Nxl0kY7wtVwCFpDKbjYUn","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
